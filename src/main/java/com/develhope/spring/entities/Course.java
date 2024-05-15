@@ -1,5 +1,6 @@
 package com.develhope.spring.entities;
 
+import com.develhope.spring.models.CourseType;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -25,8 +26,12 @@ public class Course {
     private String description;
     @ManyToOne
     private User user;
+    @Column(nullable = false)
+    private Boolean activeCourse;
+    @Column(nullable = false)
+    private CourseType courseType;
 
-    public Course(Long id, String name, Date startDate, Date finishDate, String courseLength, Double price, String subject, String description, User user) {
+    public Course(Long id, String name, Date startDate, Date finishDate, String courseLength, Double price, String subject, String description, User user, Boolean activeCourse, CourseType courseType) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
@@ -36,6 +41,8 @@ public class Course {
         this.subject = subject;
         this.description = description;
         this.user = user;
+        this.activeCourse = activeCourse;
+        this.courseType = courseType;
     }
 
     public Course() {
@@ -111,5 +118,21 @@ public class Course {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Boolean getActiveCourse() {
+        return activeCourse;
+    }
+
+    public void setActiveCourse(Boolean activeCourse) {
+        this.activeCourse = activeCourse;
+    }
+
+    public CourseType getCourseType() {
+        return courseType;
+    }
+
+    public void setCourseType(CourseType courseType) {
+        this.courseType = courseType;
     }
 }

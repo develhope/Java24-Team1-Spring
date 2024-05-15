@@ -14,6 +14,8 @@ public class User {
     @Column(nullable = false)
     private String surname;
     @Column(nullable = false, unique = true)
+    private String username;
+    @Column(nullable = false, unique = true)
     private String email;
     private String cellNum;
     @Column(nullable = false)
@@ -23,10 +25,11 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    public User(Long id, String name, String surname, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
+    public User(Long id, String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
         this.id = id;
         this.name = name;
         this.surname = surname;
+        this.username = username;
         this.email = email;
         this.cellNum = cellNum;
         this.fiscCode = fiscCode;
@@ -59,6 +62,14 @@ public class User {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
