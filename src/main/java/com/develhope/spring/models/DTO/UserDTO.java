@@ -1,44 +1,21 @@
-package com.develhope.spring.entities;
+package com.develhope.spring.models.DTO;
 
 import com.develhope.spring.enums.RoleEnum;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-@Table
-@Entity
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserDTO {
     private Long id;
-    @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
     private String surname;
-    @Column(nullable = false, unique = true)
     private String username;
-    @Column(nullable = false, unique = true)
     private String email;
     private String cellNum;
-    @Column(nullable = false)
     private String fiscCode;
-    @Column(nullable = false)
     private RoleEnum role;
-    @Column(nullable = false)
     private String password;
-
-    public User(Long id, String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.username = username;
-        this.email = email;
-        this.cellNum = cellNum;
-        this.fiscCode = fiscCode;
-        this.role = role;
-        this.password = password;
-    }
-
-    public User() {
-    }
 
     public Long getId() {
         return id;
@@ -112,5 +89,3 @@ public class User {
         this.password = password;
     }
 }
-
-

@@ -12,6 +12,7 @@ public class CourseScheduleService {
     private CourseScheduleDAO courseScheduleDAO;
 
     public void addCourseSchedule(CourseSchedule courseSchedule) {
+
         courseScheduleDAO.saveAndFlush(courseSchedule);
     }
 }

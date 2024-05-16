@@ -1,30 +1,14 @@
-package com.develhope.spring.entities;
+package com.develhope.spring.models.DTO;
 
+import com.develhope.spring.entities.Course;
+import com.develhope.spring.entities.User;
 import jakarta.persistence.*;
 
-@Entity
-@Table
-public class Review {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ReviewDTO {
     private Long id;
-    @ManyToOne
     private User student;
-    @ManyToOne
     private Course course;
-    @Column(nullable = false)
     private String review;
-
-    public Review(Long id, User student, Course course, String review) {
-        this.id = id;
-        this.student = student;
-        this.course = course;
-        this.review = review;
-    }
-
-    public Review() {
-    }
 
     public Long getId() {
         return id;

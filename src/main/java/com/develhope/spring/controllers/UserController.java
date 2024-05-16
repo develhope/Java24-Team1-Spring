@@ -2,6 +2,7 @@ package com.develhope.spring.controllers;
 
 import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.UserException;
+import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.UserService;
 import jdk.jshell.spi.ExecutionControl;
@@ -20,9 +21,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/add")
-    public ResponseEntity<Response> postUser(@RequestBody User user) {
+    public ResponseEntity<Response> postUser(@RequestBody UserDTO user) {
         try {
-            User newUser = userService.addUser(user);
+            UserDTO newUser = userService.addUser(user);
             return ResponseEntity.ok().body(
                     new Response(
                         200,

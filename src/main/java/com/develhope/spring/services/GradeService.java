@@ -12,6 +12,7 @@ public class GradeService {
     private GradeDAO gradeDAO;
 
     public void addGrade(Grade grade) {
+
         gradeDAO.saveAndFlush(grade);
     }
 }

@@ -1,34 +1,18 @@
-package com.develhope.spring.entities;
+package com.develhope.spring.models.DTO;
 
+import com.develhope.spring.entities.Course;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
-import java.time.OffsetDateTime;
 import java.util.Date;
 
-@Entity
-@Table
-public class CourseSchedule {
+public class CourseScheduleDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
     private Course course;
-    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private Date dateTime;
-    @Column(nullable = false)
     private String link;
-
-    public CourseSchedule(Long id, Course course, Date dateTime, String link) {
-        this.id = id;
-        this.course = course;
-        this.dateTime = dateTime;
-        this.link = link;
-    }
-
-    public CourseSchedule() {
-    }
 
     public Long getId() {
         return id;

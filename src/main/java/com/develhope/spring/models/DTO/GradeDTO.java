@@ -1,33 +1,15 @@
-package com.develhope.spring.entities;
+package com.develhope.spring.models.DTO;
 
+import com.develhope.spring.entities.Course;
+import com.develhope.spring.entities.User;
 import jakarta.persistence.*;
 
-@Entity
-@Table
-public class Grade {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class GradeDTO {
     private Long id;
-    @ManyToOne
     private User student;
-    @ManyToOne
     private Course course;
-    @Column(nullable = false)
     private String grade;
-    @Column(nullable = false)
     private Boolean finishedCourse;
-
-    public Grade(Long id, User student, Course course, String grade, Boolean finishedCourse) {
-        this.id = id;
-        this.student = student;
-        this.course = course;
-        this.grade = grade;
-        this.finishedCourse = finishedCourse;
-    }
-
-    public Grade() {
-    }
 
     public Long getId() {
         return id;

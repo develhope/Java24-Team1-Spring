@@ -1,53 +1,27 @@
-package com.develhope.spring.entities;
+package com.develhope.spring.models.DTO;
 
+import com.develhope.spring.entities.User;
 import com.develhope.spring.enums.CourseType;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
+
 
 import java.util.Date;
 
-@Entity
-@Table
-public class Course {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CourseDTO {
+
     private Long id;
-    @Column(nullable = false)
     private String name;
-    @Column(nullable = false, columnDefinition = "DATE")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private Date startDate;
-    @Column(nullable = false, columnDefinition = "DATE")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private Date finishDate;
-    @Column(nullable = false)
     private Integer courseLength;
-    @Column(nullable = false)
     private Double price;
-    @Column(nullable = false)
     private String subject;
     private String description;
-    @ManyToOne
     private User tutor;
-    @Column(nullable = false)
     private Boolean activeCourse;
-    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private CourseType courseType;
-
-    public Course(Long id, String name, Date startDate, Date finishDate, Integer courseLength, Double price, String subject, String description, User tutor, Boolean activeCourse, CourseType courseType) {
-        this.id = id;
-        this.name = name;
-        this.startDate = startDate;
-        this.finishDate = finishDate;
-        this.courseLength = courseLength;
-        this.price = price;
-        this.subject = subject;
-        this.description = description;
-        this.tutor = tutor;
-        this.activeCourse = activeCourse;
-        this.courseType = courseType;
-    }
-
-    public Course() {
-    }
 
     public Long getId() {
         return id;

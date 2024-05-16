@@ -3,6 +3,7 @@ package com.develhope.spring.controllers;
 
 import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.entities.Course;
+import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class CourseController {
     }
 
     @PostMapping("/add")
-    public void postCourse(@RequestBody Course course) {
+    public void postCourse(@RequestBody CourseDTO course) {
         courseService.addCourse(course);
     }
 }
