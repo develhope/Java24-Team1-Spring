@@ -1,8 +1,10 @@
 package com.develhope.spring.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.OffsetDateTime;
+import java.util.Date;
 
 @Entity
 @Table
@@ -14,11 +16,12 @@ public class CourseSchedule {
     @ManyToOne
     private Course course;
     @Column(nullable = false)
-    private OffsetDateTime dateTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private Date dateTime;
     @Column(nullable = false)
     private String link;
 
-    public CourseSchedule(Long id, Course course, OffsetDateTime dateTime, String link) {
+    public CourseSchedule(Long id, Course course, Date dateTime, String link) {
         this.id = id;
         this.course = course;
         this.dateTime = dateTime;
@@ -44,11 +47,11 @@ public class CourseSchedule {
         this.course = course;
     }
 
-    public OffsetDateTime getDateTime() {
+    public Date getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(OffsetDateTime dateTime) {
+    public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }
 

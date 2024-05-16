@@ -1,4 +1,4 @@
-package com.develhope.spring.models;
+package com.develhope.spring.enums;
 
 public enum RoleEnum {
     STUDENT,

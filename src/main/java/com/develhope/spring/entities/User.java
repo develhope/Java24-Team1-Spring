@@ -1,6 +1,6 @@
 package com.develhope.spring.entities;
 
-import com.develhope.spring.models.RoleEnum;
+import com.develhope.spring.enums.RoleEnum;
 import jakarta.persistence.*;
 
 @Table

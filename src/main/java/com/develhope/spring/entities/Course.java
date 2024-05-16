@@ -1,6 +1,7 @@
 package com.develhope.spring.entities;
 
-import com.develhope.spring.models.CourseType;
+import com.develhope.spring.enums.CourseType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -14,24 +15,26 @@ public class Course {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private Date startDate;
     @Column(nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private Date finishDate;
     @Column(nullable = false)
-    private String courseLength;
+    private Integer courseLength;
     @Column(nullable = false)
     private Double price;
     @Column(nullable = false)
     private String subject;
     private String description;
     @ManyToOne
-    private User user;
+    private User tutor;
     @Column(nullable = false)
     private Boolean activeCourse;
     @Column(nullable = false)
     private CourseType courseType;
 
-    public Course(Long id, String name, Date startDate, Date finishDate, String courseLength, Double price, String subject, String description, User user, Boolean activeCourse, CourseType courseType) {
+    public Course(Long id, String name, Date startDate, Date finishDate, Integer courseLength, Double price, String subject, String description, User tutor, Boolean activeCourse, CourseType courseType) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
@@ -40,7 +43,7 @@ public class Course {
         this.price = price;
         this.subject = subject;
         this.description = description;
-        this.user = user;
+        this.tutor = tutor;
         this.activeCourse = activeCourse;
         this.courseType = courseType;
     }
@@ -80,11 +83,11 @@ public class Course {
         this.finishDate = finishDate;
     }
 
-    public String getCourseLength() {
+    public Integer getCourseLength() {
         return courseLength;
     }
 
-    public void setCourseLength(String courseLength) {
+    public void setCourseLength(Integer courseLength) {
         this.courseLength = courseLength;
     }
 
@@ -112,12 +115,12 @@ public class Course {
         this.description = description;
     }
 
-    public User getUser() {
-        return user;
+    public User getTutor() {
+        return tutor;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setTutor(User tutor) {
+        this.tutor = tutor;
     }
 
     public Boolean getActiveCourse() {
