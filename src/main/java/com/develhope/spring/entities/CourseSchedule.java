@@ -1,9 +1,7 @@
 package com.develhope.spring.entities;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
-import java.time.OffsetDateTime;
 import java.util.Date;
 
 @Entity
@@ -16,14 +14,18 @@ public class CourseSchedule {
     @ManyToOne
     private Course course;
     @Column(nullable = false)
-    private Date dateTime;
+    private Date startDateTime;
+
+    @Column(nullable = false)
+    private Date finishDateTime;
     @Column(nullable = false)
     private String link;
 
-    public CourseSchedule(Long id, Course course, Date dateTime, String link) {
+    public CourseSchedule(Long id, Course course, Date startDateTime, Date finishDateTime, String link) {
         this.id = id;
         this.course = course;
-        this.dateTime = dateTime;
+        this.startDateTime = startDateTime;
+        this.finishDateTime = finishDateTime;
         this.link = link;
     }
 
@@ -46,12 +48,21 @@ public class CourseSchedule {
         this.course = course;
     }
 
-    public Date getDateTime() {
-        return dateTime;
+
+    public Date getStartDateTime() {
+        return startDateTime;
     }
 
-    public void setDateTime(Date dateTime) {
-        this.dateTime = dateTime;
+    public void setStartDateTime(Date startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public Date getFinishDateTime() {
+        return finishDateTime;
+    }
+
+    public void setFinishDateTime(Date finishDateTime) {
+        this.finishDateTime = finishDateTime;
     }
 
     public String getLink() {

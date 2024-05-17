@@ -2,16 +2,18 @@ package com.develhope.spring.models.DTO;
 
 import com.develhope.spring.entities.Course;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 
 import java.util.Date;
 
 public class CourseScheduleDTO {
 
     private Long id;
-    private Course course;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date dateTime;
+    private Long course_id;
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private Date startDateTime;
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
+    private Date finishDateTime;
     private String link;
 
     public Long getId() {
@@ -22,20 +24,29 @@ public class CourseScheduleDTO {
         this.id = id;
     }
 
-    public Course getCourse() {
-        return course;
+    public Long getCourseId() {
+        return course_id;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setCourse(Long course_id) {
+        this.course_id = course_id;
     }
 
-    public Date getDateTime() {
-        return dateTime;
+
+    public Date getStartDateTime() {
+        return startDateTime;
     }
 
-    public void setDateTime(Date dateTime) {
-        this.dateTime = dateTime;
+    public void setStartDateTime(Date startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public Date getFinishDateTime() {
+        return finishDateTime;
+    }
+
+    public void setFinishDateTime(Date finishDateTime) {
+        this.finishDateTime = finishDateTime;
     }
 
     public String getLink() {
