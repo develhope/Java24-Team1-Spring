@@ -9,13 +9,13 @@ public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User student;
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Course course;
     @Column(nullable = false)
     private String grade;
-    @Column(nullable = false)
+    @Column
     private Boolean finishedCourse;
 
     public Grade(Long id, User student, Course course, String grade, Boolean finishedCourse) {

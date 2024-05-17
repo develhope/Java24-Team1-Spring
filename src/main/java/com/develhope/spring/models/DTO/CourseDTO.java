@@ -19,7 +19,7 @@ public class CourseDTO {
     private Double price;
     private String subject;
     private String description;
-    private User tutor;
+    private Long tutor_id;
     private Boolean activeCourse;
     private CourseType courseType;
 
@@ -87,12 +87,12 @@ public class CourseDTO {
         this.description = description;
     }
 
-    public User getTutor() {
-        return tutor;
+    public Long getTutor_id() {
+        return tutor_id;
     }
 
-    public void setTutor(User tutor) {
-        this.tutor = tutor;
+    public void setTutor_id(Long tutor_id) {
+        this.tutor_id = tutor_id;
     }
 
     public Boolean getActiveCourse() {

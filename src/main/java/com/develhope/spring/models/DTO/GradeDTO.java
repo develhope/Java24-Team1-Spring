@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 
 public class GradeDTO {
     private Long id;
-    private User student;
-    private Course course;
+    private Long student_id;
+    private Long course_id;
     private String grade;
     private Boolean finishedCourse;
 
@@ -19,20 +19,20 @@ public class GradeDTO {
         this.id = id;
     }
 
-    public User getStudent() {
-        return student;
+    public Long getStudent_id() {
+        return student_id;
     }
 
-    public void setStudent(User student) {
-        this.student = student;
+    public void setStudent_id(Long student_id) {
+        this.student_id = student_id;
     }
 
-    public Course getCourse() {
-        return course;
+    public Long getCourse_id() {
+        return course_id;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setCourse_id(Long course_id) {
+        this.course_id = course_id;
     }
 
     public String getGrade() {

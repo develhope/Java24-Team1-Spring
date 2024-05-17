@@ -1,7 +1,9 @@
 package com.develhope.spring.services;
 
 import com.develhope.spring.DAO.CourseDAO;
+import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.Course;
+import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.validators.CourseValidator;
@@ -21,10 +23,16 @@ public class CourseService {
 
     @Autowired
     private CourseValidator validator;
+    @Autowired
+    private UserDAO userDAO;
 
     public CourseDTO addCourse(CourseDTO course) throws CourseException {
         if (validator.isCourseValid(course)) {
             Course entity = modelMapper.map(course, Course.class);
+
+            Optional<User> tutor = userDAO.findById(course.getTutor_id());
+            entity.setTutor(tutor.get());
+
             Course saved = courseDAO.saveAndFlush(entity);
             modelMapper.map(saved, course);
             return course;

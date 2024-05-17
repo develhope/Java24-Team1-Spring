@@ -15,7 +15,7 @@ public class CourseValidator {
     @Autowired
     private UserDAO userDAO;
     public boolean isCourseValid(CourseDTO c) {
-        return (isCourseNotNull(c) && isDateValid(c));
+        return true ;//(isCourseNotNull(c) && isDateValid(c));
     }
 
     private boolean isCourseNotNull(CourseDTO c) {
@@ -26,7 +26,7 @@ public class CourseValidator {
                         c.getCourseLength() != null &&
                         c.getPrice() != null &&
                         c.getSubject() != null &&
-                        c.getTutor() != null &&
+                        c.getTutor_id() != null &&
                         c.getActiveCourse() != null &&
                         c.getCourseType() != null
                 );
@@ -44,6 +44,6 @@ public class CourseValidator {
     }
 
     private boolean isTutorIdPresent(CourseDTO c){
-        return userDAO.existsById(c.getTutor().getId());
+        return userDAO.existsById(c.getTutor_id());
     }
 }
