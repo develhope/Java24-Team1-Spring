@@ -1,0 +1,39 @@
+package com.develhope.spring.validators;
+
+import com.develhope.spring.DAO.ReviewDAO;
+import com.develhope.spring.models.DTO.ReviewDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ReviewValidator {
+
+    @Autowired
+    private ReviewDAO reviewDAO;
+
+    public boolean isReviewValid(ReviewDTO r) {
+        return (isReviewNotNull(r) && studentExists(r) && courseExists(r) && isReviewNotEmpty(r));
+    }
+
+    private boolean isReviewNotNull(ReviewDTO r) {
+        return (
+                r.getId() != null &&
+                r.getId() > 0 &&
+                r.getStudent() != null &&
+                r.getCourse() != null &&
+                r.getReview() != null
+                );
+    }
+
+    private boolean studentExists(ReviewDTO r) {
+        return (reviewDAO.existsById(r.getStudent().getId()));
+    }
+
+    private boolean courseExists(ReviewDTO r) {
+        return (reviewDAO.existsById(r.getCourse().getId()));
+    }
+
+    private boolean isReviewNotEmpty(ReviewDTO r) {
+        return (r.getReview().length() > 1);
+    }
+}

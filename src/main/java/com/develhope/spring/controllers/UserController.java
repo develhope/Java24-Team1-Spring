@@ -1,11 +1,9 @@
 package com.develhope.spring.controllers;
 
-import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.UserService;
-import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
