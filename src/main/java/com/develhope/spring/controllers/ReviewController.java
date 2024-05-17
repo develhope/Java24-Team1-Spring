@@ -19,8 +19,6 @@ public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
-    @Autowired
-    private ReviewDAO reviewDAO;
 
     @PostMapping("/add")
     public ResponseEntity<Response> postReview(@RequestBody ReviewDTO review) throws ReviewException {
@@ -44,11 +42,11 @@ public class ReviewController {
 
     @GetMapping("/all")
     public List<Review> getAllReview() {
-        return reviewDAO.findAll();
+        return reviewService.getAllReview();
     }
 
     @GetMapping("/{id}")
     public Optional<Review> getReviewById(@PathVariable Long id) {
-        return reviewDAO.findById(id);
+        return reviewService.getReviewById(id);
     }
 }

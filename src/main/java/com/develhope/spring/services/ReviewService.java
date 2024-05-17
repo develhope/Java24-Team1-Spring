@@ -9,6 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ReviewService {
 
@@ -28,5 +31,13 @@ public class ReviewService {
         } else {
             throw new ReviewException("Review not added, a problem occurred with the data", 400);
         }
+    }
+
+    public List<Review> getAllReview() {;
+        return reviewDAO.findAll();
+    }
+
+    public Optional<Review> getReviewById(Long id) {
+        return reviewDAO.findById(id);
     }
 }

@@ -17,8 +17,6 @@ public class ReviewValidator {
 
     private boolean isReviewNotNull(ReviewDTO r) {
         return (
-                r.getId() != null &&
-                r.getId() > 0 &&
                 r.getStudent() != null &&
                 r.getCourse() != null &&
                 r.getReview() != null
