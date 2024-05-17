@@ -1,6 +1,5 @@
 package com.develhope.spring.controllers;
 
-import com.develhope.spring.DAO.ReviewDAO;
 import com.develhope.spring.entities.Review;
 import com.develhope.spring.exceptions.ReviewException;
 import com.develhope.spring.models.DTO.ReviewDTO;
@@ -20,7 +19,7 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    @PostMapping("/add")
+    @PostMapping("/")
     public ResponseEntity<Response> postReview(@RequestBody ReviewDTO review) {
         try {
             ReviewDTO newReview = reviewService.addReview(review);
@@ -40,14 +39,27 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping("/list")
     public List<Review> getAllReview() {
         return reviewService.getAllReview();
     }
 
     @GetMapping("/{id}")
-    public Optional<Review> getReviewById(@PathVariable Long id) {
-
-        return reviewService.getReviewById(id);
+    public ResponseEntity<Response> getReviewById(@PathVariable Long id) {
+        Optional<Review> r = reviewService.getReviewById(id);
+        if(r.isPresent()){
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "Review found: ",
+                            r)
+            );
+        }else{
+            return ResponseEntity.status(404).body(
+                    new Response(
+                            404,
+                            "Rievew not found, Id invalid"
+                    )
+            );
+        }
     }
 }

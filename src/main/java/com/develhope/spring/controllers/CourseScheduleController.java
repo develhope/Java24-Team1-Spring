@@ -1,6 +1,7 @@
 package com.develhope.spring.controllers;
 
 import com.develhope.spring.entities.CourseSchedule;
+import com.develhope.spring.entities.Grade;
 import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.models.DTO.CourseScheduleDTO;
 import com.develhope.spring.models.Response;
@@ -21,7 +22,7 @@ public class CourseScheduleController {
     @Autowired
     private CourseScheduleService courseScheduleService;
 
-    @PostMapping("/add")
+    @PostMapping("/")
     public ResponseEntity<Response> postCourseSchedule(@RequestBody CourseScheduleDTO courseSchedule) {
         try {
             CourseScheduleDTO newCourseSchedule = courseScheduleService.addCourseSchedule(courseSchedule);
@@ -30,23 +31,37 @@ public class CourseScheduleController {
                             200,
                             "New Course Schedule added correctly",
                             newCourseSchedule
-            ));
+                    ));
         } catch (CourseScheduleException e) {
-           return ResponseEntity.status(400).body(
-                   new Response(
-                   400,
-                   e.getMessage()
-           ));
+            return ResponseEntity.status(400).body(
+                    new Response(
+                            400,
+                            e.getMessage()
+                    ));
         }
     }
 
-    @GetMapping("/get/{id}")
-    public Optional<CourseSchedule> getCourseScheduleById(@PathVariable Long id) {
-        return courseScheduleService.getCourseScheduleById(id);
-    }
-
-    @GetMapping("/getall")
+    @GetMapping("/list")
     public List<CourseSchedule> getCourseScheduleById() {
         return courseScheduleService.getAllCourseSchedule();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Response> getCourseScheduleById(@PathVariable Long id) {
+        Optional<CourseSchedule> cs = courseScheduleService.getCourseScheduleById(id);
+        if(cs.isPresent()){
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "Schedule found: ",
+                            cs)
+            );
+        }else{
+            return ResponseEntity.status(404).body(
+                    new Response(
+                            404,
+                            "Schedule not found, Id invalid"
+                    )
+            );
+        }
     }
 }

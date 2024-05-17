@@ -16,7 +16,7 @@ public class CourseScheduleValidator {
     private CourseScheduleDAO courseScheduleDAO;
 
     public boolean isCourseScheduleValid(CourseScheduleDTO courseSchedule) {
-        return true;//isCourseScheduleNotNull(courseSchedule);
+        return isCourseScheduleNotNull(courseSchedule);
     }
 
     private boolean isCourseScheduleNotNull(CourseScheduleDTO courseSchedule) {

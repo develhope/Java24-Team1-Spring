@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,6 +44,12 @@ public class GradeService {
         }else{
             throw new GradeException("Grade not added, a problem occurred with the data", 400);
         }
+    }
+    public List<Grade> getAllGrade(){
+        return gradeDAO.findAll();
+    }
+    public Optional<Grade> getGradeById (Long id){
+        return gradeDAO.findById(id);
     }
 
 }

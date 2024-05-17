@@ -15,7 +15,7 @@ public class CourseValidator {
     @Autowired
     private UserDAO userDAO;
     public boolean isCourseValid(CourseDTO c) {
-        return true ;//(isCourseNotNull(c) && isDateValid(c));
+        return (isCourseNotNull(c) && isDateValid(c)&&isTutorIdPresent(c));
     }
 
     private boolean isCourseNotNull(CourseDTO c) {
@@ -37,10 +37,6 @@ public class CourseValidator {
                 Pattern.matches("(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[-/.](19|20)dd", c.getStartDate().toString()) &&
                 Pattern.matches("(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[-/.](19|20)dd", c.getFinishDate().toString())
                 );
-    }
-
-    private boolean isCourseLenghtNumber(CourseDTO c) {
-        return (Pattern.matches("\\d", c.getCourseLength().toString()));
     }
 
     private boolean isTutorIdPresent(CourseDTO c){

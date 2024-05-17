@@ -2,6 +2,7 @@ package com.develhope.spring.controllers;
 
 
 import com.develhope.spring.entities.Course;
+import com.develhope.spring.entities.Grade;
 import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.models.Response;
@@ -14,13 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/courses")
+@RequestMapping("/api/course")
 public class CourseController {
 
     @Autowired
     private CourseService courseService;
 
-    @PostMapping("/add")
+    @PostMapping("/")
     public ResponseEntity<Response> addCourse(@RequestBody CourseDTO course) {
         try {
             CourseDTO newCourse = courseService.addCourse(course);
@@ -40,13 +41,27 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping("/list")
     public List<Course> getAllCourses() {
         return courseService.getAllCourse();
     }
 
     @GetMapping("/{id}")
-    public Optional<Course> findCourseById (@PathVariable Long id){
-        return courseService.getCourseById(id);
+    public ResponseEntity<Response> findCourseById (@PathVariable Long id){
+        Optional<Course> c = courseService.getCourseById(id);
+        if(c.isPresent()){
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "Course found: ",
+                            c)
+            );
+        }else{
+            return ResponseEntity.status(404).body(
+                    new Response(
+                            404,
+                            "Course not found, Id invalid"
+                    )
+            );
+        }
     }
 }
