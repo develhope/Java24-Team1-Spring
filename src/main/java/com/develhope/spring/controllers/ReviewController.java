@@ -26,7 +26,7 @@ public class ReviewController {
             return ResponseEntity.ok().body(
                     new Response(
                             200,
-                            "student: " + newReview.getStudent() + " added a review to course: " + newReview.getCourse(),
+                            "student: " + newReview.getStudent_id() + " added a review to course: " + newReview.getCourse_id(),
                             newReview)
             );
         } catch (ReviewException e) {

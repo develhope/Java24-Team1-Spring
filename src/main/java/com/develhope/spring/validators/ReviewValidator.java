@@ -17,18 +17,18 @@ public class ReviewValidator {
 
     private boolean isReviewNotNull(ReviewDTO r) {
         return (
-                r.getStudent() != null &&
-                r.getCourse() != null &&
+                r.getStudent_id() != null &&
+                r.getCourse_id() != null &&
                 r.getReview() != null
                 );
     }
 
     private boolean studentExists(ReviewDTO r) {
-        return (reviewDAO.existsById(r.getStudent().getId()));
+        return (reviewDAO.existsById(r.getStudent_id()));
     }
 
     private boolean courseExists(ReviewDTO r) {
-        return (reviewDAO.existsById(r.getCourse().getId()));
+        return (reviewDAO.existsById(r.getCourse_id()));
     }
 
     private boolean isReviewNotEmpty(ReviewDTO r) {
