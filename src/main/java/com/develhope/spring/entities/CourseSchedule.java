@@ -15,7 +15,6 @@ public class CourseSchedule {
     private Course course;
     @Column(nullable = false)
     private Date startDateTime;
-
     @Column(nullable = false)
     private Date finishDateTime;
     @Column(nullable = false)

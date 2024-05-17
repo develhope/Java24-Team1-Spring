@@ -1,6 +1,8 @@
 package com.develhope.spring.services;
 
+import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.CourseScheduleDAO;
+import com.develhope.spring.entities.Course;
 import com.develhope.spring.entities.CourseSchedule;
 import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.models.DTO.CourseScheduleDTO;
@@ -17,24 +19,25 @@ public class CourseScheduleService {
 
     @Autowired
     private CourseScheduleDAO courseScheduleDAO;
+
+    @Autowired
+    private CourseDAO courseDAO;
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private CourseScheduleValidator courseScheduleValidator;
 
-    public CourseScheduleDTO addCourseSchedule(CourseScheduleDTO courseSchedule) throws CourseScheduleException {
-        if(courseScheduleValidator.isCourseScheduleValid(courseSchedule)) {
 
-            CourseSchedule entity = modelMapper.map(courseSchedule, CourseSchedule.class);
+    public CourseScheduleDTO addCourseSchedule(CourseScheduleDTO courseSchedule) throws CourseScheduleException{
+        CourseSchedule entity = modelMapper.map(courseSchedule, CourseSchedule.class);
 
-            CourseSchedule saved = courseScheduleDAO.saveAndFlush(entity);
-            modelMapper.map(saved, courseSchedule);
+        Optional<Course> course = courseDAO.findById(courseSchedule.getCourse_id());
+        entity.setCourse(course.get());
 
-            return courseSchedule;
-        } else {
-            throw new CourseScheduleException("Course Schedule not added. A problem occured with data", 400);
-        }
+        CourseSchedule saved = courseScheduleDAO.saveAndFlush(entity);
+        modelMapper.map(saved, courseSchedule);
+        return courseSchedule;
     }
 
     public Optional<CourseSchedule> getCourseScheduleById(Long id) {

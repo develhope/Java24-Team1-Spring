@@ -11,7 +11,6 @@ public class CourseScheduleDTO {
     private Long course_id;
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date startDateTime;
-
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date finishDateTime;
     private String link;
@@ -24,14 +23,14 @@ public class CourseScheduleDTO {
         this.id = id;
     }
 
-    public Long getCourseId() {
+
+    public Long getCourse_id() {
         return course_id;
     }
 
-    public void setCourse(Long course_id) {
+    public void setCourse_id(Long course_id) {
         this.course_id = course_id;
     }
-
 
     public Date getStartDateTime() {
         return startDateTime;

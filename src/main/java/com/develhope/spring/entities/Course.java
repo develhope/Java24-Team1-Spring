@@ -26,7 +26,7 @@ public class Course {
     private String description;
     @ManyToOne
     private User tutor;
-    @Column(nullable = false)
+    @Column
     private Boolean activeCourse;
     @Column(nullable = false)
     private CourseType courseType;

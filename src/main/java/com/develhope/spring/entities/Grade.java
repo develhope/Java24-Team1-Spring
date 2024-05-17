@@ -9,9 +9,9 @@ public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(optional = false)
+    @ManyToOne
     private User student;
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Course course;
     @Column(nullable = false)
     private String grade;
