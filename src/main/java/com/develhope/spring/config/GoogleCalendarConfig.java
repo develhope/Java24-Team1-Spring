@@ -21,7 +21,7 @@ import java.util.Collections;
 @Configuration
 public class GoogleCalendarConfig {
 
-    private static final String APPLICATION_NAME = "progettodevelhopetestcalendar";
+    private static final String APPLICATION_NAME = "TEAM1_Online-Courses";
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
