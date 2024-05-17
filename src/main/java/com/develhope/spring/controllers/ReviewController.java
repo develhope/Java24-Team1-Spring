@@ -21,7 +21,7 @@ public class ReviewController {
     private ReviewService reviewService;
 
     @PostMapping("/add")
-    public ResponseEntity<Response> postReview(@RequestBody ReviewDTO review) throws ReviewException {
+    public ResponseEntity<Response> postReview(@RequestBody ReviewDTO review) {
         try {
             ReviewDTO newReview = reviewService.addReview(review);
             return ResponseEntity.ok().body(
@@ -47,6 +47,7 @@ public class ReviewController {
 
     @GetMapping("/{id}")
     public Optional<Review> getReviewById(@PathVariable Long id) {
+
         return reviewService.getReviewById(id);
     }
 }
