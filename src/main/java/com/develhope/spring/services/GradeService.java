@@ -29,21 +29,22 @@ public class GradeService {
     private GradeValidator validator;
 
     public GradeDTO addGrade(GradeDTO grade) throws GradeException {
-
-        if (validator.isGradeValid(grade)) {
+        if (validator.isGradeValid(grade)){
             Grade entity = modelMapper.map(grade, Grade.class);
 
-            Optional<Course> course = courseDAO.findById(grade.getCourse_id());
-            entity.setCourse(course.get());
             Optional<User> student = userDAO.findById(grade.getStudent_id());
             entity.setStudent(student.get());
+            System.out.println(student.get().getEmail());
+            Optional<Course> course = courseDAO.findById(grade.getCourse_id());
+            entity.setCourse(course.get());
+            System.out.println(course.get().getName());
 
             Grade saved = gradeDAO.saveAndFlush(entity);
             modelMapper.map(saved, grade);
             return grade;
-
-        } else {
-            throw new GradeException("Grade not added, a problem occurred with the data", 400);
+        }else{
+            throw new GradeException("Porco dio", 400);
         }
     }
+
 }

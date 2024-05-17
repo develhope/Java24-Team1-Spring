@@ -12,8 +12,7 @@ public class GradeValidator {
     @Autowired
     private GradeDAO gradeDAO;
         public boolean isGradeValid(GradeDTO g) {
-
-            return true;//(isGradeNotNull(g));
+            return (isGradeNotNull(g));
         }
 
         private boolean isGradeNotNull(GradeDTO g) {

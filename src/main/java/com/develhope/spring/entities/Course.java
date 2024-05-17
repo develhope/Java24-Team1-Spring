@@ -1,7 +1,6 @@
 package com.develhope.spring.entities;
 
 import com.develhope.spring.enums.CourseType;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -29,7 +28,7 @@ public class Course {
     private User tutor;
     @Column(nullable = false)
     private Boolean activeCourse;
-    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
+    @Column(nullable = false)
     private CourseType courseType;
 
     public Course(Long id, String name, Date startDate, Date finishDate, Integer courseLength, Double price, String subject, String description, User tutor, Boolean activeCourse, CourseType courseType) {
