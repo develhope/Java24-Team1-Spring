@@ -13,10 +13,10 @@ public class Course {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false, columnDefinition = "DATE")
-    private Date startDate;
-    @Column(nullable = false, columnDefinition = "DATE")
-    private Date finishDate;
+    @Column(nullable = false)
+    private String startDate;
+    @Column(nullable = false)
+    private String finishDate;
     @Column(nullable = false)
     private Integer courseLength;
     @Column(nullable = false)
@@ -31,7 +31,7 @@ public class Course {
     @Column(nullable = false)
     private CourseType courseType;
 
-    public Course(Long id, String name, Date startDate, Date finishDate, Integer courseLength, Double price, String subject, String description, User tutor, Boolean activeCourse, CourseType courseType) {
+    public Course(Long id, String name, String startDate, String finishDate, Integer courseLength, Double price, String subject, String description, User tutor, Boolean activeCourse, CourseType courseType) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
@@ -64,19 +64,19 @@ public class Course {
         this.name = name;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getFinishDate() {
+    public String getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(Date finishDate) {
+    public void setFinishDate(String finishDate) {
         this.finishDate = finishDate;
     }
 

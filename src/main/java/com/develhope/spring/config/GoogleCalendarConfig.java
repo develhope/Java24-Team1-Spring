@@ -27,8 +27,8 @@ public class GoogleCalendarConfig {
 
     @Bean
     public Calendar googleCalendarConfigService() throws Exception {
-        Credential credential = authorize();
-        return new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, credential)
+        //Credential credential = authorize();
+        return new Calendar.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, null)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }

@@ -11,10 +11,8 @@ public class CourseDTO {
 
     private Long id;
     private String name;
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date startDate;
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date finishDate;
+    private String startDate;
+    private String finishDate;
     private Integer courseLength;
     private Double price;
     private String subject;
@@ -39,19 +37,19 @@ public class CourseDTO {
         this.name = name;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getFinishDate() {
+    public String getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(Date finishDate) {
+    public void setFinishDate(String finishDate) {
         this.finishDate = finishDate;
     }
 

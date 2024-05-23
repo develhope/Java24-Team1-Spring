@@ -12,7 +12,7 @@ public class ReviewValidator {
     private ReviewDAO reviewDAO;
 
     public boolean isReviewValid(ReviewDTO r) {
-        return (isReviewNotNull(r) && studentExists(r) && courseExists(r) && isReviewNotEmpty(r));
+        return isReviewNotNull(r); //&& studentExists(r) && courseExists(r) && isReviewNotEmpty(r));
     }
 
     private boolean isReviewNotNull(ReviewDTO r) {
