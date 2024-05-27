@@ -4,8 +4,6 @@ import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.User;
 import com.develhope.spring.models.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -26,7 +24,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         else {
             throw new UsernameNotFoundException("Usente non trovato");
-
         }
     }
 }
