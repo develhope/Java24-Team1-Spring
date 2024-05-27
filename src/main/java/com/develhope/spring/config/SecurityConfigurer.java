@@ -17,6 +17,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfigurer {
 
     @Autowired
+    private UserDetailsServiceImpl userDetailsService;
+    @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
     @Bean

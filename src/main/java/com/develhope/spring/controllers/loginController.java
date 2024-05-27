@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -24,29 +23,16 @@ public class loginController {
     private JWTUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest loginRequest) throws Exception {
+    public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) throws Exception {
         try {
-            Optional<User> user = userDetailsService.getUserByUsername(loginRequest.getUsername());
-            if(user.isPresent() && Objects.equals(user.get().getPassword(), loginRequest.getPassword())) {
-                User newUser = user.get();
-                String jwt = jwtUtil.createToken(
-                        new UserDetailsImpl(
-                                newUser.getUsername(), newUser.getPassword()));
-                return ResponseEntity.ok(
-                        new LoginResponse(
-                                200,
-                        "TOKEN CREATED CORRECTLY",
-                                jwt));
-            }
-            else {
-                return ResponseEntity.status(400).body(
-                        new LoginResponse(
-                                400,
-                                "IMPOSSIBLE TO CREATE A TOKEN")
-                );
+            Optional<User> user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
+            if(user.isPresent()) {
+                final String jwt = jwtUtil.createToken(new UserDetailsImpl(user.get().getUsername(), user.get().getPassword()));
+                return ResponseEntity.ok(new LoginResponse(jwt));
             }
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
+        return null;
     }
 }

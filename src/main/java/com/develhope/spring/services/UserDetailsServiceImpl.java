@@ -25,7 +25,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return UserDetailsImpl.build(user.get());
         }
         else {
-            throw new UsernameNotFoundException("Utente non trovato");
+            throw new UsernameNotFoundException("Usente non trovato");
+
         }
     }
 }
