@@ -2,7 +2,9 @@ package com.develhope.spring.controllers;
 
 import com.develhope.spring.entities.Grade;
 import com.develhope.spring.exceptions.GradeException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.GradeDTO;
+import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.GradeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,7 @@ public class GradeController {
         }
     }
     @GetMapping("/list")
-    public List<Grade> getAllGrade(){
+    public List<GradeDTO> getAllGrade(){
         return gradeService.getAllGrade();
     }
     @GetMapping("/{id}")
@@ -58,5 +60,27 @@ public class GradeController {
                     )
             );
         }
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Response> updateGradeById(@PathVariable Long id, @RequestBody GradeDTO gradeDTO){
+        try{
+            gradeService.updateGradeById(id, gradeDTO);
+            return ResponseEntity.ok().body(new Response(200, "grade updated",gradeDTO));
+        }catch(GradeException e){
+            return ResponseEntity.status(404).body(new Response(404, "grade id not found"));
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Response> deleteGradeById(@PathVariable Long id){
+        try{
+            gradeService.deleteGradeById(id);
+            return ResponseEntity.ok().body(new Response(200, "grade deleted"));
+        }catch (GradeException e){
+            return  ResponseEntity.status(404).body(new Response(404, "grade id not found"));
+        }
+    }
+    @DeleteMapping("/list")
+    public void deleteAllGrades(){
+        gradeService.deleteAllGrades();
     }
 }

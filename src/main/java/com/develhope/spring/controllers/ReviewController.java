@@ -2,7 +2,9 @@ package com.develhope.spring.controllers;
 
 import com.develhope.spring.entities.Review;
 import com.develhope.spring.exceptions.ReviewException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.ReviewDTO;
+import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ public class ReviewController {
     }
 
     @GetMapping("/list")
-    public List<Review> getAllReview() {
+    public List<ReviewDTO> getAllReview() {
         return reviewService.getAllReview();
     }
 
@@ -61,5 +63,27 @@ public class ReviewController {
                     )
             );
         }
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Response> updateReviewById(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO){
+        try{
+            reviewService.updateReviewById(id, reviewDTO);
+            return ResponseEntity.ok().body(new Response(200, "review updated",reviewDTO));
+        }catch(ReviewException e){
+            return ResponseEntity.status(404).body(new Response(404, "review id not found"));
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Response> deleteReviewById(@PathVariable Long id){
+        try{
+           reviewService.deleteReviewById(id);
+            return ResponseEntity.ok().body(new Response(200, "review deleted"));
+        }catch (ReviewException e){
+            return  ResponseEntity.status(404).body(new Response(404, "review id not found"));
+        }
+    }
+    @DeleteMapping("/list")
+    public void deleteAllReviews(){
+       reviewService.deleteAllReviews();
     }
 }

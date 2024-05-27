@@ -3,7 +3,9 @@ package com.develhope.spring.controllers;
 import com.develhope.spring.entities.CourseSchedule;
 import com.develhope.spring.entities.Grade;
 import com.develhope.spring.exceptions.CourseScheduleException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.CourseScheduleDTO;
+import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.CourseScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ public class CourseScheduleController {
     }
 
     @GetMapping("/list")
-    public List<CourseSchedule> getCourseScheduleById() {
+    public List<CourseScheduleDTO> getCourseScheduleById() {
         return courseScheduleService.getAllCourseSchedule();
     }
 
@@ -63,5 +65,27 @@ public class CourseScheduleController {
                     )
             );
         }
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Response> updateCourseScheduleById(@PathVariable Long id, @RequestBody CourseScheduleDTO courseScheduleDTO){
+        try{
+            courseScheduleService.updateCourseScheduleById(id, courseScheduleDTO);
+            return ResponseEntity.ok().body(new Response(200, "course schedule updated",courseScheduleDTO));
+        }catch(CourseScheduleException e){
+            return ResponseEntity.status(404).body(new Response(404, "course schedule id not found"));
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Response> deleteCourseScheduleById(@PathVariable Long id) {
+        try {
+            courseScheduleService.deleteCourseScheduleById(id);
+            return ResponseEntity.ok().body(new Response(200, "course schedule deleted"));
+        } catch (CourseScheduleException e) {
+            return ResponseEntity.status(404).body(new Response(404, "course schedule id not found"));
+        }
+    }
+    @DeleteMapping("/list")
+    public void deleteAllCourseSchedules() {
+        courseScheduleService.deleteAllCourseSchedules();
     }
 }
