@@ -37,4 +37,8 @@ public class UserService {
     public Optional<User> getUserById(Long id){
         return userDAO.findById(id);
     }
+
+    public Optional<User> getUserByUsername(String username) {
+        return userDAO.findByUsername(username);
+    }
 }
