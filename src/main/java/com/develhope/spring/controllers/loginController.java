@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -26,13 +27,15 @@ public class loginController {
     public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) throws Exception {
         try {
             Optional<User> user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
-            if(user.isPresent()) {
+            if(user.isPresent() && Objects.equals(user.get().getPassword(), authenticationRequest.getPassword())) {
                 final String jwt = jwtUtil.createToken(new UserDetailsImpl(user.get().getUsername(), user.get().getPassword()));
                 return ResponseEntity.ok(new LoginResponse(jwt));
             }
+            else return ResponseEntity.status(400).body(
+                    new LoginResponse()
+            );
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
-        return null;
     }
 }
