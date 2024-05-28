@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GradeValidator {
-    @Autowired
-    private GradeDAO gradeDAO;
+
         public boolean isGradeValid(GradeDTO g) {
             return (isGradeNotNull(g));
         }

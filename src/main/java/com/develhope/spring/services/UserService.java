@@ -22,7 +22,9 @@ public class UserService {
     private UserValidator validator;
 
     public UserDTO addUser(UserDTO user) throws UserException {
+        System.out.println(validator.isUserValid(user));
         if (validator.isUserValid(user)) {
+            System.out.println(validator.isUserValid(user));
             User entity = modelMapper.map(user, User.class);
             User saved = userDAO.saveAndFlush(entity);
             modelMapper.map(saved, user);
