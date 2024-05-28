@@ -1,12 +1,20 @@
 package com.develhope.spring.validators;
 
+import com.develhope.spring.DAO.UserDAO;
+import com.develhope.spring.entities.User;
 import com.develhope.spring.models.RegistrationDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Component
 public class RegistrationValidator {
+
+    @Autowired
+    private UserDAO userDAO;
+
     public boolean isRegistratioValid(RegistrationDTO registrationDTO) {
         return isRegistrationNotNull(registrationDTO) &&
                 isPasswordsEquals(registrationDTO) &&
@@ -14,7 +22,8 @@ public class RegistrationValidator {
                 isPasswordGreaterThenEigth(registrationDTO) &&
                 isEmailValid(registrationDTO) &&
                 isCellNumValid(registrationDTO) &&
-                isCfValid(registrationDTO);
+                isCfValid(registrationDTO) &&
+                isAlredyPresent(registrationDTO);
     }
 
     private boolean isRegistrationNotNull(RegistrationDTO registrationDTO) {
@@ -45,5 +54,11 @@ public class RegistrationValidator {
 
     private boolean isCellNumValid(RegistrationDTO registrationDTO) {
         return (Pattern.matches("[0-9]{8,12}", registrationDTO.getCellNum()));
+    }
+
+    private boolean isAlredyPresent(RegistrationDTO registrationDTO) {
+        Optional<User> user = userDAO.findByUsername(registrationDTO.getUsername());
+        Optional<User> user1 = userDAO.findByEmail(registrationDTO.getEmail());
+        return user.isEmpty() && user1.isEmpty();
     }
 }

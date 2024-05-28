@@ -2,6 +2,7 @@ package com.develhope.spring.services;
 
 import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.User;
+import com.develhope.spring.exceptions.RegisterException;
 import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.RegistrationDTO;
 import com.develhope.spring.models.Response;
@@ -24,27 +25,16 @@ public class RegisterServices {
     @Autowired
     private RegistrationValidator registrationValidator;
 
-    public ResponseEntity<Response> saveUser(RegistrationDTO registrationDTO) {
+    public UserDTO saveUser(RegistrationDTO registrationDTO) throws RegisterException {
         if (registrationValidator.isRegistratioValid(registrationDTO)) {
             UserDTO user = mappingUserDTO(registrationDTO);
             User user1 = modelMapper.map(user, User.class);
             User userSaved = userDAO.saveAndFlush(user1);
             UserDTO userDTO = modelMapper.map(userSaved, UserDTO.class);
-            return ResponseEntity.ok().body(
-                    new Response(
-                            200,
-                            "Registered successfully",
-                            userDTO
-                    )
-            );
+            return userDTO;
         }
-        else {
-            return ResponseEntity.status(400).body(
-                    new Response(
-                            400,
-                            "PROBLEM ACCURRED WITH DATA"
-                    )
-            );
+       else {
+           throw new RegisterException("An errore  accurred with data", 400);
         }
     }
 
