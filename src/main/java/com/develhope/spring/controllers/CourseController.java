@@ -4,7 +4,9 @@ package com.develhope.spring.controllers;
 import com.develhope.spring.entities.Course;
 import com.develhope.spring.entities.Grade;
 import com.develhope.spring.exceptions.CourseException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.CourseDTO;
+import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ public class CourseController {
     }
 
     @GetMapping("/list")
-    public List<Course> getAllCourses() {
+    public List<CourseDTO> getAllCourses() {
         return courseService.getAllCourse();
     }
 
@@ -62,6 +64,28 @@ public class CourseController {
                             "Course not found, Id invalid"
                     )
             );
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Response> deleteCourseById(@PathVariable Long id){
+        try{
+            courseService.deleteCourseById(id);
+            return ResponseEntity.ok().body(new Response(200, "course deleted"));
+        }catch (CourseException e){
+            return  ResponseEntity.status(404).body(new Response(404, "course id not found"));
+        }
+    }
+    @DeleteMapping("/list")
+    public void deleteAllCourses(){
+        courseService.deleteAllCourses();
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Response> updateCourseById(@PathVariable Long id, @RequestBody CourseDTO courseDTO){
+        try{
+            courseService.updateCourseById(id, courseDTO);
+            return ResponseEntity.ok().body(new Response(200, "course updated",courseDTO));
+        }catch(CourseException e){
+            return ResponseEntity.status(404).body(new Response(404, "course id not found"));
         }
     }
 }
