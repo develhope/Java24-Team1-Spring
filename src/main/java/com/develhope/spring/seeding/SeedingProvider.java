@@ -3,11 +3,12 @@ package com.develhope.spring.seeding;
 import com.develhope.spring.entities.*;
 import com.develhope.spring.enums.CourseType;
 import com.develhope.spring.enums.RoleEnum;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+@Component
 public class SeedingProvider {
 
     public List<User> generateUser() {
@@ -16,10 +17,10 @@ public class SeedingProvider {
         // Aggiungere alcuni corsi di esempio con dettagli fittizi
         users.add(new User (null, "Gigi", "Proietti", "Gigino",
                 "proiettili@gigi.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, "PippoFranco"));
-        users.add(new User (null, "Gigi", "Proietti", "Gigino",
-                "proiettili@gigi.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, "PippoFranco"));
-        users.add(new User (null, "Gigi", "Proietti", "Gigino",
-                "proiettili@gigi.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, "PippoFranco"));
+        users.add(new User (null, "Gigi", "Proietti", "Gigino1",
+                "proiettili1@gigi.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, "PippoFranco"));
+        users.add(new User (null, "Gigi", "Proietti", "Gigino2",
+                "proiettili2@gigi.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, "PippoFranco"));
         // Puoi aggiungere altri corsi di esempio qui
 
         return users;
