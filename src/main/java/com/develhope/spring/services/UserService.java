@@ -23,7 +23,9 @@ public class UserService {
     private UserValidator validator;
 
     public UserDTO addUser(UserDTO user) throws UserException {
+        System.out.println(validator.isUserValid(user));
         if (validator.isUserValid(user)) {
+            System.out.println(validator.isUserValid(user));
             User entity = modelMapper.map(user, User.class);
             User saved = userDAO.saveAndFlush(entity);
             modelMapper.map(saved, user);
@@ -46,6 +48,7 @@ public class UserService {
     public Optional<User> getUserById(Long id) {
         return userDAO.findById(id);
     }
+
 
     public UserDTO updateUserById(Long id, UserDTO userDTO) throws UserException {
         User optionalUser = userDAO.findById(id).orElse(null);
@@ -72,5 +75,6 @@ public class UserService {
 
     public void deleteAllUsers() {
         userDAO.deleteAll();
+      
     }
 }

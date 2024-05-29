@@ -1,42 +1,57 @@
-package com.develhope.spring.models.DTO;
+package com.develhope.spring.models;
 
 import com.develhope.spring.enums.RoleEnum;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import org.springframework.stereotype.Component;
 
-public class UserDTO {
-    private Long id;
+@Component
+public class RegistrationDTO {
+    private String username;
+    private String password;
+    private String repeatPassword;
     private String name;
     private String surname;
-    private String username;
     private String email;
     private String cellNum;
     private String fiscCode;
     private RoleEnum role;
-    private String password;
 
-    public UserDTO(String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
+    public RegistrationDTO(String username, String password, String repeatPassword, String name, String surname, String email, String cellNum, String fiscCode, RoleEnum role) {
+        this.username = username;
+        this.password = password;
+        this.repeatPassword = repeatPassword;
         this.name = name;
         this.surname = surname;
-        this.username = username;
         this.email = email;
         this.cellNum = cellNum;
         this.fiscCode = fiscCode;
         this.role = role;
+    }
+
+    public RegistrationDTO() {
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public UserDTO() {
+    public String getRepeatPassword() {
+        return repeatPassword;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public void setRepeatPassword(String repeatPassword) {
+        this.repeatPassword = repeatPassword;
     }
 
     public String getName() {
@@ -53,14 +68,6 @@ public class UserDTO {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {
@@ -93,13 +100,5 @@ public class UserDTO {
 
     public void setRole(RoleEnum role) {
         this.role = role;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }
