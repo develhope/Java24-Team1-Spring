@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RegisterServices {
-
     @Autowired
     private UserDAO userDAO;
 

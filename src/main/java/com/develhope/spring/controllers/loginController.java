@@ -29,7 +29,7 @@ public class loginController {
             Optional<User> user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
             if(user.isPresent() && Objects.equals(user.get().getPassword(), authenticationRequest.getPassword())) {
                 final String jwt = jwtUtil.createToken(new UserDetailsImpl(user.get().getUsername(), user.get().getPassword()));
-                return ResponseEntity.status(200).body(new LoginResponse(jwt, 200, "CREATED SUCCESSFULLY"));
+                return ResponseEntity.ok().body(new LoginResponse(jwt, 200, "CREATED SUCCESSFULLY"));
             }
             else return ResponseEntity.status(400).body(
                     new LoginResponse(400, "CAN'T CREATE TOKEN")
