@@ -5,12 +5,9 @@ import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.RegisterException;
 import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.RegistrationDTO;
-import com.develhope.spring.models.Response;
 import com.develhope.spring.validators.RegistrationValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
