@@ -38,6 +38,6 @@ public class CourseValidator {
     }
 
     private boolean isTutorIdPresent(CourseDTO c){
-        return userDAO.existsById(c.getTutor_id());
+        return userDAO.existsById(c.getTutor_id().getId());
     }
 }

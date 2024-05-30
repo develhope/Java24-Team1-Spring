@@ -31,10 +31,6 @@ public class CourseService {
     public CourseDTO addCourse(CourseDTO course) throws CourseException {
         if (validator.isCourseValid(course)) {
             Course entity = modelMapper.map(course, Course.class);
-
-            Optional<User> tutor = userDAO.findById(course.getTutor_id());
-            entity.setTutor(tutor.get());
-
             Course saved = courseDAO.saveAndFlush(entity);
             modelMapper.map(saved, course);
             return course;
@@ -68,7 +64,7 @@ public class CourseService {
             optionalCourse.setPrice(courseDTO.getPrice());
             optionalCourse.setSubject(courseDTO.getSubject());
             optionalCourse.setDescription(courseDTO.getDescription());
-            optionalCourse.setTutor(userDAO.findById(courseDTO.getTutor_id()).orElse(null));
+            optionalCourse.setTutor(courseDTO.getTutor_id());
             optionalCourse.setActiveCourse(courseDTO.getActiveCourse());
             optionalCourse.setCourseType(courseDTO.getCourseType());
             Course courseEdited = courseDAO.saveAndFlush(optionalCourse);

@@ -78,7 +78,7 @@ public class UserService {
       
     }
 
-    public Optional<User> getUserByUsername(String username) {
+    public Optional<User> getUserByUsername(String username){
         return userDAO.findByUsername(username);
     }
 }
