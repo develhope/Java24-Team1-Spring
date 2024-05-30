@@ -1,5 +1,6 @@
 package com.develhope.spring.tools;
 
+import com.develhope.spring.enums.RoleEnum;
 import com.develhope.spring.models.LoginResponse;
 import com.develhope.spring.models.UserDetailsImpl;
 import com.develhope.spring.services.UserDetailsServiceImpl;
@@ -43,12 +44,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         try{
             String jwt = parseJwt(request);
-            if(jwt != null && jwtUtil.validateToken(jwt)) {
-                String username = jwtUtil.getUsername(jwt);
-                UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken userPassAuthToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                userPassAuthToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(userPassAuthToken);
+            if (jwt != null && jwtUtil.validateToken(jwt)) {
+                String username = jwtUtil.extractUsername(jwt);
+                String role = jwtUtil.extractRole(jwt);
+                System.out.println(role);
+
+                UserDetailsImpl userDetails = new UserDetailsImpl(username, null, RoleEnum.valueOf(role));
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
         catch (Exception e) {
