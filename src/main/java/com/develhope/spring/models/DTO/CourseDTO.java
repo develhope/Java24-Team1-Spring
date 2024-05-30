@@ -3,6 +3,8 @@ package com.develhope.spring.models.DTO;
 import com.develhope.spring.entities.User;
 import com.develhope.spring.enums.CourseType;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
+import org.springframework.stereotype.Component;
 
 
 import java.util.Date;
@@ -17,7 +19,7 @@ public class CourseDTO {
     private Double price;
     private String subject;
     private String description;
-    private Long tutor_id;
+    private User tutor_id;
     private Boolean activeCourse;
     private CourseType courseType;
 
@@ -85,11 +87,11 @@ public class CourseDTO {
         this.description = description;
     }
 
-    public Long getTutor_id() {
+    public User getTutor_id() {
         return tutor_id;
     }
 
-    public void setTutor_id(Long tutor_id) {
+    public void setTutor_id(User tutor_id) {
         this.tutor_id = tutor_id;
     }
 

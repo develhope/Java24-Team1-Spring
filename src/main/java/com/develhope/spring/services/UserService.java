@@ -77,4 +77,7 @@ public class UserService {
         userDAO.deleteAll();
       
     }
+    public Optional<User> getUserByUsername(String username){
+        return userDAO.findByUsername(username);
+    }
 }
