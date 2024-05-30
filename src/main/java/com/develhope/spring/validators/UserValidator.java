@@ -20,7 +20,7 @@ public class UserValidator {
                 u.getUsername() != null &&
                 u.getEmail() != null &&
                 u.getFiscCode() != null &&
-                u.getATutor() != null &&
+                u.getRole() != null &&
                 u.getPassword() != null
                 );
     }

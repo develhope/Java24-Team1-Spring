@@ -11,6 +11,17 @@ public class GradeDTO {
     private String grade;
     private Boolean finishedCourse;
 
+    public GradeDTO(Long id, Long student_id, Long course_id, String grade, Boolean finishedCourse) {
+        this.id = id;
+        this.student_id = student_id;
+        this.course_id = course_id;
+        this.grade = grade;
+        this.finishedCourse = finishedCourse;
+    }
+
+    public GradeDTO() {
+    }
+
     public Long getId() {
         return id;
     }

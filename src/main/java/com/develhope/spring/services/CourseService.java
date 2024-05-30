@@ -3,26 +3,23 @@ package com.develhope.spring.services;
 import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.Course;
-import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.CourseException;
-import com.develhope.spring.exceptions.UserException;
+import com.develhope.spring.mappers.CourseMapper;
 import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.validators.CourseValidator;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CourseService {
+
     @Autowired
-    private ModelMapper modelMapper;
+    private CourseMapper courseMapper;
     @Autowired
     private CourseDAO courseDAO;
-
     @Autowired
     private CourseValidator validator;
     @Autowired
@@ -30,14 +27,9 @@ public class CourseService {
 
     public CourseDTO addCourse(CourseDTO course) throws CourseException {
         if (validator.isCourseValid(course)) {
-            Course entity = modelMapper.map(course, Course.class);
-
-            Optional<User> tutor = userDAO.findById(course.getTutor_id());
-            entity.setTutor(tutor.get());
-
+            Course entity = courseMapper.dtoToEntity(course);
             Course saved = courseDAO.saveAndFlush(entity);
-            modelMapper.map(saved, course);
-            return course;
+            return courseMapper.entityToDto(saved);
         } else {
             throw new CourseException("Course not added, a problem occurred with the data", 400);
         }
@@ -48,19 +40,24 @@ public class CourseService {
         List<Course> courseList = courseDAO.findAll();
         List<CourseDTO> courseDTOList = new ArrayList<>();
         for (Course course : courseList) {
-            CourseDTO courseDTO = modelMapper.map(course, CourseDTO.class);
+            CourseDTO courseDTO = courseMapper.entityToDto(course);
             courseDTOList.add(courseDTO);
         }
         return courseDTOList;
     }
 
-    public Optional<Course> getCourseById(Long id) {
-        return courseDAO.findById(id);
+    public CourseDTO getCourseById(Long id) throws CourseException {
+        Course course = courseDAO.findById(id).orElse(null);
+        if (course != null) {
+            return courseMapper.entityToDto(course);
+        } else {
+            throw new CourseException("Course not found!", 404);
+        }
     }
 
     public CourseDTO updateCourseById(Long id, CourseDTO courseDTO) throws CourseException {
         Course optionalCourse = courseDAO.findById(id).orElse(null);
-
+        if (optionalCourse != null) {
             optionalCourse.setName(courseDTO.getName());
             optionalCourse.setStartDate(courseDTO.getStartDate());
             optionalCourse.setFinishDate(courseDTO.getFinishDate());
@@ -72,9 +69,10 @@ public class CourseService {
             optionalCourse.setActiveCourse(courseDTO.getActiveCourse());
             optionalCourse.setCourseType(courseDTO.getCourseType());
             Course courseEdited = courseDAO.saveAndFlush(optionalCourse);
-            modelMapper.map(courseEdited, courseDTO);
-
-        return courseDTO;
+            return courseMapper.entityToDto(courseEdited);
+        } else {
+            throw new CourseException("Course not found!", 404);
+        }
     }
 
     public void deleteCourseById(Long id) throws CourseException {

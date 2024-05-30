@@ -1,5 +1,7 @@
 package com.develhope.spring.models.DTO;
 
+import com.develhope.spring.enums.RoleEnum;
+
 public class UserDTO {
     private Long id;
     private String name;
@@ -8,17 +10,17 @@ public class UserDTO {
     private String email;
     private String cellNum;
     private String fiscCode;
-    private Boolean isATutor;
+    private RoleEnum role;
     private String password;
 
-    public UserDTO(String name, String surname, String username, String email, String cellNum, String fiscCode, Boolean isATutor, String password) {
+    public UserDTO(String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.email = email;
         this.cellNum = cellNum;
         this.fiscCode = fiscCode;
-        this.isATutor = isATutor;
+        this.role = role;
         this.password = password;
     }
 
@@ -81,12 +83,12 @@ public class UserDTO {
         this.fiscCode = fiscCode;
     }
 
-    public Boolean getATutor() {
-        return isATutor;
+    public RoleEnum getRole() {
+        return role;
     }
 
-    public void setATutor(Boolean ATutor) {
-        isATutor = ATutor;
+    public void setRole(RoleEnum role) {
+        this.role = role;
     }
 
     public String getPassword() {

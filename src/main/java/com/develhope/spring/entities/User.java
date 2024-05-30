@@ -1,5 +1,6 @@
 package com.develhope.spring.entities;
 
+import com.develhope.spring.enums.RoleEnum;
 import jakarta.persistence.*;
 
 @Table
@@ -20,11 +21,11 @@ public class User {
     @Column(nullable = false)
     private String fiscCode;
     @Column(nullable = false)
-    private Boolean isATutor;
+    private RoleEnum role;
     @Column(nullable = false)
     private String password;
 
-    public User(Long id, String name, String surname, String username, String email, String cellNum, String fiscCode, Boolean isATutor, String password) {
+    public User(Long id, String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -32,7 +33,7 @@ public class User {
         this.email = email;
         this.cellNum = cellNum;
         this.fiscCode = fiscCode;
-        this.isATutor = isATutor;
+        this.role = role;
         this.password = password;
     }
 
@@ -95,12 +96,12 @@ public class User {
         this.fiscCode = fiscCode;
     }
 
-    public Boolean getATutor() {
-        return isATutor;
+    public RoleEnum getRole() {
+        return role;
     }
 
-    public void setATutor(Boolean ATutor) {
-        isATutor = ATutor;
+    public void setRole(RoleEnum role) {
+        this.role = role;
     }
 
     public String getPassword() {
