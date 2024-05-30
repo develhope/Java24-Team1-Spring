@@ -1,6 +1,5 @@
 package com.develhope.spring.models;
 
-import com.develhope.spring.enums.RoleEnum;
 import org.springframework.stereotype.Component;
 
 @Component

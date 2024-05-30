@@ -58,7 +58,7 @@ public class UserService {
             optionalUser.setEmail(userDTO.getEmail());
             optionalUser.setCellNum(userDTO.getCellNum());
             optionalUser.setFiscCode(userDTO.getFiscCode());
-            optionalUser.setRole(userDTO.getRole());
+            optionalUser.setATutor(userDTO.getATutor());
             optionalUser.setPassword(userDTO.getPassword());
             User userEdited = userDAO.saveAndFlush(optionalUser);
              modelMapper.map(userEdited, userDTO);

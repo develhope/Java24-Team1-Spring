@@ -26,7 +26,7 @@ public class UserController {
             return ResponseEntity.ok().body(
                     new Response(
                             200,
-                            newUser.getRole() + " " + newUser.getUsername() + " added correctly",
+                            newUser.getUsername() + " added correctly",
                             newUser)
             );
         } catch (UserException e) {

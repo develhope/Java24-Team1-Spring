@@ -2,7 +2,6 @@ package com.develhope.spring.seeding;
 
 import com.develhope.spring.entities.*;
 import com.develhope.spring.enums.CourseType;
-import com.develhope.spring.enums.RoleEnum;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
