@@ -112,7 +112,7 @@ public class IscrizioneController {
     @GetMapping("/tutor{id}") // da valutare
     public ResponseEntity<Response> findByTutor(@PathVariable Long id){
         try{
-            List<IscrizioneDTO> iscrizioneDTOList = iscrizioneService.getAll();
+            List<IscrizioneDTO> iscrizioneDTOList = iscrizioneService.getAllByTutor(id);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "subscription found: ",
