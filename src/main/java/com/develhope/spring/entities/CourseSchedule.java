@@ -1,4 +1,5 @@
 package com.develhope.spring.entities;
+import com.google.api.client.util.DateTime;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Cascade;
 
@@ -14,13 +15,13 @@ public class CourseSchedule {
     @ManyToOne
     private Course course;
     @Column(nullable = false)
-    private Date startDateTime;
+    private DateTime startDateTime;
     @Column(nullable = false)
-    private Date finishDateTime;
+    private DateTime finishDateTime;
     @Column(nullable = false)
     private String link;
 
-    public CourseSchedule(Long id, Course course, Date startDateTime, Date finishDateTime, String link) {
+    public CourseSchedule(Long id, Course course, DateTime startDateTime, DateTime finishDateTime, String link) {
         this.id = id;
         this.course = course;
         this.startDateTime = startDateTime;
@@ -48,19 +49,19 @@ public class CourseSchedule {
     }
 
 
-    public Date getStartDateTime() {
+    public DateTime getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(Date startDateTime) {
+    public void setStartDateTime(DateTime startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public Date getFinishDateTime() {
+    public DateTime getFinishDateTime() {
         return finishDateTime;
     }
 
-    public void setFinishDateTime(Date finishDateTime) {
+    public void setFinishDateTime(DateTime finishDateTime) {
         this.finishDateTime = finishDateTime;
     }
 

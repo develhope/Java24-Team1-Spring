@@ -2,6 +2,7 @@ package com.develhope.spring.models.DTO;
 
 import com.develhope.spring.entities.Course;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.api.client.util.DateTime;
 
 import java.util.Date;
 
@@ -10,9 +11,9 @@ public class CourseScheduleDTO {
     private Long id;
     private Long course_id;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date startDateTime;
+    private DateTime startDateTime;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date finishDateTime;
+    private DateTime finishDateTime;
     private String link;
 
     public Long getId() {
@@ -32,19 +33,19 @@ public class CourseScheduleDTO {
         this.course_id = course_id;
     }
 
-    public Date getStartDateTime() {
+    public DateTime getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(Date startDateTime) {
+    public void setStartDateTime(DateTime startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public Date getFinishDateTime() {
+    public DateTime getFinishDateTime() {
         return finishDateTime;
     }
 
-    public void setFinishDateTime(Date finishDateTime) {
+    public void setFinishDateTime(DateTime finishDateTime) {
         this.finishDateTime = finishDateTime;
     }
 

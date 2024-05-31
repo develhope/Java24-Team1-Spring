@@ -6,6 +6,7 @@ import com.develhope.spring.entities.Course;
 import com.develhope.spring.entities.CourseSchedule;
 import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.exceptions.UserException;
+import com.develhope.spring.mappers.CourseScheduleMapper;
 import com.develhope.spring.models.DTO.CourseScheduleDTO;
 import com.develhope.spring.validators.CourseScheduleValidator;
 import org.modelmapper.ModelMapper;
@@ -26,6 +27,8 @@ public class CourseScheduleService {
     private CourseDAO courseDAO;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private CourseScheduleMapper courseScheduleMapper;
 
     @Autowired
     private CourseScheduleValidator courseScheduleValidator;
@@ -55,6 +58,18 @@ public class CourseScheduleService {
         }
         return courseScheduleDTOList;
     }
+
+    public List<CourseSchedule> getAllCourseScheduleByCourse(Long id) {
+        List<CourseSchedule> courseScheduleList = courseScheduleDAO.findAll();
+        List<CourseSchedule> newCourseScheduleList = new ArrayList<>();
+        for(CourseSchedule courseSchedule: courseScheduleList){
+            if(courseSchedule.getCourse().getId() == id) {
+                newCourseScheduleList.add(courseSchedule);
+            }
+        }
+        return newCourseScheduleList;
+    }
+
     public CourseScheduleDTO updateCourseScheduleById(Long id, CourseScheduleDTO courseScheduleDTO) throws CourseScheduleException {
         CourseSchedule optionalCourseSchedule = courseScheduleDAO.findById(id).orElse(null);
             optionalCourseSchedule.setStartDateTime(courseScheduleDTO.getStartDateTime());
