@@ -56,20 +56,18 @@ public class CourseService {
 
     public CourseDTO updateCourseById(Long id, CourseDTO courseDTO) throws CourseException {
         Course optionalCourse = courseDAO.findById(id).orElse(null);
-
-            optionalCourse.setName(courseDTO.getName());
-            optionalCourse.setStartDate(courseDTO.getStartDate());
-            optionalCourse.setFinishDate(courseDTO.getFinishDate());
-            optionalCourse.setCourseLength(courseDTO.getCourseLength());
-            optionalCourse.setPrice(courseDTO.getPrice());
-            optionalCourse.setSubject(courseDTO.getSubject());
-            optionalCourse.setDescription(courseDTO.getDescription());
-            optionalCourse.setTutor(courseDTO.getTutor_id());
-            optionalCourse.setActiveCourse(courseDTO.getActiveCourse());
-            optionalCourse.setCourseType(courseDTO.getCourseType());
-            Course courseEdited = courseDAO.saveAndFlush(optionalCourse);
-            modelMapper.map(courseEdited, courseDTO);
-
+        optionalCourse.setName(courseDTO.getName());
+        optionalCourse.setStartDate(courseDTO.getStartDate());
+        optionalCourse.setFinishDate(courseDTO.getFinishDate());
+        optionalCourse.setCourseLength(courseDTO.getCourseLength());
+        optionalCourse.setPrice(courseDTO.getPrice());
+        optionalCourse.setSubject(courseDTO.getSubject());
+        optionalCourse.setDescription(courseDTO.getDescription());
+        optionalCourse.setTutor(userDAO.findById(courseDTO.getTutor_id()).orElse(null));
+        optionalCourse.setActiveCourse(courseDTO.getActiveCourse());
+        optionalCourse.setCourseType(courseDTO.getCourseType());
+        Course courseEdited = courseDAO.saveAndFlush(optionalCourse);
+        modelMapper.map(courseEdited, courseDTO);
         return courseDTO;
     }
 

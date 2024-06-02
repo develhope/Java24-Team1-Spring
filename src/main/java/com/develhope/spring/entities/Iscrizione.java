@@ -13,6 +13,26 @@ public class Iscrizione {
     @ManyToOne
     private Course course;
     private String dataIscrizione;
+    private Boolean payed;
+
+    public Iscrizione(Long id, User user, Course course, String dataIscrizione, Boolean payed) {
+        this.id = id;
+        this.user = user;
+        this.course = course;
+        this.dataIscrizione = dataIscrizione;
+        this.payed= payed;
+    }
+
+    public Iscrizione() {
+    }
+
+    public Boolean getPayed() {
+        return payed;
+    }
+
+    public void setPayed(Boolean payed) {
+        this.payed = payed;
+    }
 
     public Long getId() {
         return id;
