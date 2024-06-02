@@ -48,14 +48,14 @@ public class ReviewController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Response> getReviewById(@PathVariable Long id) {
-        Optional<Review> r = reviewService.getReviewById(id);
-        if(r.isPresent()){
+        try{
+            ReviewDTO r = reviewService.getReviewById(id);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "Review found: ",
                             r)
             );
-        }else{
+        }catch(ReviewException e){
             return ResponseEntity.status(404).body(
                     new Response(
                             404,
@@ -64,6 +64,7 @@ public class ReviewController {
             );
         }
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Response> updateReviewById(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO){
         try{

@@ -49,15 +49,15 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Response> findCourseById (@PathVariable Long id){
-        Optional<Course> c = courseService.getCourseById(id);
-        if(c.isPresent()){
+    public ResponseEntity<Response> findCourseById (@PathVariable Long id) {
+        try {
+            CourseDTO c = courseService.getCourseById(id);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "Course found: ",
                             c)
             );
-        }else{
+        } catch (CourseException e) {
             return ResponseEntity.status(404).body(
                     new Response(
                             404,
@@ -75,10 +75,12 @@ public class CourseController {
             return  ResponseEntity.status(404).body(new Response(404, "course id not found"));
         }
     }
-    @DeleteMapping("/list")
+
+    @DeleteMapping("/all")
     public void deleteAllCourses(){
         courseService.deleteAllCourses();
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Response> updateCourseById(@PathVariable Long id, @RequestBody CourseDTO courseDTO){
         try{
