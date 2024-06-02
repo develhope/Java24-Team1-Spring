@@ -8,6 +8,7 @@ import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.validators.UserValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -85,8 +86,13 @@ public class UserService {
         userDAO.deleteAll();
     }
 
-    public Optional<User> getUserByUsername(String username){
-        return userDAO.findByUsername(username);
-    }
+    public User getUserByUsername(String username){
+        Optional<User> user = userDAO.findByUsername(username);
 
+        if(user.isPresent()) {
+            return user.get();
+        }
+        throw new BadCredentialsException("");
+    }
+  
 }

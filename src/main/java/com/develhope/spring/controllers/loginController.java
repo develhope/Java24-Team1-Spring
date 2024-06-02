@@ -7,6 +7,7 @@ import com.develhope.spring.models.UserDetailsImpl;
 import com.develhope.spring.services.UserService;
 import com.develhope.spring.utilities.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,19 +24,23 @@ public class loginController {
     @Autowired
     private JWTUtil jwtUtil;
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) throws Exception {
+    @PostMapping(value = "/login")
+    public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) throws BadCredentialsException {
         try {
-            Optional<User> user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
-            if(user.isPresent() && Objects.equals(user.get().getPassword(), authenticationRequest.getPassword())) {
-                final String jwt = jwtUtil.createToken(new UserDetailsImpl(user.get().getUsername(), user.get().getPassword()));
-                return ResponseEntity.ok().body(new LoginResponse(jwt, 200, "CREATED SUCCESSFULLY"));
+            User user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
+            if (user != null && Objects.equals(user.getPassword(), authenticationRequest.getPassword())) {
+                final String jwt = jwtUtil.createToken(new UserDetailsImpl(user.getUsername(), user.getPassword(), user.getRole()));
+                return ResponseEntity.ok().body(new LoginResponse(jwt, 200, "Token created successfully!"));
             }
-            else return ResponseEntity.status(400).body(
-                    new LoginResponse(400, "CAN'T CREATE TOKEN")
-            );
+
         } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
+            return ResponseEntity.status(400).body(
+                    new LoginResponse(
+                            400,
+                            "Impossible to create token. Wrong credentials!"
+                    )
+            );
         }
+        return null;
     }
 }

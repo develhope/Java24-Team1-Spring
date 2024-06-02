@@ -13,6 +13,18 @@ public class UserDTO {
     private RoleEnum role;
     private String password;
 
+    public UserDTO(Long id, String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+        this.email = email;
+        this.cellNum = cellNum;
+        this.fiscCode = fiscCode;
+        this.role = role;
+        this.password = password;
+    }
+
     public UserDTO(String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
         this.name = name;
         this.surname = surname;

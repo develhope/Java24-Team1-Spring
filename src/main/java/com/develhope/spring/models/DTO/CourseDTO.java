@@ -3,6 +3,8 @@ package com.develhope.spring.models.DTO;
 import com.develhope.spring.entities.User;
 import com.develhope.spring.enums.CourseType;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
+import org.springframework.stereotype.Component;
 
 
 import java.util.Date;
