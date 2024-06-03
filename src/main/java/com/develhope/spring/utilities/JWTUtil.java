@@ -52,7 +52,7 @@ public class JWTUtil {
                 .claim("role", userDetails.getAuthorities().iterator().next().getAuthority())
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis())) //DATA INIZIO TOKEN
-                .setExpiration(new Date(System.currentTimeMillis() + 3600000)) //TOKEN DURA 1 ORA
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) //TOKEN DURA 1 ORA
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 
