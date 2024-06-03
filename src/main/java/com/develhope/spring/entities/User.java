@@ -2,9 +2,6 @@ package com.develhope.spring.entities;
 
 import com.develhope.spring.enums.RoleEnum;
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.List;
 
 @Table
 @Entity
@@ -30,6 +27,17 @@ public class User {
 
     public User(Long id, String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
         this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.username = username;
+        this.email = email;
+        this.cellNum = cellNum;
+        this.fiscCode = fiscCode;
+        this.role = role;
+        this.password = password;
+    }
+
+    public User(String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
         this.name = name;
         this.surname = surname;
         this.username = username;

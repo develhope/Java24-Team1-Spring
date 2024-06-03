@@ -7,6 +7,7 @@ import com.develhope.spring.entities.Review;
 import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.ReviewException;
 import com.develhope.spring.exceptions.UserException;
+import com.develhope.spring.mappers.ReviewMapper;
 import com.develhope.spring.models.DTO.ReviewDTO;
 import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.validators.ReviewValidator;
@@ -22,7 +23,7 @@ import java.util.Optional;
 public class ReviewService {
 
     @Autowired
-    private ModelMapper modelMapper;
+    private ReviewMapper reviewMapper;
     @Autowired
     private ReviewDAO reviewDAO;
     @Autowired
@@ -34,10 +35,9 @@ public class ReviewService {
 
     public ReviewDTO addReview(ReviewDTO review) throws ReviewException {
         if (validator.isReviewValid(review)) {
-            Review entity = modelMapper.map(review, Review.class);
+            Review entity = reviewMapper.dtoToEntity(review);
             Review saved = reviewDAO.saveAndFlush(entity);
-            modelMapper.map(saved, review);
-            return review;
+            return reviewMapper.entityToDto(saved);
         } else {
             throw new ReviewException("Review not added, a problem occurred with the data", 400);
         }
@@ -47,25 +47,32 @@ public class ReviewService {
         List<Review> reviews = reviewDAO.findAll();
         List<ReviewDTO> reviewsDTOList = new ArrayList<>();
         for (Review review : reviews) {
-            ReviewDTO reviewDTO = modelMapper.map(review, ReviewDTO.class);
+            ReviewDTO reviewDTO = reviewMapper.entityToDto(review);
             reviewsDTOList.add(reviewDTO);
         }
         return reviewsDTOList;
     }
 
-    public Optional<Review> getReviewById(Long id) {
-        return reviewDAO.findById(id);
+    public ReviewDTO getReviewById(Long id) throws ReviewException {
+        Review review = reviewDAO.findById(id).orElse(null);
+        if (review != null) {
+            return reviewMapper.entityToDto(review);
+        } else {
+            throw new ReviewException("Review not found!", 404);
+        }
     }
 
     public ReviewDTO updateReviewById(Long id, ReviewDTO reviewDTO) throws ReviewException {
         Review optionalReview = reviewDAO.findById(id).orElse(null);
-        optionalReview.setReview(reviewDTO.getReview());
-        optionalReview.setStudent(userDAO.findById(reviewDTO.getStudent_id()).orElse(null));
-        optionalReview.setCourse(courseDAO.findById(reviewDTO.getCourse_id()).orElse(null));
-        Review reviewEdited = reviewDAO.saveAndFlush(optionalReview);
-        modelMapper.map(reviewEdited, ReviewDTO.class);
-
-        return reviewDTO;
+        if (optionalReview != null) {
+            optionalReview.setReview(reviewDTO.getReview());
+            optionalReview.setStudent(userDAO.findById(reviewDTO.getStudent_id()).orElse(null));
+            optionalReview.setCourse(courseDAO.findById(reviewDTO.getCourse_id()).orElse(null));
+            Review reviewEdited = reviewDAO.saveAndFlush(optionalReview);
+            return reviewMapper.entityToDto(reviewEdited);
+        } else {
+            throw new ReviewException("Review not found!", 404);
+        }
     }
 
     public void deleteReviewById(Long id) throws ReviewException {
@@ -85,7 +92,7 @@ public class ReviewService {
         List<ReviewDTO> reviewDTOList = new ArrayList<>();
         for (Review review : reviewList) {
             if (review.getCourse().getTutor().getId() == id) {
-                //reviewDTOList.add(mapperEntityToDTO)
+                reviewDTOList.add(reviewMapper.entityToDTO(review));
             }
         }
         if(!reviewDTOList.isEmpty()) {
@@ -94,4 +101,5 @@ public class ReviewService {
             throw new ReviewException("no reviews found", 404);
         }
     }
+
 }

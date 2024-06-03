@@ -10,7 +10,7 @@ public class Grade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private User student;
+    private User student ;
     @ManyToOne
     private Course course;
     @Column(nullable = false)

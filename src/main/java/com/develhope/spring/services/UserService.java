@@ -3,10 +3,12 @@ package com.develhope.spring.services;
 import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.UserException;
+import com.develhope.spring.mappers.UserMapper;
 import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.validators.UserValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     @Autowired
-    private ModelMapper modelMapper;
+    private UserMapper userMapper;
     @Autowired
     private UserDAO userDAO;
     @Autowired
@@ -26,10 +28,9 @@ public class UserService {
         System.out.println(validator.isUserValid(user));
         if (validator.isUserValid(user)) {
             System.out.println(validator.isUserValid(user));
-            User entity = modelMapper.map(user, User.class);
+            User entity = userMapper.dtoToEntity(user);
             User saved = userDAO.saveAndFlush(entity);
-            modelMapper.map(saved, user);
-            return user;
+            return userMapper.entityToDto(saved);
         } else {
             throw new UserException("User not added, a problem occurred with the data", 400);
         }
@@ -39,19 +40,25 @@ public class UserService {
         List <User> users = userDAO.findAll();
         List<UserDTO> usersDTOList = new ArrayList<>();
         for(User user : users){
-            UserDTO userDTO = modelMapper.map(user,UserDTO.class);
+            UserDTO userDTO = userMapper.entityToDto(user);
             usersDTOList.add(userDTO);
         }
         return usersDTOList;
     }
 
-    public Optional<User> getUserById(Long id) {
-        return userDAO.findById(id);
+    public UserDTO getUserById(Long id) throws UserException {
+        User user = userDAO.findById(id).orElse(null);
+        if (user != null) {
+            return userMapper.entityToDto(user);
+        } else {
+            throw new UserException("User not found!", 404);
+        }
     }
 
 
     public UserDTO updateUserById(Long id, UserDTO userDTO) throws UserException {
         User optionalUser = userDAO.findById(id).orElse(null);
+        if (optionalUser != null) {
             optionalUser.setName(userDTO.getName());
             optionalUser.setSurname(userDTO.getSurname());
             optionalUser.setUsername(userDTO.getUsername());
@@ -61,8 +68,10 @@ public class UserService {
             optionalUser.setRole(userDTO.getRole());
             optionalUser.setPassword(userDTO.getPassword());
             User userEdited = userDAO.saveAndFlush(optionalUser);
-             modelMapper.map(userEdited, userDTO);
-        return userDTO;
+            return userMapper.entityToDto(userEdited);
+        } else {
+            throw new UserException("User not found!", 404);
+        }
     }
 
     public void deleteUserById(Long id) throws UserException {
@@ -75,9 +84,15 @@ public class UserService {
 
     public void deleteAllUsers() {
         userDAO.deleteAll();
-      
     }
-    public Optional<User> getUserByUsername(String username){
-        return userDAO.findByUsername(username);
+
+    public User getUserByUsername(String username){
+        Optional<User> user = userDAO.findByUsername(username);
+
+        if(user.isPresent()) {
+            return user.get();
+        }
+        throw new BadCredentialsException("");
     }
+  
 }

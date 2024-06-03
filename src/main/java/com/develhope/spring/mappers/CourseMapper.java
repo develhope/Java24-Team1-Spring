@@ -1,6 +1,5 @@
 package com.develhope.spring.mappers;
 
-import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.Course;
 import com.develhope.spring.models.DTO.CourseDTO;
@@ -9,8 +8,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CourseMapper {
+
     @Autowired
     private UserDAO userDAO;
+
     public Course dtoToEntity(CourseDTO courseDTO){
         return new Course(
                 courseDTO.getId(),

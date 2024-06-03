@@ -45,16 +45,17 @@ public class GradeController {
     public List<GradeDTO> getAllGrade(){
         return gradeService.getAllGrade();
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Response> findGradeById (@PathVariable Long id){
-        Optional<Grade> g = gradeService.getGradeById(id);
-        if(g.isPresent()){
+        try {
+            GradeDTO g = gradeService.getGradeById(id);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "Grade found: ",
                             g)
             );
-        }else{
+        }catch (GradeException e){
             return ResponseEntity.status(404).body(
                     new Response(
                             404,
@@ -63,6 +64,7 @@ public class GradeController {
             );
         }
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Response> updateGradeById(@PathVariable Long id, @RequestBody GradeDTO gradeDTO){
         try{
@@ -72,6 +74,7 @@ public class GradeController {
             return ResponseEntity.status(404).body(new Response(404, "grade id not found"));
         }
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Response> deleteGradeById(@PathVariable Long id){
         try{
@@ -81,7 +84,8 @@ public class GradeController {
             return  ResponseEntity.status(404).body(new Response(404, "grade id not found"));
         }
     }
-    @DeleteMapping("/list")
+
+    @DeleteMapping("/all")
     public void deleteAllGrades(){
         gradeService.deleteAllGrades();
     }
