@@ -76,15 +76,30 @@ public class ReviewService {
     }
 
     public void deleteReviewById(Long id) throws ReviewException {
-        if(reviewDAO.existsById(id)) {
+        if (reviewDAO.existsById(id)) {
             reviewDAO.deleteById(id);
-        }else{
-            throw  new ReviewException("User not found", 404);
+        } else {
+            throw new ReviewException("user id not found", 404);
         }
     }
 
     public void deleteAllReviews() {
         reviewDAO.deleteAll();
+    }
+
+    public List<ReviewDTO> getReviewByTutor(Long id) throws ReviewException {
+        List<Review> reviewList = reviewDAO.findAll();
+        List<ReviewDTO> reviewDTOList = new ArrayList<>();
+        for (Review review : reviewList) {
+            if (review.getCourse().getTutor().getId() == id) {
+                reviewDTOList.add(reviewMapper.entityToDTO(review));
+            }
+        }
+        if(!reviewDTOList.isEmpty()) {
+            return reviewDTOList;
+        }else{
+            throw new ReviewException("no reviews found", 404);
+        }
     }
 
 }

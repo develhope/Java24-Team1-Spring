@@ -2,8 +2,10 @@ package com.develhope.spring.controllers;
 
 import com.develhope.spring.entities.Grade;
 import com.develhope.spring.exceptions.GradeException;
+import com.develhope.spring.exceptions.ReviewException;
 import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.GradeDTO;
+import com.develhope.spring.models.DTO.ReviewDTO;
 import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.GradeService;
@@ -86,5 +88,23 @@ public class GradeController {
     @DeleteMapping("/all")
     public void deleteAllGrades(){
         gradeService.deleteAllGrades();
+    }
+    @GetMapping("/tutor{id}")
+    public ResponseEntity<Response> getGradesByTutor(@PathVariable Long id){
+        try {
+            List<GradeDTO> grades = gradeService.getGradeByTutor(id);
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "grades found: ",
+                            grades)
+            );
+        } catch (GradeException e) {
+            return ResponseEntity.status(404).body(
+                    new Response(
+                            404,
+                            e.getMessage()
+                    )
+            );
+        }
     }
 }

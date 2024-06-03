@@ -82,4 +82,19 @@ public class GradeService {
         gradeDAO.deleteAll();
     }
 
+    public List<GradeDTO> getGradeByTutor(Long id) throws GradeException {
+        List<Grade> gradeList = gradeDAO.findAll();
+        List<GradeDTO> gradeDTOList = new ArrayList<>();
+        for(Grade grade: gradeList){
+            if(grade.getCourse().getTutor().getId() == id){  
+              gradeDTOList.add(gradeMapper.entityToDto(grade));
+            }
+        }
+        if(!gradeDTOList.isEmpty()){
+            return gradeDTOList;
+        }else{
+            throw new GradeException("no grades found", 404);
+        }
+    }
+
 }

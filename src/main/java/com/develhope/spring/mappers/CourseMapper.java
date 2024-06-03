@@ -25,7 +25,7 @@ public class CourseMapper {
                 userDAO.findById(courseDTO.getTutor_id()).orElse(null),
                 courseDTO.getActiveCourse(),
                 courseDTO.getCourseType()
-                );
+        );
     }
 
     public CourseDTO entityToDto(Course course){

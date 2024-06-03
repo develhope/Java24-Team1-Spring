@@ -24,6 +24,8 @@ public class CourseService {
     private CourseValidator validator;
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private CourseMapper courseMapper;
 
     public CourseDTO addCourse(CourseDTO course) throws CourseException {
         if (validator.isCourseValid(course)) {
@@ -57,6 +59,7 @@ public class CourseService {
 
     public CourseDTO updateCourseById(Long id, CourseDTO courseDTO) throws CourseException {
         Course optionalCourse = courseDAO.findById(id).orElse(null);
+
         if (optionalCourse != null) {
             optionalCourse.setName(courseDTO.getName());
             optionalCourse.setStartDate(courseDTO.getStartDate());
@@ -82,7 +85,23 @@ public class CourseService {
             throw new CourseException("course id not found", 404);
         }
     }
-    public void deleteAllCourses(){
+
+    public void deleteAllCourses() {
         courseDAO.deleteAll();
+    }
+
+    public List<CourseDTO> getActiveCoursesByTutor(Long id) throws CourseException {
+        List<Course> courseList = courseDAO.findAll();
+        List<CourseDTO> courseDTOList = new ArrayList<>();
+        for (Course course : courseList) {
+            if (course.getTutor().getId() == id && course.getActiveCourse()) {
+                courseDTOList.add(courseMapper.entityToDto(course));
+            }
+        }
+        if(!courseDTOList.isEmpty()) {
+            return courseDTOList;
+        }else{
+            throw new CourseException("no courses found", 404);
+        }
     }
 }
