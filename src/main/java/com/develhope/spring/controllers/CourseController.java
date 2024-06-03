@@ -88,4 +88,22 @@ public class CourseController {
             return ResponseEntity.status(404).body(new Response(404, "course id not found"));
         }
     }
+    @GetMapping("/active/tutor{id}")
+    public ResponseEntity<Response> getActiveCourseByTutor(@PathVariable Long id){
+        try {
+           List<CourseDTO> courses = courseService.getActiveCoursesByTutor(id);
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "the active courses are:  ",
+                            courses)
+            );
+        } catch (CourseException e) {
+            return ResponseEntity.status(404).body(
+                    new Response(
+                            404,
+                            e.getMessage()
+                    )
+            );
+        }
+    }
 }

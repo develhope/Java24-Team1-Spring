@@ -6,6 +6,7 @@ import com.develhope.spring.entities.Course;
 import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.exceptions.UserException;
+import com.develhope.spring.mappers.CourseMapper;
 import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.validators.CourseValidator;
 import org.modelmapper.ModelMapper;
@@ -27,6 +28,8 @@ public class CourseService {
     private CourseValidator validator;
     @Autowired
     private UserDAO userDAO;
+    @Autowired
+    private CourseMapper courseMapper;
 
     public CourseDTO addCourse(CourseDTO course) throws CourseException {
         if (validator.isCourseValid(course)) {
@@ -57,18 +60,18 @@ public class CourseService {
     public CourseDTO updateCourseById(Long id, CourseDTO courseDTO) throws CourseException {
         Course optionalCourse = courseDAO.findById(id).orElse(null);
 
-            optionalCourse.setName(courseDTO.getName());
-            optionalCourse.setStartDate(courseDTO.getStartDate());
-            optionalCourse.setFinishDate(courseDTO.getFinishDate());
-            optionalCourse.setCourseLength(courseDTO.getCourseLength());
-            optionalCourse.setPrice(courseDTO.getPrice());
-            optionalCourse.setSubject(courseDTO.getSubject());
-            optionalCourse.setDescription(courseDTO.getDescription());
-            optionalCourse.setTutor(courseDTO.getTutor_id());
-            optionalCourse.setActiveCourse(courseDTO.getActiveCourse());
-            optionalCourse.setCourseType(courseDTO.getCourseType());
-            Course courseEdited = courseDAO.saveAndFlush(optionalCourse);
-            modelMapper.map(courseEdited, courseDTO);
+        optionalCourse.setName(courseDTO.getName());
+        optionalCourse.setStartDate(courseDTO.getStartDate());
+        optionalCourse.setFinishDate(courseDTO.getFinishDate());
+        optionalCourse.setCourseLength(courseDTO.getCourseLength());
+        optionalCourse.setPrice(courseDTO.getPrice());
+        optionalCourse.setSubject(courseDTO.getSubject());
+        optionalCourse.setDescription(courseDTO.getDescription());
+        optionalCourse.setTutor(userDAO.findById(courseDTO.getTutor_id()).orElse(null));
+        optionalCourse.setActiveCourse(courseDTO.getActiveCourse());
+        optionalCourse.setCourseType(courseDTO.getCourseType());
+        Course courseEdited = courseDAO.saveAndFlush(optionalCourse);
+        modelMapper.map(courseEdited, courseDTO);
 
         return courseDTO;
     }
@@ -80,7 +83,23 @@ public class CourseService {
             throw new CourseException("course id not found", 404);
         }
     }
-    public void deleteAllCourses(){
+
+    public void deleteAllCourses() {
         courseDAO.deleteAll();
+    }
+
+    public List<CourseDTO> getActiveCoursesByTutor(Long id) throws CourseException {
+        List<Course> courseList = courseDAO.findAll();
+        List<CourseDTO> courseDTOList = new ArrayList<>();
+        for (Course course : courseList) {
+            if (course.getTutor().getId() == id && course.getActiveCourse()) {
+                courseDTOList.add(courseMapper.entityToDto(course));
+            }
+        }
+        if(!courseDTOList.isEmpty()) {
+            return courseDTOList;
+        }else{
+            throw new CourseException("no courses found", 404);
+        }
     }
 }

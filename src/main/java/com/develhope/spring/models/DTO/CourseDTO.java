@@ -19,9 +19,26 @@ public class CourseDTO {
     private Double price;
     private String subject;
     private String description;
-    private User tutor_id;
+    private Long tutor_id;
     private Boolean activeCourse;
     private CourseType courseType;
+
+    public CourseDTO(Long id, String name, String startDate, String finishDate, Integer courseLength, Double price, String subject, String description, Long tutor_id, Boolean activeCourse, CourseType courseType) {
+        this.id = id;
+        this.name = name;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.courseLength = courseLength;
+        this.price = price;
+        this.subject = subject;
+        this.description = description;
+        this.tutor_id = tutor_id;
+        this.activeCourse = activeCourse;
+        this.courseType = courseType;
+    }
+
+    public CourseDTO() {
+    }
 
     public Long getId() {
         return id;
@@ -87,11 +104,11 @@ public class CourseDTO {
         this.description = description;
     }
 
-    public User getTutor_id() {
+    public Long getTutor_id() {
         return tutor_id;
     }
 
-    public void setTutor_id(User tutor_id) {
+    public void setTutor_id(Long tutor_id) {
         this.tutor_id = tutor_id;
     }
 

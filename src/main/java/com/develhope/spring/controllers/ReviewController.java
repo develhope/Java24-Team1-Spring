@@ -1,8 +1,10 @@
 package com.develhope.spring.controllers;
 
 import com.develhope.spring.entities.Review;
+import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.exceptions.ReviewException;
 import com.develhope.spring.exceptions.UserException;
+import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.models.DTO.ReviewDTO;
 import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
@@ -85,5 +87,23 @@ public class ReviewController {
     @DeleteMapping("/list")
     public void deleteAllReviews(){
        reviewService.deleteAllReviews();
+    }
+    @GetMapping("/tutor{id}")
+    public ResponseEntity<Response> getReviewByTutor(@PathVariable Long id){
+        try {
+            List<ReviewDTO> reviews = reviewService.getReviewByTutor(id);
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "review found: ",
+                            reviews)
+            );
+        } catch (ReviewException e) {
+            return ResponseEntity.status(404).body(
+                    new Response(
+                            404,
+                            e.getMessage()
+                    )
+            );
+        }
     }
 }

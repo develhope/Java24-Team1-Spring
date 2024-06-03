@@ -59,23 +59,39 @@ public class ReviewService {
 
     public ReviewDTO updateReviewById(Long id, ReviewDTO reviewDTO) throws ReviewException {
         Review optionalReview = reviewDAO.findById(id).orElse(null);
-            optionalReview.setReview(reviewDTO.getReview());
-            optionalReview.setStudent(userDAO.findById(reviewDTO.getStudent_id()).orElse(null));
-            optionalReview.setCourse(courseDAO.findById(reviewDTO.getCourse_id()).orElse(null));
-            Review reviewEdited = reviewDAO.saveAndFlush(optionalReview);
-            modelMapper.map(reviewEdited, ReviewDTO.class);
+        optionalReview.setReview(reviewDTO.getReview());
+        optionalReview.setStudent(userDAO.findById(reviewDTO.getStudent_id()).orElse(null));
+        optionalReview.setCourse(courseDAO.findById(reviewDTO.getCourse_id()).orElse(null));
+        Review reviewEdited = reviewDAO.saveAndFlush(optionalReview);
+        modelMapper.map(reviewEdited, ReviewDTO.class);
 
         return reviewDTO;
     }
+
     public void deleteReviewById(Long id) throws ReviewException {
-        if(reviewDAO.existsById(id)) {
+        if (reviewDAO.existsById(id)) {
             reviewDAO.deleteById(id);
-        }else{
-            throw  new ReviewException("user id not found", 404);
+        } else {
+            throw new ReviewException("user id not found", 404);
         }
     }
 
     public void deleteAllReviews() {
         reviewDAO.deleteAll();
+    }
+
+    public List<ReviewDTO> getReviewByTutor(Long id) throws ReviewException {
+        List<Review> reviewList = reviewDAO.findAll();
+        List<ReviewDTO> reviewDTOList = new ArrayList<>();
+        for (Review review : reviewList) {
+            if (review.getCourse().getTutor().getId() == id) {
+                //reviewDTOList.add(mapperEntityToDTO)
+            }
+        }
+        if(!reviewDTOList.isEmpty()) {
+            return reviewDTOList;
+        }else{
+            throw new ReviewException("no reviews found", 404);
+        }
     }
 }
