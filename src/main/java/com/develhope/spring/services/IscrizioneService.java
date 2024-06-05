@@ -61,17 +61,13 @@ public class IscrizioneService {
             throw new IscrizioneException("Subscription not found", 404);
         }
     }
-    public List<IscrizioneDTO> getAll() throws IscrizioneException {
+    public List<IscrizioneDTO> getAll() {
         List<Iscrizione> iscrizioneList = iscrizioneDAO.findAll();
         List<IscrizioneDTO> iscrizioneDTOList = new ArrayList<>();
         for (Iscrizione iscrizione:iscrizioneList) {
             iscrizioneDTOList.add(iscrizioneMapper.entityToDTO(iscrizione));
         }
-        if(!iscrizioneList.isEmpty()) {
             return iscrizioneDTOList;
-        }else {
-            throw new IscrizioneException("Subscription not found", 404);
-        }
     }
 
     public IscrizioneDTO payedSwitch(Long id) throws IscrizioneException {
@@ -104,7 +100,7 @@ public class IscrizioneService {
         if(!iscrizioneList.isEmpty()) {
             return iscrizioneDTOList;
         }else {
-            throw new IscrizioneException("Subscription not found", 404);
+            throw new IscrizioneException("Subscription not found", 400);
         }
     }
 
@@ -113,13 +109,13 @@ public class IscrizioneService {
         List<UserDTO> userDTOList = new ArrayList<>();
         for (Iscrizione iscrizione:iscrizioneList) {
             if(iscrizione.getCourse().getId() == id) {
-                userDTOList.add(userMapper.entityToDTO(iscrizione.getUser()));
+                userDTOList.add(userMapper.entityToDto(iscrizione.getUser()));
             }
         }
         if(!userDTOList.isEmpty()) {
             return userDTOList;
         }else {
-            throw new IscrizioneException("No Client found", 404);
+            throw new IscrizioneException("No Client found", 400);
         }
     }
 }

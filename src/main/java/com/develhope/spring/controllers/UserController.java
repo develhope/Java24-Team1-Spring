@@ -1,6 +1,7 @@
 package com.develhope.spring.controllers;
 
 import com.develhope.spring.exceptions.UserException;
+import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.UserService;
@@ -18,7 +19,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Response> postUser(@RequestBody UserDTO user) {
         try {
             UserDTO newUser = userService.addUser(user);
@@ -38,9 +39,23 @@ public class UserController {
         }
     }
 
-    @GetMapping("/list")
-    public List<UserDTO> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping
+    public ResponseEntity<Response> getAllUsers() {
+        try {
+            List<UserDTO> users = userService.getAllUsers();
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "List of users: ",
+                            users)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(
+                    new Response(
+                            400,
+                            e.getMessage()
+                    )
+            );
+        }
     }
 
     @GetMapping("/{id}")
@@ -49,7 +64,7 @@ public class UserController {
             UserDTO user = userService.getUserById(id);
             return ResponseEntity.ok().body(new Response(200, "user found", user));
         } catch (UserException e) {
-            return ResponseEntity.status(404).body(new Response(404, "user not found"));
+            return ResponseEntity.status(400).body(new Response(400, "user not found"));
         }
     }
 
@@ -59,13 +74,8 @@ public class UserController {
                userService.deleteUserById(id);
                 return ResponseEntity.ok().body(new Response(200, "user deleted"));
             }catch (UserException e){
-                return  ResponseEntity.status(404).body(new Response(404, "user id not found"));
+                return  ResponseEntity.status(400).body(new Response(400, "user id not found"));
             }
-    }
-
-    @DeleteMapping("/list")
-    public void deleteAllUsers(){
-        userService.deleteAllUsers();
     }
 
     @PutMapping("/{id}")
@@ -74,7 +84,7 @@ public class UserController {
            userService.updateUserById(id, userDTO);
            return ResponseEntity.ok().body(new Response(200, "user updated",userDTO));
         } catch(UserException e){
-            return ResponseEntity.status(404).body(new Response(404, "user id not found"));
+            return ResponseEntity.status(400).body(new Response(400, "user id not found"));
         }
     }
 }

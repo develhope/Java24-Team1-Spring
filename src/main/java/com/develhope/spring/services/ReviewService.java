@@ -92,7 +92,7 @@ public class ReviewService {
         List<ReviewDTO> reviewDTOList = new ArrayList<>();
         for (Review review : reviewList) {
             if (review.getCourse().getTutor().getId() == id) {
-                reviewDTOList.add(reviewMapper.entityToDTO(review));
+                reviewDTOList.add(reviewMapper.entityToDto(review));
             }
         }
         if(!reviewDTOList.isEmpty()) {

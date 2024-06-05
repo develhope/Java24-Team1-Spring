@@ -24,8 +24,6 @@ public class CourseService {
     private CourseValidator validator;
     @Autowired
     private UserDAO userDAO;
-    @Autowired
-    private CourseMapper courseMapper;
 
     public CourseDTO addCourse(CourseDTO course) throws CourseException {
         if (validator.isCourseValid(course)) {

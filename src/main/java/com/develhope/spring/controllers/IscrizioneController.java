@@ -1,13 +1,10 @@
 package com.develhope.spring.controllers;
 
-import com.develhope.spring.exceptions.GradeException;
 import com.develhope.spring.exceptions.IscrizioneException;
-import com.develhope.spring.models.DTO.GradeDTO;
 import com.develhope.spring.models.DTO.IscrizioneDTO;
 import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.IscrizioneService;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,16 +45,16 @@ public class IscrizioneController {
                             iscrizione)
             );
         }catch (IscrizioneException e){
-            return ResponseEntity.status(404).body(
+            return ResponseEntity.status(400).body(
                     new Response(
-                            404,
+                            400,
                             e.getMessage()
                     )
             );
         }
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<Response> getAll(){
         try{
             List<IscrizioneDTO> iscrizioneDTOList = iscrizioneService.getAll();
@@ -65,17 +62,17 @@ public class IscrizioneController {
                     new Response(200,
                             "subscription found: ",
                             iscrizioneDTOList));
-        }catch (IscrizioneException e){
-            return ResponseEntity.status(404).body(
+        }catch (Exception e){
+            return ResponseEntity.status(400).body(
                     new Response(
-                            404,
+                            400,
                             e.getMessage()
                     )
             );
         }
     }
 
-    @PatchMapping("/pay{id}")
+    @PatchMapping("/pay/{id}")
     public ResponseEntity<Response> paySwitch(@PathVariable Long id){
         try{
             IscrizioneDTO iscrizione = iscrizioneService.payedSwitch(id);
@@ -85,9 +82,9 @@ public class IscrizioneController {
                             iscrizione)
             );
         }catch (IscrizioneException e){
-            return ResponseEntity.status(404).body(
+            return ResponseEntity.status(400).body(
                     new Response(
-                            404,
+                            400,
                             e.getMessage()
                     )
             );
@@ -101,15 +98,15 @@ public class IscrizioneController {
                     new Response(200,
                             "Subscription deleted"));
         }catch (IscrizioneException e){
-            return ResponseEntity.status(404).body(
+            return ResponseEntity.status(400).body(
                     new Response(
-                            404,
+                            400,
                             e.getMessage()
                     )
             );
         }
     }
-    @GetMapping("/tutor{id}") // da valutare
+    @GetMapping("/tutor/{id}") // da valutare
     public ResponseEntity<Response> findByTutor(@PathVariable Long id){
         try{
             List<IscrizioneDTO> iscrizioneDTOList = iscrizioneService.getAllByTutor(id);
@@ -118,16 +115,16 @@ public class IscrizioneController {
                             "subscription found: ",
                             iscrizioneDTOList));
         }catch (IscrizioneException e){
-            return ResponseEntity.status(404).body(
+            return ResponseEntity.status(400).body(
                     new Response(
-                            404,
+                            400,
                             e.getMessage()
                     )
             );
         }
     }
 
-    @GetMapping("/course{id}")
+    @GetMapping("/course/{id}")
     public ResponseEntity<Response> findUserByCourse(@PathVariable Long id){
         try{
             List<UserDTO> userDTOList = iscrizioneService.getUserByCourse(id);
@@ -136,9 +133,9 @@ public class IscrizioneController {
                             "subscription found: ",
                             userDTOList));
         }catch (IscrizioneException e){
-            return ResponseEntity.status(404).body(
+            return ResponseEntity.status(400).body(
                     new Response(
-                            404,
+                            400,
                             e.getMessage()
                     )
             );
