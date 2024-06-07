@@ -112,4 +112,25 @@ public class CourseController {
             );
         }
     }
+
+    @GetMapping("/active/subject")
+    public ResponseEntity<Response> getActiveCourseBySubject(@RequestParam String s){
+        try {
+            List<CourseDTO> courses = courseService.getActiveCourseBySubject(s);
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "the active courses are:  ",
+                            courses)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(
+                    new Response(
+                            400,
+                            e.getMessage()
+                    )
+            );
+        }
+
+    }
+
 }

@@ -3,6 +3,7 @@ package com.develhope.spring.services;
 import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.Course;
+import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.mappers.CourseMapper;
 import com.develhope.spring.models.DTO.CourseDTO;
@@ -102,4 +103,15 @@ public class CourseService {
             throw new CourseException("no courses found", 404);
         }
     }
+
+    public List<CourseDTO> getActiveCourseBySubject(String s) {
+        List<Course> courses = courseDAO.findActiveCourseBySubject(s);
+        List<CourseDTO> courseDTOList = new ArrayList<>();
+        for(Course c : courses){
+            courseDTOList.add(courseMapper.entityToDto(c));
+        }
+        return courseDTOList;
+
+    }
+
 }
