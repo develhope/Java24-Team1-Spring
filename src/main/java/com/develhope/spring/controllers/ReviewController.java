@@ -59,14 +59,14 @@ public class ReviewController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Response> getReviewById(@PathVariable Long id) {
-        try{
+        try {
             ReviewDTO r = reviewService.getReviewById(id);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "Review found: ",
                             r)
             );
-        }catch(ReviewException e){
+        } catch (ReviewException e) {
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -77,25 +77,27 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Response> updateReviewById(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO){
-        try{
+    public ResponseEntity<Response> updateReviewById(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO) {
+        try {
             reviewService.updateReviewById(id, reviewDTO);
-            return ResponseEntity.ok().body(new Response(200, "review updated",reviewDTO));
-        }catch(ReviewException e){
+            return ResponseEntity.ok().body(new Response(200, "review updated", reviewDTO));
+        } catch (ReviewException e) {
             return ResponseEntity.status(400).body(new Response(400, "review id not found"));
         }
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Response> deleteReviewById(@PathVariable Long id){
-        try{
-           reviewService.deleteReviewById(id);
+    public ResponseEntity<Response> deleteReviewById(@PathVariable Long id) {
+        try {
+            reviewService.deleteReviewById(id);
             return ResponseEntity.ok().body(new Response(200, "review deleted"));
-        }catch (ReviewException e){
-            return  ResponseEntity.status(400).body(new Response(400, "review id not found"));
+        } catch (ReviewException e) {
+            return ResponseEntity.status(400).body(new Response(400, "review id not found"));
         }
     }
+
     @GetMapping("/tutor/{id}")
-    public ResponseEntity<Response> getReviewByTutor(@PathVariable Long id){
+    public ResponseEntity<Response> getReviewByTutor(@PathVariable Long id) {
         try {
             List<ReviewDTO> reviews = reviewService.getReviewByTutor(id);
             return ResponseEntity.ok().body(
@@ -112,4 +114,15 @@ public class ReviewController {
             );
         }
     }
+
+    @GetMapping("/course/{id}")
+    public ResponseEntity<Response> getReviewCourse(@PathVariable Long id) {
+            List<ReviewDTO> reviews = reviewService.getReviewCourse(id);
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "List course review: ",
+                            reviews)
+            );
+    }
+
 }

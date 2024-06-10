@@ -111,4 +111,13 @@ public class GradeController {
             );
         }
     }
+    @GetMapping("/student/{id}")
+    public ResponseEntity<Response> getAllStudentsGrades(@PathVariable Long id){
+        List<GradeDTO> grades = gradeService.getAllStudentsGrades(id);
+        return ResponseEntity.ok().body(
+                new Response(200,
+                        "List of grades for students: ",
+                        grades)
+        );
+    }
 }

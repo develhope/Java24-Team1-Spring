@@ -101,5 +101,12 @@ public class ReviewService {
             throw new ReviewException("no reviews found", 404);
         }
     }
-
+    public List<ReviewDTO> getReviewCourse(Long id){
+        List<Review> reviewList = reviewDAO.findReviewCourse(id);
+        List<ReviewDTO> reviewDTOList = new ArrayList<>();
+        for(Review review : reviewList){
+            reviewDTOList.add(reviewMapper.entityToDto(review));
+        }
+        return  reviewDTOList;
+    }
 }
