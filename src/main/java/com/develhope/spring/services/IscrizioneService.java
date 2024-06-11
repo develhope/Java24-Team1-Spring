@@ -55,7 +55,12 @@ public class IscrizioneService {
             Iscrizione saved = iscrizioneDAO.saveAndFlush(iscrizione);
 
             //richiama metodo di UserTokenService; DA USCIRE DA QUI O FARE UN CONTROLLO SE GIà ESISTE TOKEN!////////////////////////////////////////////////////////////////////////////////////////////////////
-            UserToken userToken = userTokenService.createUserToken(user);
+            UserToken userToken;
+            if (userTokenService.findByUserId(user)!= null){
+                userToken = userTokenService.findByUserId(user);
+            }else {
+                userToken = userTokenService.createUserToken(user);
+            }
 
 
             //Crea List di EVENT da CourseSchedule utilizzando un servizio che torna una lista di eventi di un corso;

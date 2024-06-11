@@ -3,6 +3,7 @@ package com.develhope.spring.services;
 import com.develhope.spring.DAO.UserTokenDAO;
 import com.develhope.spring.entities.User;
 import com.develhope.spring.entities.UserToken;
+import com.develhope.spring.exceptions.UserTokenException;
 import com.google.api.client.auth.oauth2.Credential;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class UserTokenService {
     }
 
     public UserToken createUserToken(User user){
+
         UserToken userToken = new UserToken();
         userToken.setUser_id(user);
         return userTokenDAO.save(userToken);
@@ -29,5 +31,9 @@ public class UserTokenService {
         user.setRefreshToken(credential.getRefreshToken());
         user.setTokenExpiry(credential.getExpirationTimeMilliseconds() == null ? null : Instant.ofEpochMilli(credential.getExpirationTimeMilliseconds()));
         userTokenDAO.save(user);
+    }
+
+    public UserToken findByUserId(User user){
+        return userTokenDAO.findByUserId(user.getId()).orElse(null);
     }
 }
