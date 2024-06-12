@@ -2,9 +2,6 @@ package com.develhope.spring.entities;
 
 import com.develhope.spring.enums.RoleEnum;
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.List;
 
 @Table
 @Entity

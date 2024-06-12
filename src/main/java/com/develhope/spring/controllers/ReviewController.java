@@ -1,10 +1,8 @@
 package com.develhope.spring.controllers;
 
-import com.develhope.spring.entities.Review;
+
 import com.develhope.spring.exceptions.ReviewException;
-import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.ReviewDTO;
-import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/review")
@@ -21,7 +18,7 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Response> postReview(@RequestBody ReviewDTO review) {
         try {
             ReviewDTO newReview = reviewService.addReview(review);
@@ -41,49 +38,91 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("/list")
-    public List<ReviewDTO> getAllReview() {
-        return reviewService.getAllReview();
+    @GetMapping
+    public ResponseEntity<Response> getAllReview() {
+        try {
+            List<ReviewDTO> reviews = reviewService.getAllReview();
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "List of reviews: ",
+                            reviews)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(
+                    new Response(
+                            400,
+                            e.getMessage()
+                    )
+            );
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Response> getReviewById(@PathVariable Long id) {
-        Optional<Review> r = reviewService.getReviewById(id);
-        if(r.isPresent()){
+        try {
+            ReviewDTO r = reviewService.getReviewById(id);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "Review found: ",
                             r)
             );
-        }else{
-            return ResponseEntity.status(404).body(
+        } catch (ReviewException e) {
+            return ResponseEntity.status(400).body(
                     new Response(
-                            404,
+                            400,
                             "Rievew not found, Id invalid"
                     )
             );
         }
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Response> updateReviewById(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO){
-        try{
+    public ResponseEntity<Response> updateReviewById(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO) {
+        try {
             reviewService.updateReviewById(id, reviewDTO);
-            return ResponseEntity.ok().body(new Response(200, "review updated",reviewDTO));
-        }catch(ReviewException e){
-            return ResponseEntity.status(404).body(new Response(404, "review id not found"));
+            return ResponseEntity.ok().body(new Response(200, "review updated", reviewDTO));
+        } catch (ReviewException e) {
+            return ResponseEntity.status(400).body(new Response(400, "review id not found"));
         }
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Response> deleteReviewById(@PathVariable Long id){
-        try{
-           reviewService.deleteReviewById(id);
+    public ResponseEntity<Response> deleteReviewById(@PathVariable Long id) {
+        try {
+            reviewService.deleteReviewById(id);
             return ResponseEntity.ok().body(new Response(200, "review deleted"));
-        }catch (ReviewException e){
-            return  ResponseEntity.status(404).body(new Response(404, "review id not found"));
+        } catch (ReviewException e) {
+            return ResponseEntity.status(400).body(new Response(400, "review id not found"));
         }
     }
-    @DeleteMapping("/list")
-    public void deleteAllReviews(){
-       reviewService.deleteAllReviews();
+
+    @GetMapping("/tutor/{id}")
+    public ResponseEntity<Response> getReviewByTutor(@PathVariable Long id) {
+        try {
+            List<ReviewDTO> reviews = reviewService.getReviewByTutor(id);
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "review found: ",
+                            reviews)
+            );
+        } catch (ReviewException e) {
+            return ResponseEntity.status(400).body(
+                    new Response(
+                            400,
+                            e.getMessage()
+                    )
+            );
+        }
     }
+
+    @GetMapping("/course/{id}")
+    public ResponseEntity<Response> getReviewCourse(@PathVariable Long id) {
+            List<ReviewDTO> reviews = reviewService.getReviewCourse(id);
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "List course review: ",
+                            reviews)
+            );
+    }
+
 }

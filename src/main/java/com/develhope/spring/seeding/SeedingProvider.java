@@ -16,12 +16,16 @@ public class SeedingProvider {
         List<User> users = new ArrayList<>();
 
         // Aggiungere alcuni corsi di esempio con dettagli fittizi
-        users.add(new User (null, "Gigi", "Proietti", "Gigino",
-                "proiettili@gigi.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, "PippoFranco"));
-        users.add(new User (null, "Gigi", "Proietti", "Gigino1",
-                "proiettili1@gigi.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, "PippoFranco"));
-        users.add(new User (null, "Gigi", "Proietti", "Gigino2",
-                "proiettili2@gigi.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, "PippoFranco"));
+        users.add(new User (null, "Liborio", "Di Stefano", "Lib18",
+                "lib18@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, "PippoFranco"));
+        users.add(new User (null, "Davide", "Busà", "sbrakkius",
+                "davide@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, "PippoFranco"));
+        users.add(new User (null, "Giovanni", "Innaimi", "vocalic oister",
+                "vocalic@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, "PippoFranco"));
+        users.add(new User (null, "Gianluca", "Mulieddi", "aizen",
+                "aizen@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, "PippoFranco"));
+        users.add(new User (null, "Giada", "Fiorito", "jade flower",
+                "jade@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, "PippoFranco"));
         // Puoi aggiungere altri corsi di esempio qui
 
         return users;
@@ -31,12 +35,12 @@ public class SeedingProvider {
         List<Course> courses = new ArrayList<>();
 
         // Aggiungere alcuni corsi di esempio con dettagli fittizi
-        courses.add(new Course(null, "", "2024-05-20", "2024-08-20", 40, 150.0,
-                                "", "", null, true, CourseType.LIVE));
-        courses.add(new Course(null, "","2024-05-20", "2024-08-20", 50, 120.0,
-                                "", "", null, true, CourseType.ONDEMAND));
-        courses.add(new Course(null, "", "2024-05-20", "2024-08-20", 30, 80.0,
-                                "", "", null, true, CourseType.LIVE));
+        courses.add(new Course(null, "Corso di Informatica", "2024-05-20", "2024-08-20", 40, 150.0,
+                                "Informatica", "Corso preparatorio per informatici", null, true, CourseType.LIVE));
+        courses.add(new Course(null, "Corso di Italiano","2024-05-20", "2024-08-20", 50, 120.0,
+                                "Italiano", "Corso preparatorio per italiani", null, true, CourseType.ONDEMAND));
+        courses.add(new Course(null, "Corso di Inglese", "2024-05-20", "2024-08-20", 30, 80.0,
+                                "Inglese", "corso preparatorio per la lingua inglese", null, true, CourseType.LIVE));
 
         // Puoi aggiungere altri corsi di esempio qui
 

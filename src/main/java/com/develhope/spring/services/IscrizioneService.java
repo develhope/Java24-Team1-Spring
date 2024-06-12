@@ -72,51 +72,45 @@ public class IscrizioneService {
             googleCalendarService.addEvent(userToken, cs);
 
             return iscrizioneMapper.entityToDTO(saved);
-        }else{
+        } else {
             throw new IscrizioneException("Subscription not added, a problem occurred with the data", 400);
         }
     }
 
-
-
-
-
+      
     public IscrizioneDTO getById(Long id) throws IscrizioneException {
         Iscrizione iscrizione = iscrizioneDAO.findById(id).orElse(null);
-        if(iscrizione!=null){
+        if (iscrizione != null) {
             return iscrizioneMapper.entityToDTO(iscrizione);
-        }else{
+        } else {
             throw new IscrizioneException("Subscription not found", 404);
         }
     }
-    public List<IscrizioneDTO> getAll() throws IscrizioneException {
+
+    public List<IscrizioneDTO> getAll() {
         List<Iscrizione> iscrizioneList = iscrizioneDAO.findAll();
         List<IscrizioneDTO> iscrizioneDTOList = new ArrayList<>();
-        for (Iscrizione iscrizione:iscrizioneList) {
+        for (Iscrizione iscrizione : iscrizioneList) {
             iscrizioneDTOList.add(iscrizioneMapper.entityToDTO(iscrizione));
         }
-        if(!iscrizioneList.isEmpty()) {
-            return iscrizioneDTOList;
-        }else {
-            throw new IscrizioneException("Subscription not found", 404);
-        }
+        return iscrizioneDTOList;
     }
 
     public IscrizioneDTO payedSwitch(Long id) throws IscrizioneException {
         Iscrizione iscrizione = iscrizioneDAO.findById(id).orElse(null);
-        if(iscrizione!= null) {
+        if (iscrizione != null) {
             iscrizione.setPayed(!iscrizione.getPayed());
             Iscrizione saved = iscrizioneDAO.saveAndFlush(iscrizione);
             return iscrizioneMapper.entityToDTO(saved);
-        }else{
+        } else {
             throw new IscrizioneException("Subscription not found", 404);
         }
     }
 
     public void deleteSubscription(Long id) throws IscrizioneException {
-        if(iscrizioneDAO.existsById(id)){
+        if (iscrizioneDAO.existsById(id)) {
             iscrizioneDAO.deleteById(id);
-        }else{
+        } else {
             throw new IscrizioneException("Subscription not found", 404);
         }
     }
@@ -124,30 +118,36 @@ public class IscrizioneService {
     public List<IscrizioneDTO> getAllByTutor(Long id) throws IscrizioneException {
         List<Iscrizione> iscrizioneList = iscrizioneDAO.findAll();
         List<IscrizioneDTO> iscrizioneDTOList = new ArrayList<>();
-        for (Iscrizione iscrizione:iscrizioneList) {
-            if(iscrizione.getCourse().getTutor().getId() == id) {
+        for (Iscrizione iscrizione : iscrizioneList) {
+            if (iscrizione.getCourse().getTutor().getId() == id) {
                 iscrizioneDTOList.add(iscrizioneMapper.entityToDTO(iscrizione));
             }
         }
-        if(!iscrizioneList.isEmpty()) {
+        if (!iscrizioneList.isEmpty()) {
             return iscrizioneDTOList;
-        }else {
-            throw new IscrizioneException("Subscription not found", 404);
+        } else {
+            throw new IscrizioneException("Subscription not found", 400);
         }
     }
 
     public List<UserDTO> getUserByCourse(Long id) throws IscrizioneException {
         List<Iscrizione> iscrizioneList = iscrizioneDAO.findAll();
         List<UserDTO> userDTOList = new ArrayList<>();
-        for (Iscrizione iscrizione:iscrizioneList) {
-            if(iscrizione.getCourse().getId() == id) {
-                userDTOList.add(userMapper.entityToDTO(iscrizione.getUser()));
+        for (Iscrizione iscrizione : iscrizioneList) {
+            if (iscrizione.getCourse().getId() == id) {
+                userDTOList.add(userMapper.entityToDto(iscrizione.getUser()));
             }
         }
-        if(!userDTOList.isEmpty()) {
-            return userDTOList;
-        }else {
-            throw new IscrizioneException("No Client found", 404);
+        return userDTOList;
+    }
+
+
+    public List<IscrizioneDTO> getSubscribedCourse(Long id) {
+        List<Iscrizione> iscrizioneList = iscrizioneDAO.findCourseByUser(id);
+        List<IscrizioneDTO> iscrizioneDTOList = new ArrayList<>();
+        for (Iscrizione iscrizione : iscrizioneList) {
+            iscrizioneDTOList.add(iscrizioneMapper.entityToDTO(iscrizione));
         }
+        return iscrizioneDTOList;
     }
 }

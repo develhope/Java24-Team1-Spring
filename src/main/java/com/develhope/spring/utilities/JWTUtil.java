@@ -20,6 +20,19 @@ public class JWTUtil {
     private final String secret = "vRURNqOAwQf2OAe3cminZOzmFVoIoHij";
 
 
+    public String extractUsername(String token) {
+        return extractClaim(token, "sub");
+    }
+
+    public String extractRole(String token) {
+        return extractClaim(token, "role");
+    }
+
+    public String extractClaim(String token, String claimName) {
+        final Claims claims = extractAllClaims(token);
+        return claims.get(claimName, String.class);
+    }
+
     public Date extractExpiration(String token) {
         return extractAllClaims(token).getExpiration();
     }
@@ -36,10 +49,10 @@ public class JWTUtil {
 
     public String createToken(UserDetailsImpl userDetails) {
         return Jwts.builder()
-                .claim("role", userDetails.getAuthorities())
+                .claim("role", userDetails.getAuthorities().iterator().next().getAuthority())
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis())) //DATA INIZIO TOKEN
-                .setExpiration(new Date(System.currentTimeMillis() + 3600000)) //TOKEN DURA 1 ORA
+                .setExpiration(new Date(System.currentTimeMillis() + 86400000)) //TOKEN DURA 1 ORA
                 .signWith(SignatureAlgorithm.HS256, secret).compact();
     }
 
