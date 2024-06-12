@@ -141,4 +141,13 @@ public class IscrizioneController {
             );
         }
     }
+    @GetMapping("/sub/{id}")
+    public ResponseEntity<Response> findCourseByUser(@PathVariable Long id){
+        List<IscrizioneDTO> iscrizioneDTOList = iscrizioneService.getSubscribedCourse(id);
+        return ResponseEntity.ok(
+                new Response(
+                        200,
+                        "Iscrizioni",
+                        iscrizioneDTOList));
+    }
 }
