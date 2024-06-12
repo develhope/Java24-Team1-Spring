@@ -96,5 +96,13 @@ public class GradeService {
             throw new GradeException("no grades found", 404);
         }
     }
+    public List<GradeDTO> getAllStudentsGrades(Long id){
+        List<Grade> gradeList = gradeDAO.findAllStudentGrades(id);
+        List<GradeDTO> gradeDTOList = new ArrayList<>();
+        for(Grade grade : gradeList){
+            gradeDTOList.add(gradeMapper.entityToDto(grade));
+        }
+        return gradeDTOList;
+    }
 
 }
