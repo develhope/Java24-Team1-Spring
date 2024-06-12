@@ -3,6 +3,7 @@ package com.develhope.spring.seeding;
 import com.develhope.spring.entities.*;
 import com.develhope.spring.enums.CourseType;
 import com.develhope.spring.enums.RoleEnum;
+import com.google.api.client.util.DateTime;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class SeedingProvider {
         // Crea programmi di corso per ogni corso
         for (Course course : courses) {
             // Aggiungi date e link fittizi per i programmi di corso
-            schedules.add(new CourseSchedule(null, course, new Date(), new Date(), "Test"));
+            schedules.add(new CourseSchedule(null, course, new DateTime(new Date()), new DateTime(new Date()), "Test"));
         }
 
         return schedules;

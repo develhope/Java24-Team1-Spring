@@ -26,12 +26,14 @@ public class IscrizioneController {
                             iscrizione)
             );
         }catch (IscrizioneException e){
-            return ResponseEntity.status(400).body(
+            return ResponseEntity.status(404).body(
                     new Response(
-                            400,
+                            404,
                             e.getMessage()
                     )
             );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

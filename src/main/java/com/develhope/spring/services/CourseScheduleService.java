@@ -26,6 +26,8 @@ public class CourseScheduleService {
     @Autowired
     private CourseDAO courseDAO;
     @Autowired
+    private ModelMapper modelMapper;
+    @Autowired
     private CourseScheduleMapper courseScheduleMapper;
 
     @Autowired
@@ -55,6 +57,18 @@ public class CourseScheduleService {
             courseScheduleDTOList.add(courseScheduleDTO);
         }
         return courseScheduleDTOList;
+    }
+
+
+    public List<CourseSchedule> getAllCourseScheduleByCourse(Long id) {
+        List<CourseSchedule> courseScheduleList = courseScheduleDAO.findAll();
+        List<CourseSchedule> newCourseScheduleList = new ArrayList<>();
+        for(CourseSchedule courseSchedule: courseScheduleList){
+            if(courseSchedule.getCourse().getId() == id) {
+                newCourseScheduleList.add(courseSchedule);
+            }
+        }
+        return newCourseScheduleList;
     }
 
     public CourseScheduleDTO updateCourseScheduleById(Long id, CourseScheduleDTO courseScheduleDTO) throws CourseScheduleException {
