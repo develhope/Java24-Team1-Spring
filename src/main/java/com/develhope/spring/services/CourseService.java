@@ -3,8 +3,11 @@ package com.develhope.spring.services;
 import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.Course;
+import com.develhope.spring.entities.CourseSchedule;
 import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.CourseException;
+import com.develhope.spring.exceptions.CourseScheduleException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.CourseMapper;
 import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.validators.CourseValidator;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CourseService {
@@ -38,7 +42,7 @@ public class CourseService {
     }
 
     public List<CourseDTO> getAllCourse() {
-        List<Course> courseList = courseDAO.findAll();
+        List<Course> courseList = courseDAO.findActiveCourse();
         List<CourseDTO> courseDTOList = new ArrayList<>();
         for (Course course : courseList) {
             CourseDTO courseDTO = courseMapper.entityToDto(course);
@@ -48,7 +52,7 @@ public class CourseService {
     }
 
     public CourseDTO getCourseById(Long id) throws CourseException {
-        Course course = courseDAO.findById(id).orElse(null);
+        Course course = courseDAO.findById(id).orElseThrow(() -> new CourseException("Course not found!", 404));
         if (course != null) {
             return courseMapper.entityToDto(course);
         } else {
@@ -56,8 +60,8 @@ public class CourseService {
         }
     }
 
-    public CourseDTO updateCourseById(Long id, CourseDTO courseDTO) throws CourseException {
-        Course optionalCourse = courseDAO.findById(id).orElse(null);
+    public CourseDTO updateCourseById(Long id, CourseDTO courseDTO) throws CourseException, UserException {
+        Course optionalCourse = courseDAO.findById(id).orElseThrow(() -> new CourseException("Course not found!", 404));
 
         if (optionalCourse != null) {
             optionalCourse.setName(courseDTO.getName());
@@ -67,8 +71,7 @@ public class CourseService {
             optionalCourse.setPrice(courseDTO.getPrice());
             optionalCourse.setSubject(courseDTO.getSubject());
             optionalCourse.setDescription(courseDTO.getDescription());
-            optionalCourse.setTutor(userDAO.findById(courseDTO.getTutor_id()).orElse(null));
-            optionalCourse.setActiveCourse(courseDTO.getActiveCourse());
+            optionalCourse.setTutor(userDAO.findById(courseDTO.getTutor_id()).orElseThrow(() -> new UserException("Course not found!", 404)));
             optionalCourse.setCourseType(courseDTO.getCourseType());
             Course courseEdited = courseDAO.saveAndFlush(optionalCourse);
             return courseMapper.entityToDto(courseEdited);
@@ -78,22 +81,21 @@ public class CourseService {
     }
 
     public void deleteCourseById(Long id) throws CourseException {
-        if (courseDAO.existsById(id)) {
-            courseDAO.deleteById(id);
+        Course course = courseDAO.findById(id).orElseThrow(() -> new CourseException("Course not found!", 404));
+        if(course.getActiveCourse()) {
+            course.setActiveCourse(false);
+            courseDAO.saveAndFlush(course);
         } else {
             throw new CourseException("course id not found", 404);
         }
     }
 
-    public void deleteAllCourses() {
-        courseDAO.deleteAll();
-    }
 
     public List<CourseDTO> getActiveCoursesByTutor(Long id) throws CourseException {
-        List<Course> courseList = courseDAO.findAll();
+        List<Course> courseList = courseDAO.findActiveCourse();
         List<CourseDTO> courseDTOList = new ArrayList<>();
         for (Course course : courseList) {
-            if (course.getTutor().getId() == id && course.getActiveCourse()) {
+            if (Objects.equals(course.getTutor().getId(), id) && course.getActiveCourse()) {
                 courseDTOList.add(courseMapper.entityToDto(course));
             }
         }

@@ -2,6 +2,7 @@ package com.develhope.spring.controllers;
 
 
 import com.develhope.spring.exceptions.CourseException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.CourseService;
@@ -92,6 +93,8 @@ public class CourseController {
             return ResponseEntity.ok().body(new Response(200, "course updated",courseDTO));
         }catch(CourseException e){
             return ResponseEntity.status(400).body(new Response(400, "course id not found"));
+        } catch (UserException e) {
+            return ResponseEntity.status(400).body(new Response(400, "user id not found"));
         }
     }
     @GetMapping("/active/tutor/{id}")

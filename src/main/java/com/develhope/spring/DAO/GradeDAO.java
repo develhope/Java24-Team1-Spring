@@ -13,4 +13,7 @@ public interface GradeDAO extends JpaRepository<Grade, Long> {
 
     @Query("SELECT g FROM Grade g WHERE g.student.id = :id")
     List<Grade> findAllStudentGrades(@Param("id") Long id);
+
+    @Query("SELECT g FROM Grade g WHERE g.isDeleted = False")
+    List<Grade> findActiveGrade();
 }

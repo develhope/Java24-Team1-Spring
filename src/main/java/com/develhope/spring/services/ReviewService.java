@@ -3,8 +3,11 @@ package com.develhope.spring.services;
 import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.ReviewDAO;
 import com.develhope.spring.DAO.UserDAO;
+import com.develhope.spring.entities.CourseSchedule;
 import com.develhope.spring.entities.Review;
 import com.develhope.spring.entities.User;
+import com.develhope.spring.exceptions.CourseException;
+import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.exceptions.ReviewException;
 import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.ReviewMapper;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -33,7 +37,7 @@ public class ReviewService {
     @Autowired
     private CourseDAO courseDAO;
 
-    public ReviewDTO addReview(ReviewDTO review) throws ReviewException {
+    public ReviewDTO addReview(ReviewDTO review) throws ReviewException, CourseException, UserException {
         if (validator.isReviewValid(review)) {
             Review entity = reviewMapper.dtoToEntity(review);
             Review saved = reviewDAO.saveAndFlush(entity);
@@ -44,7 +48,7 @@ public class ReviewService {
     }
 
     public List<ReviewDTO> getAllReview() {
-        List<Review> reviews = reviewDAO.findAll();
+        List<Review> reviews = reviewDAO.findActiveReview();
         List<ReviewDTO> reviewsDTOList = new ArrayList<>();
         for (Review review : reviews) {
             ReviewDTO reviewDTO = reviewMapper.entityToDto(review);
@@ -54,7 +58,7 @@ public class ReviewService {
     }
 
     public ReviewDTO getReviewById(Long id) throws ReviewException {
-        Review review = reviewDAO.findById(id).orElse(null);
+        Review review = reviewDAO.findById(id).orElseThrow(() -> new ReviewException("Review not found!", 400));
         if (review != null) {
             return reviewMapper.entityToDto(review);
         } else {
@@ -62,36 +66,35 @@ public class ReviewService {
         }
     }
 
-    public ReviewDTO updateReviewById(Long id, ReviewDTO reviewDTO) throws ReviewException {
-        Review optionalReview = reviewDAO.findById(id).orElse(null);
+    public ReviewDTO updateReviewById(Long id, ReviewDTO reviewDTO) throws ReviewException, UserException, CourseException {
+        Review optionalReview = reviewDAO.findById(id).orElseThrow(() -> new ReviewException("Review not found!", 400));
         if (optionalReview != null) {
             optionalReview.setReview(reviewDTO.getReview());
-            optionalReview.setStudent(userDAO.findById(reviewDTO.getStudent_id()).orElse(null));
-            optionalReview.setCourse(courseDAO.findById(reviewDTO.getCourse_id()).orElse(null));
+            optionalReview.setStudent(userDAO.findById(reviewDTO.getStudent_id()).orElseThrow(() -> new UserException("Student not found!", 400)));
+            optionalReview.setCourse(courseDAO.findById(reviewDTO.getCourse_id()).orElseThrow(() -> new CourseException("Course not found!", 400)));
             Review reviewEdited = reviewDAO.saveAndFlush(optionalReview);
             return reviewMapper.entityToDto(reviewEdited);
         } else {
-            throw new ReviewException("Review not found!", 404);
+            throw new ReviewException("Review not found!", 400);
         }
     }
 
     public void deleteReviewById(Long id) throws ReviewException {
-        if (reviewDAO.existsById(id)) {
-            reviewDAO.deleteById(id);
+        Review review = reviewDAO.findById(id).orElseThrow(() -> new ReviewException("Review not found!", 400));
+        if(!review.getIsDeleted()) {
+            review.setIsDeleted(true);
+            reviewDAO.saveAndFlush(review);
         } else {
-            throw new ReviewException("user id not found", 404);
+            throw new ReviewException("user id not found", 400);
         }
     }
 
-    public void deleteAllReviews() {
-        reviewDAO.deleteAll();
-    }
 
     public List<ReviewDTO> getReviewByTutor(Long id) throws ReviewException {
-        List<Review> reviewList = reviewDAO.findAll();
+        List<Review> reviewList = reviewDAO.findActiveReview();
         List<ReviewDTO> reviewDTOList = new ArrayList<>();
         for (Review review : reviewList) {
-            if (review.getCourse().getTutor().getId() == id) {
+            if (Objects.equals(review.getCourse().getTutor().getId(), id)) {
                 reviewDTOList.add(reviewMapper.entityToDto(review));
             }
         }

@@ -3,6 +3,8 @@ package com.develhope.spring.mappers;
 import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.Review;
+import com.develhope.spring.exceptions.CourseException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.ReviewDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,11 +18,11 @@ public class ReviewMapper {
     private CourseDAO courseDAO;
 
 
-    public Review dtoToEntity(ReviewDTO reviewMapperDTO) {
+    public Review dtoToEntity(ReviewDTO reviewMapperDTO) throws UserException, CourseException {
         Review review = new Review();
         review.setId(reviewMapperDTO.getId());
-        review.setStudent(userDAO.findById(reviewMapperDTO.getStudent_id()).orElse(null));
-        review.setCourse(courseDAO.findById(reviewMapperDTO.getCourse_id()).orElse(null));
+        review.setStudent(userDAO.findById(reviewMapperDTO.getStudent_id()).orElseThrow(() -> new UserException("Student not found!", 404)));
+        review.setCourse(courseDAO.findById(reviewMapperDTO.getCourse_id()).orElseThrow(() -> new CourseException("Course not found!", 404)));
         review.setReview(reviewMapperDTO.getReview());
         return review;
     }

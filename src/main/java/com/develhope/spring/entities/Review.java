@@ -15,15 +15,19 @@ public class Review {
     private Course course;
     @Column(nullable = false)
     private String review;
+    @Column(nullable = false)
+    private Boolean isDeleted;
 
     public Review(Long id, User student, Course course, String review) {
         this.id = id;
         this.student = student;
         this.course = course;
         this.review = review;
+        this.isDeleted = false;
     }
 
     public Review() {
+        this.isDeleted = false;
     }
 
     public Long getId() {
@@ -56,5 +60,13 @@ public class Review {
 
     public void setReview(String review) {
         this.review = review;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }

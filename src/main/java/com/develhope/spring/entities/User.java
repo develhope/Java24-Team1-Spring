@@ -21,9 +21,12 @@ public class User {
     @Column(nullable = false)
     private String fiscCode;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private RoleEnum role;
     @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    private Boolean isDeleted;
 
     public User(Long id, String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
         this.id = id;
@@ -35,6 +38,7 @@ public class User {
         this.fiscCode = fiscCode;
         this.role = role;
         this.password = password;
+        this.isDeleted = false;
     }
 
     public User(String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
@@ -46,9 +50,11 @@ public class User {
         this.fiscCode = fiscCode;
         this.role = role;
         this.password = password;
+        this.isDeleted = false;
     }
 
     public User() {
+        this.isDeleted = false;
     }
 
     public Long getId() {
@@ -123,6 +129,13 @@ public class User {
         this.password = password;
     }
 
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean deleted) {
+        isDeleted = deleted;
+    }
 }
 
 

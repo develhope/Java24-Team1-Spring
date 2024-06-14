@@ -3,8 +3,12 @@ package com.develhope.spring.services;
 import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.GradeDAO;
 import com.develhope.spring.DAO.UserDAO;
+import com.develhope.spring.entities.CourseSchedule;
 import com.develhope.spring.entities.Grade;
+import com.develhope.spring.exceptions.CourseException;
+import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.exceptions.GradeException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.GradeMapper;
 import com.develhope.spring.models.DTO.GradeDTO;
 import com.develhope.spring.validators.GradeValidator;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GradeService {
@@ -27,7 +32,7 @@ public class GradeService {
     @Autowired
     private GradeValidator validator;
 
-    public GradeDTO addGrade(GradeDTO grade) throws GradeException {
+    public GradeDTO addGrade(GradeDTO grade) throws GradeException, CourseException, UserException {
         if (validator.isGradeValid(grade)) {
             Grade entity = gradeMapper.dtoToEntity(grade);
             Grade saved = gradeDAO.saveAndFlush(entity);
@@ -38,7 +43,7 @@ public class GradeService {
     }
 
     public List<GradeDTO> getAllGrade() {
-        List<Grade> grades = gradeDAO.findAll();
+        List<Grade> grades = gradeDAO.findActiveGrade();
         List<GradeDTO> gradesDTOList = new ArrayList<>();
         for (Grade grade : grades) {
             GradeDTO gradeDTO = gradeMapper.entityToDto(grade);
@@ -48,19 +53,15 @@ public class GradeService {
     }
 
     public GradeDTO getGradeById(Long id) throws GradeException {
-        Grade grade = gradeDAO.findById(id).orElse(null);
-        if (grade != null) {
-            return gradeMapper.entityToDto(grade);
-        } else {
-            throw new GradeException("Grade not found!", 404);
-        }
+        Grade grade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("Grade not found!", 404));
+        return gradeMapper.entityToDto(grade);
     }
 
-    public GradeDTO updateGradeById(Long id, GradeDTO gradeDTO) throws GradeException {
-        Grade optionalGrade = gradeDAO.findById(id).orElse(null);
+    public GradeDTO updateGradeById(Long id, GradeDTO gradeDTO) throws GradeException, UserException, CourseException {
+        Grade optionalGrade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("Grade not found!", 404));
         if (optionalGrade != null) {
-            optionalGrade.setStudent(userDAO.findById(gradeDTO.getStudent_id()).orElse(null));
-            optionalGrade.setCourse(courseDAO.findById(gradeDTO.getCourse_id()).orElse(null));
+            optionalGrade.setStudent(userDAO.findById(gradeDTO.getStudent_id()).orElseThrow(() -> new UserException("Student not found!", 404)));
+            optionalGrade.setCourse(courseDAO.findById(gradeDTO.getCourse_id()).orElseThrow(() -> new CourseException("Course not found!", 404)));
             optionalGrade.setGrade(gradeDTO.getGrade());
             optionalGrade.setFinishedCourse(gradeDTO.getFinishedCourse());
             Grade gradeEdited = gradeDAO.saveAndFlush(optionalGrade);
@@ -71,22 +72,21 @@ public class GradeService {
     }
 
     public void deleteGradeById(Long id) throws GradeException {
-        if (gradeDAO.existsById(id)) {
-            gradeDAO.deleteById(id);
+        Grade grade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("Course Schedule not found!", 404));
+        if(!grade.getIsDeleted()) {
+            grade.setIsDeleted(true);
+            gradeDAO.saveAndFlush(grade);
         } else {
             throw new GradeException("Grade not found!", 404);
         }
     }
 
-    public void deleteAllGrades() {
-        gradeDAO.deleteAll();
-    }
 
     public List<GradeDTO> getGradeByTutor(Long id) throws GradeException {
-        List<Grade> gradeList = gradeDAO.findAll();
+        List<Grade> gradeList = gradeDAO.findActiveGrade();
         List<GradeDTO> gradeDTOList = new ArrayList<>();
         for(Grade grade: gradeList){
-            if(grade.getCourse().getTutor().getId() == id){  
+            if(Objects.equals(grade.getCourse().getTutor().getId(), id)){
               gradeDTOList.add(gradeMapper.entityToDto(grade));
             }
         }

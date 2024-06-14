@@ -27,7 +27,6 @@ public class CourseValidator {
                         c.getPrice() != null &&
                         c.getSubject() != null &&
                         c.getTutor_id() != null &&
-                        c.getActiveCourse() != null &&
                         c.getCourseType() != null
                 );
     }
