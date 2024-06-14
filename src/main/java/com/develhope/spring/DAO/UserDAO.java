@@ -16,6 +16,6 @@ public interface UserDAO extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String username);
 
-    @Query("SELECT u FROM User u WHERE u.isDeleted = False")
+    @Query("SELECT u FROM User u WHERE u.isDeleted = false")
     List<User> findActiveUser();
 }

@@ -70,8 +70,6 @@ public class IscrizioneService {
             //Crea List di EVENT da CourseSchedule utilizzando un servizio che torna una lista di eventi di un corso;
             List<CourseSchedule> cs = courseScheduleService.getAllCourseScheduleByCourse(course.getId());
 
-            System.out.println(cs.toString());
-
             //richiama metodo AddEvent;
             googleCalendarService.addEvent(userToken, cs);
 

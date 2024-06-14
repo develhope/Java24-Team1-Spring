@@ -34,6 +34,6 @@ public class UserTokenService {
     }
 
     public UserToken findByUserId(User user) throws UserTokenException {
-        return userTokenDAO.findByUserId(user.getId()).orElseThrow(() -> new UserTokenException("User token not found!", 404));
+        return userTokenDAO.findByUserId(user.getId()).orElse(null);
     }
 }

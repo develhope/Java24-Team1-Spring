@@ -14,7 +14,4 @@ public interface UserTokenDAO extends JpaRepository<UserToken, Long> {
 
     @Query("SELECT ut FROM UserToken ut WHERE ut.user_id.id = :id")
     Optional<UserToken> findByUserId(@Param("id") Long id);
-
-    @Query("SELECT ut FROM UserToken ut WHERE ut.isDeleted = False")
-    List<UserToken> findActiveUserToken();
 }

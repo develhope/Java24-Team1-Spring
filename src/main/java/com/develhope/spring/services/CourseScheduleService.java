@@ -28,8 +28,6 @@ public class CourseScheduleService {
     @Autowired
     private CourseDAO courseDAO;
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
     private CourseScheduleMapper courseScheduleMapper;
 
     @Autowired

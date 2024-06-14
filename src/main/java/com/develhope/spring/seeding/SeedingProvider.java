@@ -36,11 +36,11 @@ public class SeedingProvider {
 
         // Aggiungere alcuni corsi di esempio con dettagli fittizi
         courses.add(new Course(null, "Corso di Informatica", "2024-05-20", "2024-08-20", 40, 150.0,
-                                "Informatica", "Corso preparatorio per informatici", null, true, CourseType.LIVE));
+                                "Informatica", "Corso preparatorio per informatici", null, CourseType.LIVE));
         courses.add(new Course(null, "Corso di Italiano","2024-05-20", "2024-08-20", 50, 120.0,
-                                "Italiano", "Corso preparatorio per italiani", null, true, CourseType.ONDEMAND));
+                                "Italiano", "Corso preparatorio per italiani", null, CourseType.ONDEMAND));
         courses.add(new Course(null, "Corso di Inglese", "2024-05-20", "2024-08-20", 30, 80.0,
-                                "Inglese", "corso preparatorio per la lingua inglese", null, true, CourseType.LIVE));
+                                "Inglese", "corso preparatorio per la lingua inglese", null, CourseType.LIVE));
 
         // Puoi aggiungere altri corsi di esempio qui
 

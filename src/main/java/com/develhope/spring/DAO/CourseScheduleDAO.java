@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface CourseScheduleDAO extends JpaRepository<CourseSchedule, Long> {
     
-    @Query("SELECT cs FROM CourseSchedule cs WHERE cs.isDeleted = False")
+    @Query("SELECT cs FROM CourseSchedule cs WHERE cs.isDeleted = false")
     List<CourseSchedule> findActiveCourseSchedule();
 }
