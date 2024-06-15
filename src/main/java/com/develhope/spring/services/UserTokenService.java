@@ -16,7 +16,7 @@ public class UserTokenService {
     private UserTokenDAO userTokenDAO;
 
     public UserToken findById(Long id) throws Exception {
-        return userTokenDAO.findById(id).orElseThrow(Exception::new);
+        return userTokenDAO.findById(id).orElseThrow(() -> new UserTokenException("User token not found!", 404));
     }
 
     public UserToken createUserToken(User user){
@@ -33,7 +33,7 @@ public class UserTokenService {
         userTokenDAO.save(user);
     }
 
-    public UserToken findByUserId(User user){
+    public UserToken findByUserId(User user) throws UserTokenException {
         return userTokenDAO.findByUserId(user.getId()).orElse(null);
     }
 }

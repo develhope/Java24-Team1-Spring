@@ -29,9 +29,10 @@ public class Course {
     @Column
     private Boolean activeCourse;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private CourseType courseType;
 
-    public Course(Long id, String name, String startDate, String finishDate, Integer courseLength, Double price, String subject, String description, User tutor, Boolean activeCourse, CourseType courseType) {
+    public Course(Long id, String name, String startDate, String finishDate, Integer courseLength, Double price, String subject, String description, User tutor, CourseType courseType) {
         this.id = id;
         this.name = name;
         this.startDate = startDate;
@@ -41,11 +42,12 @@ public class Course {
         this.subject = subject;
         this.description = description;
         this.tutor = tutor;
-        this.activeCourse = activeCourse;
+        this.activeCourse = true;
         this.courseType = courseType;
     }
 
     public Course() {
+        this.activeCourse = true;
     }
 
     public Long getId() {

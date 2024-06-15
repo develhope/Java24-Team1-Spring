@@ -17,6 +17,8 @@ public class Grade {
     private String grade;
     @Column
     private Boolean finishedCourse;
+    @Column(nullable = false)
+    private Boolean isDeleted;
 
     public Grade(Long id, User student, Course course, String grade, Boolean finishedCourse) {
         this.id = id;
@@ -24,9 +26,11 @@ public class Grade {
         this.course = course;
         this.grade = grade;
         this.finishedCourse = finishedCourse;
+        this.isDeleted = false;
     }
 
     public Grade() {
+        this.isDeleted = false;
     }
 
     public Long getId() {
@@ -67,5 +71,13 @@ public class Grade {
 
     public void setFinishedCourse(Boolean finishedCourse) {
         this.finishedCourse = finishedCourse;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }

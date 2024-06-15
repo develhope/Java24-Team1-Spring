@@ -4,7 +4,10 @@ import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.IscrizioneDAO;
 import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.*;
+import com.develhope.spring.exceptions.CourseException;
+import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.exceptions.IscrizioneException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.IscrizioneMapper;
 import com.develhope.spring.mappers.UserMapper;
 import com.develhope.spring.models.DTO.CourseScheduleDTO;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class IscrizioneService {
@@ -42,8 +46,8 @@ public class IscrizioneService {
 
     public IscrizioneDTO subscribeToCourse(Long idUser, Long idCourse) throws Exception {
 
-        User user = userDAO.findById(idUser).orElse(null);
-        Course course = courseDAO.findById(idCourse).orElse(null);
+        User user = userDAO.findById(idUser).orElseThrow(() -> new UserException("User not found!", 400));
+        Course course = courseDAO.findById(idCourse).orElseThrow(() -> new CourseException("Course not found!", 400));
 
         if(iscrizioneValidator.isIscrizioneValid(user,course)){
             Iscrizione iscrizione = new Iscrizione();
@@ -66,8 +70,6 @@ public class IscrizioneService {
             //Crea List di EVENT da CourseSchedule utilizzando un servizio che torna una lista di eventi di un corso;
             List<CourseSchedule> cs = courseScheduleService.getAllCourseScheduleByCourse(course.getId());
 
-            System.out.println(cs.toString());
-
             //richiama metodo AddEvent;
             googleCalendarService.addEvent(userToken, cs);
 
@@ -79,7 +81,7 @@ public class IscrizioneService {
 
       
     public IscrizioneDTO getById(Long id) throws IscrizioneException {
-        Iscrizione iscrizione = iscrizioneDAO.findById(id).orElse(null);
+        Iscrizione iscrizione = iscrizioneDAO.findById(id).orElseThrow(() -> new IscrizioneException("Subscription not found!", 400));
         if (iscrizione != null) {
             return iscrizioneMapper.entityToDTO(iscrizione);
         } else {
@@ -88,7 +90,7 @@ public class IscrizioneService {
     }
 
     public List<IscrizioneDTO> getAll() {
-        List<Iscrizione> iscrizioneList = iscrizioneDAO.findAll();
+        List<Iscrizione> iscrizioneList = iscrizioneDAO.findActiveIscrizione();
         List<IscrizioneDTO> iscrizioneDTOList = new ArrayList<>();
         for (Iscrizione iscrizione : iscrizioneList) {
             iscrizioneDTOList.add(iscrizioneMapper.entityToDTO(iscrizione));
@@ -97,7 +99,7 @@ public class IscrizioneService {
     }
 
     public IscrizioneDTO payedSwitch(Long id) throws IscrizioneException {
-        Iscrizione iscrizione = iscrizioneDAO.findById(id).orElse(null);
+        Iscrizione iscrizione = iscrizioneDAO.findById(id).orElseThrow(() -> new IscrizioneException("Subscription not found!", 404));
         if (iscrizione != null) {
             iscrizione.setPayed(!iscrizione.getPayed());
             Iscrizione saved = iscrizioneDAO.saveAndFlush(iscrizione);
@@ -108,18 +110,20 @@ public class IscrizioneService {
     }
 
     public void deleteSubscription(Long id) throws IscrizioneException {
-        if (iscrizioneDAO.existsById(id)) {
-            iscrizioneDAO.deleteById(id);
+        Iscrizione iscrizione = iscrizioneDAO.findById(id).orElseThrow(() -> new IscrizioneException("Subscription not found!", 404));
+        if(!iscrizione.getIsDeleted()) {
+            iscrizione.setIsDeleted(true);
+            iscrizioneDAO.saveAndFlush(iscrizione);
         } else {
             throw new IscrizioneException("Subscription not found", 404);
         }
     }
 
     public List<IscrizioneDTO> getAllByTutor(Long id) throws IscrizioneException {
-        List<Iscrizione> iscrizioneList = iscrizioneDAO.findAll();
+        List<Iscrizione> iscrizioneList = iscrizioneDAO.findActiveIscrizione();
         List<IscrizioneDTO> iscrizioneDTOList = new ArrayList<>();
         for (Iscrizione iscrizione : iscrizioneList) {
-            if (iscrizione.getCourse().getTutor().getId() == id) {
+            if (Objects.equals(iscrizione.getCourse().getTutor().getId(), id)) {
                 iscrizioneDTOList.add(iscrizioneMapper.entityToDTO(iscrizione));
             }
         }
@@ -131,10 +135,10 @@ public class IscrizioneService {
     }
 
     public List<UserDTO> getUserByCourse(Long id) throws IscrizioneException {
-        List<Iscrizione> iscrizioneList = iscrizioneDAO.findAll();
+        List<Iscrizione> iscrizioneList = iscrizioneDAO.findActiveIscrizione();
         List<UserDTO> userDTOList = new ArrayList<>();
         for (Iscrizione iscrizione : iscrizioneList) {
-            if (iscrizione.getCourse().getId() == id) {
+            if (Objects.equals(iscrizione.getCourse().getId(), id)) {
                 userDTOList.add(userMapper.entityToDto(iscrizione.getUser()));
             }
         }

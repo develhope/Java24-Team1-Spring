@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,12 +24,14 @@ public class loginController {
     private UserService userDetailsService;
     @Autowired
     private JWTUtil jwtUtil;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @PostMapping(value = "/login")
     public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) throws BadCredentialsException {
         try {
             User user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
-            if (user != null && Objects.equals(user.getPassword(), authenticationRequest.getPassword())) {
+            if (user != null && passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
                 final String jwt = jwtUtil.createToken(new UserDetailsImpl(user.getUsername(), user.getPassword(), user.getRole()));
                 return ResponseEntity.ok().body(new LoginResponse(jwt, 200, "Token created successfully!"));
             }

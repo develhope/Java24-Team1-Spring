@@ -17,7 +17,7 @@ public interface CourseDAO extends JpaRepository<Course, Long> {
     @Query("SELECT c FROM Course c WHERE c.activeCourse = True AND c.subject = :materia")
     List<Course> findActiveCourseBySubject(@Param("materia") String materia);
 
-
-
+    @Query("SELECT c FROM Course c WHERE c.activeCourse = true")
+    List<Course> findActiveCourse();
 
 }

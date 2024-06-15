@@ -10,6 +10,10 @@ import java.util.List;
 
 @Repository
 public interface ReviewDAO extends JpaRepository<Review, Long> {
+
     @Query("SELECT r FROM Review r WHERE r.course.id = :id")
     List<Review> findReviewCourse(@Param("id")Long id);
+
+    @Query("SELECT r FROM Review r WHERE r.isDeleted = false")
+    List<Review> findActiveReview();
 }

@@ -1,5 +1,6 @@
 package com.develhope.spring.controllers;
 
+import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.models.DTO.CourseScheduleDTO;
 import com.develhope.spring.models.Response;
@@ -29,7 +30,7 @@ public class CourseScheduleController {
                             "New Course Schedule added correctly",
                             newCourseSchedule
                     ));
-        } catch (CourseScheduleException e) {
+        } catch (CourseScheduleException | CourseException e) {
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -83,6 +84,8 @@ public class CourseScheduleController {
             return ResponseEntity.ok().body(new Response(200, "course schedule updated", courseScheduleDTO));
         } catch (CourseScheduleException e) {
             return ResponseEntity.status(400).body(new Response(400, "course schedule id not found"));
+        } catch (CourseException e) {
+            return ResponseEntity.status(400).body(new Response(400, "course id not found"));
         }
     }
 

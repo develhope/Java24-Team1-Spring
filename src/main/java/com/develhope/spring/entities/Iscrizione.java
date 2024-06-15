@@ -14,6 +14,8 @@ public class Iscrizione {
     private Course course;
     private String dataIscrizione;
     private Boolean payed;
+    @Column(nullable = false)
+    private Boolean isDeleted;
 
     public Iscrizione(Long id, User user, Course course, String dataIscrizione, Boolean payed) {
         this.id = id;
@@ -21,9 +23,11 @@ public class Iscrizione {
         this.course = course;
         this.dataIscrizione = dataIscrizione;
         this.payed= payed;
+        this.isDeleted = false;
     }
 
     public Iscrizione() {
+        this.isDeleted = false;
     }
 
     public Boolean getPayed() {
@@ -64,5 +68,13 @@ public class Iscrizione {
 
     public void setDataIscrizione(String dataIscrizione) {
         this.dataIscrizione = dataIscrizione;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }

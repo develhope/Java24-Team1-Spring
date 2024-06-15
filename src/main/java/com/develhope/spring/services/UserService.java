@@ -1,7 +1,9 @@
 package com.develhope.spring.services;
 
 import com.develhope.spring.DAO.UserDAO;
+import com.develhope.spring.entities.Review;
 import com.develhope.spring.entities.User;
+import com.develhope.spring.exceptions.ReviewException;
 import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.UserMapper;
 import com.develhope.spring.models.DTO.UserDTO;
@@ -37,7 +39,7 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUsers() {
-        List <User> users = userDAO.findAll();
+        List <User> users = userDAO.findActiveUser();
         List<UserDTO> usersDTOList = new ArrayList<>();
         for(User user : users){
             UserDTO userDTO = userMapper.entityToDto(user);
@@ -47,17 +49,17 @@ public class UserService {
     }
 
     public UserDTO getUserById(Long id) throws UserException {
-        User user = userDAO.findById(id).orElse(null);
+        User user = userDAO.findById(id).orElseThrow(() -> new UserException("User not found!", 400));
         if (user != null) {
             return userMapper.entityToDto(user);
         } else {
-            throw new UserException("User not found!", 404);
+            throw new UserException("User not found!", 400);
         }
     }
 
 
     public UserDTO updateUserById(Long id, UserDTO userDTO) throws UserException {
-        User optionalUser = userDAO.findById(id).orElse(null);
+        User optionalUser = userDAO.findById(id).orElseThrow(() -> new UserException("User not found!", 400));
         if (optionalUser != null) {
             optionalUser.setName(userDTO.getName());
             optionalUser.setSurname(userDTO.getSurname());
@@ -70,21 +72,20 @@ public class UserService {
             User userEdited = userDAO.saveAndFlush(optionalUser);
             return userMapper.entityToDto(userEdited);
         } else {
-            throw new UserException("User not found!", 404);
+            throw new UserException("User not found!", 400);
         }
     }
 
     public void deleteUserById(Long id) throws UserException {
-        if(userDAO.existsById(id)) {
-            userDAO.deleteById(id);
+        User user = userDAO.findById(id).orElseThrow(() -> new UserException("Review not found!", 400));
+        if(!user.getIsDeleted()) {
+            user.setIsDeleted(true);
+            userDAO.saveAndFlush(user);
         }else{
-            throw  new UserException("user id not found", 404);
+            throw  new UserException("user id not found", 400);
         }
     }
 
-    public void deleteAllUsers() {
-        userDAO.deleteAll();
-    }
 
     public User getUserByUsername(String username){
         Optional<User> user = userDAO.findByUsername(username);

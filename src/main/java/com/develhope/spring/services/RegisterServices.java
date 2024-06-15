@@ -9,6 +9,7 @@ import com.develhope.spring.models.RegistrationDTO;
 import com.develhope.spring.validators.RegistrationValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service

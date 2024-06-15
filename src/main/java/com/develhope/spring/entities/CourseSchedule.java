@@ -20,6 +20,8 @@ public class CourseSchedule {
     private DateTime finishDateTime;
     @Column(nullable = false)
     private String link;
+    @Column(nullable = false)
+    private Boolean isDeleted;
 
     public CourseSchedule(Long id, Course course, DateTime startDateTime, DateTime finishDateTime, String link) {
         this.id = id;
@@ -27,9 +29,11 @@ public class CourseSchedule {
         this.startDateTime = startDateTime;
         this.finishDateTime = finishDateTime;
         this.link = link;
+        this.isDeleted = false;
     }
 
     public CourseSchedule() {
+        this.isDeleted = false;
     }
 
     public Long getId() {
@@ -71,5 +75,13 @@ public class CourseSchedule {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }

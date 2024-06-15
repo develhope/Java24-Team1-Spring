@@ -1,6 +1,8 @@
 package com.develhope.spring.controllers;
 
+import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.exceptions.GradeException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.GradeDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.GradeService;
@@ -26,7 +28,7 @@ public class GradeController {
                             " added correctly",
                             newGrade)
             );
-        }catch (GradeException e){
+        }catch (GradeException | CourseException | UserException e){
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -80,6 +82,10 @@ public class GradeController {
             return ResponseEntity.ok().body(new Response(200, "grade updated",gradeDTO));
         }catch(GradeException e){
             return ResponseEntity.status(400).body(new Response(400, "grade id not found"));
+        } catch (CourseException e) {
+            return ResponseEntity.status(400).body(new Response(400, "course id not found"));
+        } catch (UserException e) {
+            return ResponseEntity.status(400).body(new Response(400, "user id not found"));
         }
     }
 

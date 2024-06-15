@@ -1,7 +1,9 @@
 package com.develhope.spring.controllers;
 
 
+import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.exceptions.ReviewException;
+import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.ReviewDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.ReviewService;
@@ -28,7 +30,7 @@ public class ReviewController {
                             "student: " + newReview.getStudent_id() + " added a review to course: " + newReview.getCourse_id(),
                             newReview)
             );
-        } catch (ReviewException e) {
+        } catch (ReviewException | CourseException | UserException e) {
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -83,6 +85,10 @@ public class ReviewController {
             return ResponseEntity.ok().body(new Response(200, "review updated", reviewDTO));
         } catch (ReviewException e) {
             return ResponseEntity.status(400).body(new Response(400, "review id not found"));
+        } catch (CourseException e) {
+            return ResponseEntity.status(400).body(new Response(400, "course id not found"));
+        } catch (UserException e) {
+            return ResponseEntity.status(400).body(new Response(400, "user id not found"));
         }
     }
 
