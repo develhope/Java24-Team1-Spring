@@ -17,19 +17,18 @@ public class SeedingService {
     private GradeDAO gradeDAO;
     private ReviewDAO reviewDAO;
     private UserDAO userDAO;
+    private IscrizioneDAO iscrizioneDAO;
+    private UserTokenDAO userTokenDAO;
 
     @Autowired
-    public SeedingService(CourseDAO courseDAO,
-                          CourseScheduleDAO courseScheduleDAO,
-                          GradeDAO gradeDAO,
-                          ReviewDAO reviewDAO,
-                          UserDAO userDAO,
-                          SeedingProvider seedingProvider) {
+    public SeedingService(CourseDAO courseDAO, CourseScheduleDAO courseScheduleDAO, GradeDAO gradeDAO, ReviewDAO reviewDAO, UserDAO userDAO, IscrizioneDAO iscrizioneDAO, UserTokenDAO userTokenDAO) {
         this.courseDAO = courseDAO;
         this.courseScheduleDAO = courseScheduleDAO;
         this.gradeDAO = gradeDAO;
         this.reviewDAO = reviewDAO;
         this.userDAO = userDAO;
+        this.iscrizioneDAO = iscrizioneDAO;
+        this.userTokenDAO = userTokenDAO;
     }
 
 
@@ -42,11 +41,13 @@ public class SeedingService {
     }
 
     public void cleanDatabase() {
-        this.courseDAO.deleteAll();
-        this.courseScheduleDAO.deleteAll();
-        this.gradeDAO.deleteAll();
-        this.reviewDAO.deleteAll();
-        this.userDAO.deleteAll();
+        this.cleanSubscriprions();
+        this.cleanUserToken();
+        this.cleanReviews();
+        this.cleanGrades();
+        this.cleanCourseSchedules();
+        this.cleanCourses();
+        this.cleanUsers();
     }
 
     private void seedCourses() {
@@ -89,6 +90,14 @@ public class SeedingService {
 
     public void cleanReviews() {
         this.reviewDAO.deleteAll();
+    }
+
+    public void cleanSubscriprions() {
+        this.iscrizioneDAO.deleteAll();
+    }
+
+    public void cleanUserToken() {
+        this.userTokenDAO.deleteAll();
     }
 }
 
