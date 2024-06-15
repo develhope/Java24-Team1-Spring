@@ -49,17 +49,17 @@ public class UserService {
     }
 
     public UserDTO getUserById(Long id) throws UserException {
-        User user = userDAO.findById(id).orElseThrow(() -> new UserException("User not found!", 400));
+        User user = userDAO.findById(id).orElseThrow(() -> new UserException("This user does not exist!", 400));
         if (user != null) {
             return userMapper.entityToDto(user);
         } else {
-            throw new UserException("User not found!", 400);
+            throw new UserException("This user does not exist!", 400);
         }
     }
 
 
     public UserDTO updateUserById(Long id, UserDTO userDTO) throws UserException {
-        User optionalUser = userDAO.findById(id).orElseThrow(() -> new UserException("User not found!", 400));
+        User optionalUser = userDAO.findById(id).orElseThrow(() -> new UserException("This user does not exist!", 400));
         if (optionalUser != null) {
             optionalUser.setName(userDTO.getName());
             optionalUser.setSurname(userDTO.getSurname());
@@ -72,17 +72,17 @@ public class UserService {
             User userEdited = userDAO.saveAndFlush(optionalUser);
             return userMapper.entityToDto(userEdited);
         } else {
-            throw new UserException("User not found!", 400);
+            throw new UserException("This user does not exist!", 400);
         }
     }
 
     public void deleteUserById(Long id) throws UserException {
-        User user = userDAO.findById(id).orElseThrow(() -> new UserException("Review not found!", 400));
+        User user = userDAO.findById(id).orElseThrow(() -> new UserException("This review does not exist!", 400));
         if(!user.getIsDeleted()) {
             user.setIsDeleted(true);
             userDAO.saveAndFlush(user);
         }else{
-            throw  new UserException("user id not found", 400);
+            throw  new UserException("This user does not exist!", 400);
         }
     }
 
