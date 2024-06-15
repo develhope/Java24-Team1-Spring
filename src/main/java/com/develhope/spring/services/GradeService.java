@@ -53,49 +53,44 @@ public class GradeService {
     }
 
     public GradeDTO getGradeById(Long id) throws GradeException {
-        Grade grade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("Grade not found!", 404));
+        Grade grade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("This grade does not exist!", 400));
         return gradeMapper.entityToDto(grade);
     }
 
     public GradeDTO updateGradeById(Long id, GradeDTO gradeDTO) throws GradeException, UserException, CourseException {
-        Grade optionalGrade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("Grade not found!", 404));
+        Grade optionalGrade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("This grade does not exist!", 400));
         if (optionalGrade != null) {
-            optionalGrade.setStudent(userDAO.findById(gradeDTO.getStudent_id()).orElseThrow(() -> new UserException("Student not found!", 404)));
-            optionalGrade.setCourse(courseDAO.findById(gradeDTO.getCourse_id()).orElseThrow(() -> new CourseException("Course not found!", 404)));
+            optionalGrade.setStudent(userDAO.findById(gradeDTO.getStudent_id()).orElseThrow(() -> new UserException("This user does not exist!", 400)));
+            optionalGrade.setCourse(courseDAO.findById(gradeDTO.getCourse_id()).orElseThrow(() -> new CourseException("This course does not exist!", 400)));
             optionalGrade.setGrade(gradeDTO.getGrade());
             optionalGrade.setFinishedCourse(gradeDTO.getFinishedCourse());
             Grade gradeEdited = gradeDAO.saveAndFlush(optionalGrade);
             return gradeMapper.entityToDto(gradeEdited);
         } else {
-            throw new GradeException("Grade not found!", 404);
+            throw new GradeException("This grade does not exist!", 400);
         }
     }
 
     public void deleteGradeById(Long id) throws GradeException {
-        Grade grade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("Course Schedule not found!", 404));
+        Grade grade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("This Course Schedule does not exist!", 400));
         if(!grade.getIsDeleted()) {
             grade.setIsDeleted(true);
             gradeDAO.saveAndFlush(grade);
         } else {
-            throw new GradeException("Grade not found!", 404);
+            throw new GradeException("This grade does not exist!", 400);
         }
     }
 
 
     public List<GradeDTO> getGradeByTutor(Long id) throws GradeException {
-        List<Grade> gradeList = gradeDAO.findActiveGrade();
+        List<Grade> gradeList = gradeDAO.findAllTutorGrades(id);
         List<GradeDTO> gradeDTOList = new ArrayList<>();
         for(Grade grade: gradeList){
-            if(Objects.equals(grade.getCourse().getTutor().getId(), id)){
               gradeDTOList.add(gradeMapper.entityToDto(grade));
-            }
         }
-        if(!gradeDTOList.isEmpty()){
-            return gradeDTOList;
-        }else{
-            throw new GradeException("no grades found", 404);
-        }
+        return gradeDTOList;
     }
+
     public List<GradeDTO> getAllStudentsGrades(Long id){
         List<Grade> gradeList = gradeDAO.findAllStudentGrades(id);
         List<GradeDTO> gradeDTOList = new ArrayList<>();

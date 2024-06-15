@@ -11,8 +11,14 @@ import java.util.List;
 @Repository
 public interface IscrizioneDAO extends JpaRepository<Iscrizione, Long> {
 
-    @Query("SELECT i FROM Iscrizione i WHERE i.user.id = :id")
+    @Query("SELECT i FROM Iscrizione i WHERE i.user.id = :id AND i.isDeleted = false")
     List<Iscrizione> findCourseByUser(@Param("id") Long id);
+
+    @Query("SELECT i FROM Iscrizione i WHERE i.course.tutor.id = :id AND i.isDeleted = false")
+    List<Iscrizione> findCourseByTutor(@Param("id") Long id);
+
+    @Query("SELECT i FROM Iscrizione i WHERE i.course.id = :id AND i.isDeleted = false")
+    List<Iscrizione> findCourseByCourse(@Param("id") Long id);
 
     @Query("SELECT i FROM Iscrizione i WHERE i.isDeleted = false")
     List<Iscrizione> findActiveIscrizione();

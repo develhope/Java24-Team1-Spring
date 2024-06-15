@@ -91,19 +91,14 @@ public class ReviewService {
 
 
     public List<ReviewDTO> getReviewByTutor(Long id) throws ReviewException {
-        List<Review> reviewList = reviewDAO.findActiveReview();
+        List<Review> reviewList = reviewDAO.findReviewTutor(id);
         List<ReviewDTO> reviewDTOList = new ArrayList<>();
         for (Review review : reviewList) {
-            if (Objects.equals(review.getCourse().getTutor().getId(), id)) {
-                reviewDTOList.add(reviewMapper.entityToDto(review));
-            }
+            reviewDTOList.add(reviewMapper.entityToDto(review));
         }
-        if(!reviewDTOList.isEmpty()) {
-            return reviewDTOList;
-        }else{
-            throw new ReviewException("no reviews found", 404);
-        }
+        return reviewDTOList;
     }
+
     public List<ReviewDTO> getReviewCourse(Long id){
         List<Review> reviewList = reviewDAO.findReviewCourse(id);
         List<ReviewDTO> reviewDTOList = new ArrayList<>();

@@ -95,7 +95,7 @@ public class CourseScheduleController {
             courseScheduleService.deleteCourseScheduleById(id);
             return ResponseEntity.ok().body(new Response(200, "course schedule deleted"));
         } catch (CourseScheduleException e) {
-            return ResponseEntity.status(404).body(new Response(404, "course schedule id not found"));
+            return ResponseEntity.status(400).body(new Response(400, "course schedule id not found"));
         }
     }
 }

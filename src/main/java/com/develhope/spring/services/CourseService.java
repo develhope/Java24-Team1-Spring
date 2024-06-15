@@ -52,16 +52,16 @@ public class CourseService {
     }
 
     public CourseDTO getCourseById(Long id) throws CourseException {
-        Course course = courseDAO.findById(id).orElseThrow(() -> new CourseException("Course not found!", 404));
+        Course course = courseDAO.findById(id).orElseThrow(() -> new CourseException("This course doesn't exist!", 400));
         if (course != null) {
             return courseMapper.entityToDto(course);
         } else {
-            throw new CourseException("Course not found!", 404);
+            throw new CourseException("This course doesn't exist!", 400);
         }
     }
 
     public CourseDTO updateCourseById(Long id, CourseDTO courseDTO) throws CourseException, UserException {
-        Course optionalCourse = courseDAO.findById(id).orElseThrow(() -> new CourseException("Course not found!", 404));
+        Course optionalCourse = courseDAO.findById(id).orElseThrow(() -> new CourseException("This course doesn't exist!", 400));
 
         if (optionalCourse != null) {
             optionalCourse.setName(courseDTO.getName());
@@ -71,39 +71,33 @@ public class CourseService {
             optionalCourse.setPrice(courseDTO.getPrice());
             optionalCourse.setSubject(courseDTO.getSubject());
             optionalCourse.setDescription(courseDTO.getDescription());
-            optionalCourse.setTutor(userDAO.findById(courseDTO.getTutor_id()).orElseThrow(() -> new UserException("Course not found!", 404)));
+            optionalCourse.setTutor(userDAO.findById(courseDTO.getTutor_id()).orElseThrow(() -> new UserException("This user doesn't exist!", 400)));
             optionalCourse.setCourseType(courseDTO.getCourseType());
             Course courseEdited = courseDAO.saveAndFlush(optionalCourse);
             return courseMapper.entityToDto(courseEdited);
         } else {
-            throw new CourseException("Course not found!", 404);
+            throw new CourseException("This course doesn't exist!", 400);
         }
     }
 
     public void deleteCourseById(Long id) throws CourseException {
-        Course course = courseDAO.findById(id).orElseThrow(() -> new CourseException("Course not found!", 404));
+        Course course = courseDAO.findById(id).orElseThrow(() -> new CourseException("This course doesn't exist!", 400));
         if(course.getActiveCourse()) {
             course.setActiveCourse(false);
             courseDAO.saveAndFlush(course);
         } else {
-            throw new CourseException("course id not found", 404);
+            throw new CourseException("This course doesn't exist!", 400);
         }
     }
 
 
     public List<CourseDTO> getActiveCoursesByTutor(Long id) throws CourseException {
-        List<Course> courseList = courseDAO.findActiveCourse();
+        List<Course> courseList = courseDAO.findActiveCourseByTutor(id);
         List<CourseDTO> courseDTOList = new ArrayList<>();
         for (Course course : courseList) {
-            if (Objects.equals(course.getTutor().getId(), id) && course.getActiveCourse()) {
-                courseDTOList.add(courseMapper.entityToDto(course));
-            }
+            courseDTOList.add(courseMapper.entityToDto(course));
         }
-        if(!courseDTOList.isEmpty()) {
-            return courseDTOList;
-        }else{
-            throw new CourseException("no courses found", 404);
-        }
+        return courseDTOList;
     }
 
     public List<CourseDTO> getActiveCourseBySubject(String s) {
@@ -113,6 +107,5 @@ public class CourseService {
             courseDTOList.add(courseMapper.entityToDto(c));
         }
         return courseDTOList;
-
     }
 }
