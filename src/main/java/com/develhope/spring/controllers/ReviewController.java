@@ -7,6 +7,8 @@ import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.ReviewDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.ReviewService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +22,13 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
+    Logger logger = LoggerFactory.getLogger(ReviewController.class);
+
     @PostMapping
     public ResponseEntity<Response> postReview(@RequestBody ReviewDTO review) {
         try {
             ReviewDTO newReview = reviewService.addReview(review);
+            logger.info("Recensione inserita"+ newReview);
             return ResponseEntity.ok().body(
                     new Response(
                             200,
@@ -31,6 +36,7 @@ public class ReviewController {
                             newReview)
             );
         } catch (ReviewException | CourseException | UserException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -50,6 +56,7 @@ public class ReviewController {
                             reviews)
             );
         } catch (Exception e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -69,6 +76,7 @@ public class ReviewController {
                             r)
             );
         } catch (ReviewException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -84,10 +92,13 @@ public class ReviewController {
             reviewService.updateReviewById(id, reviewDTO);
             return ResponseEntity.ok().body(new Response(200, "review updated", reviewDTO));
         } catch (ReviewException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "review id not found"));
         } catch (CourseException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "course id not found"));
         } catch (UserException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "user id not found"));
         }
     }
@@ -98,6 +109,7 @@ public class ReviewController {
             reviewService.deleteReviewById(id);
             return ResponseEntity.ok().body(new Response(200, "review deleted"));
         } catch (ReviewException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "review id not found"));
         }
     }
@@ -112,6 +124,7 @@ public class ReviewController {
                             reviews)
             );
         } catch (ReviewException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,

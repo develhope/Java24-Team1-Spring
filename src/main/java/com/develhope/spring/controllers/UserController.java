@@ -5,6 +5,8 @@ import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
 import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +20,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    Logger logger = LoggerFactory.getLogger(UserController.class);
     @PostMapping
     public ResponseEntity<Response> postUser(@RequestBody UserRequestDTO user) {
         try {
             UserResponseDTO newUser = userService.addUser(user);
+            logger.info("User inserito"+newUser);
             return ResponseEntity.ok().body(
                     new Response(
                             200,
@@ -29,6 +33,7 @@ public class UserController {
                             newUser)
             );
         } catch (UserException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -48,6 +53,7 @@ public class UserController {
                             users)
             );
         } catch (Exception e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -63,6 +69,7 @@ public class UserController {
             UserResponseDTO user = userService.getUserById(id);
             return ResponseEntity.ok().body(new Response(200, "user found", user));
         } catch (UserException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "user not found"));
         }
     }
@@ -73,6 +80,7 @@ public class UserController {
                userService.deleteUserById(id);
                 return ResponseEntity.ok().body(new Response(200, "user deleted"));
             }catch (UserException e){
+               logger.error("errore " + e.getMessage());
                 return  ResponseEntity.status(400).body(new Response(400, "user id not found"));
             }
     }
@@ -83,6 +91,7 @@ public class UserController {
            userService.updateUserById(id, userDTO);
            return ResponseEntity.ok().body(new Response(200, "user updated",userDTO));
         } catch(UserException e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "user id not found"));
         }
     }

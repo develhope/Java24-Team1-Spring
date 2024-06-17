@@ -6,10 +6,13 @@ import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.CourseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -19,16 +22,20 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
+    Logger logger = LoggerFactory.getLogger(CourseController.class);
+
     @PostMapping
     public ResponseEntity<Response> addCourse(@RequestBody CourseDTO course) {
         try {
             CourseDTO newCourse = courseService.addCourse(course);
+            logger.info("corso creato" + newCourse);
             return ResponseEntity.ok().body(
                     new Response(200,
                             " added correctly",
                             newCourse)
             );
         } catch (CourseException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -49,6 +56,7 @@ public class CourseController {
                             courses)
             );
         } catch (Exception e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -68,6 +76,7 @@ public class CourseController {
                             c)
             );
         } catch (CourseException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -82,6 +91,7 @@ public class CourseController {
             courseService.deleteCourseById(id);
             return ResponseEntity.ok().body(new Response(200, "course deleted"));
         }catch (CourseException e){
+            logger.error("errore " + e.getMessage());
             return  ResponseEntity.status(404).body(new Response(404, "course id not found"));
         }
     }
@@ -92,8 +102,10 @@ public class CourseController {
             courseService.updateCourseById(id, courseDTO);
             return ResponseEntity.ok().body(new Response(200, "course updated",courseDTO));
         }catch(CourseException e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "course id not found"));
         } catch (UserException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "user id not found"));
         }
     }
@@ -107,6 +119,7 @@ public class CourseController {
                             courses)
             );
         } catch (CourseException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -126,6 +139,7 @@ public class CourseController {
                             courses)
             );
         } catch (Exception e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,

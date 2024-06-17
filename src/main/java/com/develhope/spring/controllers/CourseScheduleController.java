@@ -6,6 +6,8 @@ import com.develhope.spring.models.DTO.requestDTO.CourseScheduleRequestDTO;
 import com.develhope.spring.models.DTO.responseDTO.CourseScheduleResponseDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.CourseScheduleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +23,13 @@ public class CourseScheduleController {
     @Autowired
     private CourseScheduleService courseScheduleService;
 
+    Logger logger = LoggerFactory.getLogger(CourseScheduleController.class);
+
     @PostMapping
     public ResponseEntity<Response> postCourseSchedule(@RequestBody CourseScheduleRequestDTO courseSchedule) {
         try {
             CourseScheduleResponseDTO newCourseSchedule = courseScheduleService.addCourseSchedule(courseSchedule);
+            logger.info("evento corso creato" + newCourseSchedule);
             return ResponseEntity.ok().body(
                     new Response(
                             200,
@@ -32,6 +37,7 @@ public class CourseScheduleController {
                             newCourseSchedule
                     ));
         } catch (CourseScheduleException | CourseException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -50,6 +56,7 @@ public class CourseScheduleController {
                             courses)
             );
         } catch (Exception e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -69,6 +76,7 @@ public class CourseScheduleController {
                             cs)
             );
         } catch (CourseScheduleException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -84,8 +92,10 @@ public class CourseScheduleController {
             courseScheduleService.updateCourseScheduleById(id, courseScheduleDTO);
             return ResponseEntity.ok().body(new Response(200, "course schedule updated", courseScheduleDTO));
         } catch (CourseScheduleException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "course schedule id not found"));
         } catch (CourseException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "course id not found"));
         }
     }
@@ -96,6 +106,7 @@ public class CourseScheduleController {
             courseScheduleService.deleteCourseScheduleById(id);
             return ResponseEntity.ok().body(new Response(200, "course schedule deleted"));
         } catch (CourseScheduleException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "course schedule id not found"));
         }
     }

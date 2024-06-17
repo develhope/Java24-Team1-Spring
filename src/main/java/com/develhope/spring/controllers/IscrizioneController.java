@@ -6,6 +6,8 @@ import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
 import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.IscrizioneService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,19 +19,23 @@ import java.util.List;
 public class IscrizioneController {
     @Autowired
     private IscrizioneService iscrizioneService;
+
+    Logger logger = LoggerFactory.getLogger(IscrizioneController.class);
     @PostMapping
     public ResponseEntity<Response> subscribe(@RequestParam Long userId, @RequestParam Long courseId){
         try {
             IscrizioneDTO iscrizione = iscrizioneService.subscribeToCourse(userId,courseId);
+            logger.info("Iscrizione creata" + iscrizione);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "User " + iscrizione.getUser().getName() + " subscribed to course " + iscrizione.getCourse().getName(),
                             iscrizione)
             );
         }catch (IscrizioneException e){
-            return ResponseEntity.status(404).body(
+            logger.error("errore " + e.getMessage());
+            return ResponseEntity.status(400).body(
                     new Response(
-                            404,
+                            400,
                             e.getMessage()
                     )
             );
@@ -48,6 +54,7 @@ public class IscrizioneController {
                             iscrizione)
             );
         }catch (IscrizioneException e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -66,6 +73,7 @@ public class IscrizioneController {
                             "subscription found: ",
                             iscrizioneDTOList));
         }catch (Exception e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -85,6 +93,7 @@ public class IscrizioneController {
                             iscrizione)
             );
         }catch (IscrizioneException e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -101,6 +110,7 @@ public class IscrizioneController {
                     new Response(200,
                             "Subscription deleted"));
         }catch (IscrizioneException e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -118,6 +128,7 @@ public class IscrizioneController {
                             "subscription found: ",
                             iscrizioneDTOList));
         }catch (IscrizioneException e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -136,6 +147,7 @@ public class IscrizioneController {
                             "subscription found: ",
                             userDTOList));
         }catch (IscrizioneException e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,

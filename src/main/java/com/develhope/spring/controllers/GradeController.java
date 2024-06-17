@@ -6,6 +6,8 @@ import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.GradeDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.GradeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +21,20 @@ public class GradeController {
     @Autowired
     private GradeService gradeService;
 
+    Logger logger = LoggerFactory.getLogger(GradeController.class);
+
     @PostMapping
     public ResponseEntity<Response> addGrade(@RequestBody GradeDTO grade){
         try {
             GradeDTO newGrade = gradeService.addGrade(grade);
+            logger.info("Voto inserito" + newGrade);
             return ResponseEntity.ok().body(
                     new Response(200,
                             " added correctly",
                             newGrade)
             );
         }catch (GradeException | CourseException | UserException e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -47,6 +53,7 @@ public class GradeController {
                             grades)
             );
         } catch (Exception e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -66,6 +73,7 @@ public class GradeController {
                             g)
             );
         }catch (GradeException e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
@@ -81,10 +89,13 @@ public class GradeController {
             gradeService.updateGradeById(id, gradeDTO);
             return ResponseEntity.ok().body(new Response(200, "grade updated",gradeDTO));
         }catch(GradeException e){
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "grade id not found"));
         } catch (CourseException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "course id not found"));
         } catch (UserException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new Response(400, "user id not found"));
         }
     }
@@ -95,6 +106,7 @@ public class GradeController {
             gradeService.deleteGradeById(id);
             return ResponseEntity.ok().body(new Response(200, "grade deleted"));
         }catch (GradeException e){
+            logger.error("errore " + e.getMessage());
             return  ResponseEntity.status(400).body(new Response(400, "grade id not found"));
         }
     }
@@ -109,6 +121,7 @@ public class GradeController {
                             grades)
             );
         } catch (GradeException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new Response(
                             400,
