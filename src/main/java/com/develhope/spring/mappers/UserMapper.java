@@ -1,7 +1,8 @@
 package com.develhope.spring.mappers;
 
 import com.develhope.spring.entities.User;
-import com.develhope.spring.models.DTO.UserDTO;
+import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
+import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,8 @@ public class UserMapper {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    public UserDTO entityToDto(User u){
-        return new UserDTO(
+    public UserResponseDTO entityToDto(User u){
+        return new UserResponseDTO(
                 u.getId(),
                 u.getName(),
                 u.getSurname(),
@@ -21,11 +22,10 @@ public class UserMapper {
                 u.getEmail(),
                 u.getCellNum(),
                 u.getFiscCode(),
-                u.getRole(),
-                u.getPassword()
+                u.getRole()
         );
     }
-    public User dtoToEntity(UserDTO u){
+    public User dtoToEntity(UserRequestDTO u){
         return new User(
                 u.getId(),
                 u.getName(),

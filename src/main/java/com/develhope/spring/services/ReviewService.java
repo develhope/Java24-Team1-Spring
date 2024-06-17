@@ -3,25 +3,18 @@ package com.develhope.spring.services;
 import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.ReviewDAO;
 import com.develhope.spring.DAO.UserDAO;
-import com.develhope.spring.entities.CourseSchedule;
 import com.develhope.spring.entities.Review;
-import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.CourseException;
-import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.exceptions.ReviewException;
 import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.ReviewMapper;
 import com.develhope.spring.models.DTO.ReviewDTO;
-import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.validators.ReviewValidator;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class ReviewService {

@@ -2,7 +2,8 @@ package com.develhope.spring.controllers;
 
 import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.exceptions.CourseScheduleException;
-import com.develhope.spring.models.DTO.CourseScheduleDTO;
+import com.develhope.spring.models.DTO.requestDTO.CourseScheduleRequestDTO;
+import com.develhope.spring.models.DTO.responseDTO.CourseScheduleResponseDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.CourseScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,9 @@ public class CourseScheduleController {
     private CourseScheduleService courseScheduleService;
 
     @PostMapping
-    public ResponseEntity<Response> postCourseSchedule(@RequestBody CourseScheduleDTO courseSchedule) {
+    public ResponseEntity<Response> postCourseSchedule(@RequestBody CourseScheduleRequestDTO courseSchedule) {
         try {
-            CourseScheduleDTO newCourseSchedule = courseScheduleService.addCourseSchedule(courseSchedule);
+            CourseScheduleResponseDTO newCourseSchedule = courseScheduleService.addCourseSchedule(courseSchedule);
             return ResponseEntity.ok().body(
                     new Response(
                             200,
@@ -42,7 +43,7 @@ public class CourseScheduleController {
     @GetMapping
     public ResponseEntity<Response> getCourseScheduleById() {
         try {
-            List<CourseScheduleDTO> courses = courseScheduleService.getAllCourseSchedule();
+            List<CourseScheduleResponseDTO> courses = courseScheduleService.getAllCourseSchedule();
             return ResponseEntity.ok().body(
                     new Response(200,
                             "List of courses schedules: ",
@@ -61,7 +62,7 @@ public class CourseScheduleController {
     @GetMapping("/{id}")
     public ResponseEntity<Response> getCourseScheduleById(@PathVariable Long id) {
         try {
-            CourseScheduleDTO cs = courseScheduleService.getCourseScheduleById(id);
+            CourseScheduleResponseDTO cs = courseScheduleService.getCourseScheduleById(id);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "Schedule found: ",
@@ -78,7 +79,7 @@ public class CourseScheduleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Response> updateCourseScheduleById(@PathVariable Long id, @RequestBody CourseScheduleDTO courseScheduleDTO) {
+    public ResponseEntity<Response> updateCourseScheduleById(@PathVariable Long id, @RequestBody CourseScheduleRequestDTO courseScheduleDTO) {
         try {
             courseScheduleService.updateCourseScheduleById(id, courseScheduleDTO);
             return ResponseEntity.ok().body(new Response(200, "course schedule updated", courseScheduleDTO));

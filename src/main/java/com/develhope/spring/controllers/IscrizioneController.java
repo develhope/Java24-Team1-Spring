@@ -2,7 +2,8 @@ package com.develhope.spring.controllers;
 
 import com.develhope.spring.exceptions.IscrizioneException;
 import com.develhope.spring.models.DTO.IscrizioneDTO;
-import com.develhope.spring.models.DTO.UserDTO;
+import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
+import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.IscrizioneService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,7 +130,7 @@ public class IscrizioneController {
     @GetMapping("/course/{id}")
     public ResponseEntity<Response> findUserByCourse(@PathVariable Long id){
         try{
-            List<UserDTO> userDTOList = iscrizioneService.getUserByCourse(id);
+            List<UserResponseDTO> userDTOList = iscrizioneService.getUserByCourse(id);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "subscription found: ",
