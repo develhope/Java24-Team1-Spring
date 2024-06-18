@@ -37,7 +37,7 @@ public class IscrizioneController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/a/{id}")
     public ResponseEntity<Response> getById(@PathVariable Long id){
         try {
             IscrizioneDTO iscrizione = iscrizioneService.getById(id);
@@ -56,7 +56,7 @@ public class IscrizioneController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/a")
     public ResponseEntity<Response> getAll(){
         try{
             List<IscrizioneDTO> iscrizioneDTOList = iscrizioneService.getAll();
@@ -74,7 +74,7 @@ public class IscrizioneController {
         }
     }
 
-    @PatchMapping("/pay/{id}")
+    @PatchMapping("/a/pay/{id}")
     public ResponseEntity<Response> paySwitch(@PathVariable Long id){
         try{
             IscrizioneDTO iscrizione = iscrizioneService.payedSwitch(id);
@@ -92,7 +92,7 @@ public class IscrizioneController {
             );
         }
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/a/{id}")
     public ResponseEntity<Response> deleteSub(@PathVariable Long id){
         try{
             iscrizioneService.deleteSubscription(id);
@@ -108,7 +108,7 @@ public class IscrizioneController {
             );
         }
     }
-    @GetMapping("/tutor/{id}") // da valutare
+    @GetMapping("/t/tutor/{id}") // da valutare
     public ResponseEntity<Response> findByTutor(@PathVariable Long id){
         try{
             List<IscrizioneDTO> iscrizioneDTOList = iscrizioneService.getAllByTutor(id);
@@ -126,7 +126,7 @@ public class IscrizioneController {
         }
     }
 
-    @GetMapping("/course/{id}")
+    @GetMapping("/t/course/{id}")
     public ResponseEntity<Response> findUserByCourse(@PathVariable Long id){
         try{
             List<UserDTO> userDTOList = iscrizioneService.getUserByCourse(id);

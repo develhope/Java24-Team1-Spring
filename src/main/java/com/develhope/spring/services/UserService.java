@@ -27,7 +27,6 @@ public class UserService {
     private UserValidator validator;
 
     public UserDTO addUser(UserDTO user) throws UserException {
-        System.out.println(validator.isUserValid(user));
         if (validator.isUserValid(user)) {
             System.out.println(validator.isUserValid(user));
             User entity = userMapper.dtoToEntity(user);
