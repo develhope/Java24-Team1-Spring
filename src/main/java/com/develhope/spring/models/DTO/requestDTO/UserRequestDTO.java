@@ -1,8 +1,8 @@
-package com.develhope.spring.models.DTO;
+package com.develhope.spring.models.DTO.requestDTO;
 
 import com.develhope.spring.enums.RoleEnum;
 
-public class UserDTO {
+public class UserRequestDTO {
     private Long id;
     private String name;
     private String surname;
@@ -13,7 +13,7 @@ public class UserDTO {
     private RoleEnum role;
     private String password;
 
-    public UserDTO(Long id, String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
+    public UserRequestDTO(Long id, String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -25,7 +25,7 @@ public class UserDTO {
         this.password = password;
     }
 
-    public UserDTO(String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
+    public UserRequestDTO(String name, String surname, String username, String email, String cellNum, String fiscCode, RoleEnum role, String password) {
         this.name = name;
         this.surname = surname;
         this.username = username;
@@ -36,7 +36,7 @@ public class UserDTO {
         this.password = password;
     }
 
-    public UserDTO() {
+    public UserRequestDTO() {
     }
 
     public Long getId() {

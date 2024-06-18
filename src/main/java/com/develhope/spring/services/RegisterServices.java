@@ -4,12 +4,11 @@ import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.RegisterException;
 import com.develhope.spring.mappers.UserMapper;
-import com.develhope.spring.models.DTO.UserDTO;
+import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
+import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.models.RegistrationDTO;
 import com.develhope.spring.validators.RegistrationValidator;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,9 +21,9 @@ public class RegisterServices {
     @Autowired
     private RegistrationValidator registrationValidator;
 
-    public UserDTO saveUser(RegistrationDTO registrationDTO) throws RegisterException {
+    public UserResponseDTO saveUser(RegistrationDTO registrationDTO) throws RegisterException {
         if (registrationValidator.isRegistratioValid(registrationDTO)) {
-            UserDTO user = mappingUserDTO(registrationDTO);
+            UserRequestDTO user = mappingUserDTO(registrationDTO);
             User user1 = userMapper.dtoToEntity(user);
             User userSaved = userDAO.saveAndFlush(user1);
             return userMapper.entityToDto(userSaved);
@@ -34,8 +33,8 @@ public class RegisterServices {
         }
     }
 
-    private UserDTO mappingUserDTO(RegistrationDTO registrationDTO) {
-        return new UserDTO(
+    private UserRequestDTO mappingUserDTO(RegistrationDTO registrationDTO) {
+        return new UserRequestDTO(
                 registrationDTO.getName(),
                 registrationDTO.getSurname(),
                 registrationDTO.getUsername(),

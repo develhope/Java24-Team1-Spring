@@ -6,7 +6,8 @@ import com.develhope.spring.entities.CourseSchedule;
 import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.mappers.CourseScheduleMapper;
-import com.develhope.spring.models.DTO.CourseScheduleDTO;
+import com.develhope.spring.models.DTO.requestDTO.CourseScheduleRequestDTO;
+import com.develhope.spring.models.DTO.responseDTO.CourseScheduleResponseDTO;
 import com.develhope.spring.validators.CourseScheduleValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,13 +31,13 @@ public class CourseScheduleService {
     private CourseScheduleValidator courseScheduleValidator;
 
 
-    public CourseScheduleDTO addCourseSchedule(CourseScheduleDTO courseSchedule) throws CourseScheduleException, CourseException {
+    public CourseScheduleResponseDTO addCourseSchedule(CourseScheduleRequestDTO courseSchedule) throws CourseScheduleException, CourseException {
         CourseSchedule entity = courseScheduleMapper.dtoToEntity(courseSchedule);
         CourseSchedule saved = courseScheduleDAO.saveAndFlush(entity);
         return courseScheduleMapper.entityToDto(saved);
     }
 
-    public CourseScheduleDTO getCourseScheduleById(Long id) throws CourseScheduleException {
+    public CourseScheduleResponseDTO getCourseScheduleById(Long id) throws CourseScheduleException {
         CourseSchedule courseSchedule = courseScheduleDAO.findById(id).orElseThrow(() -> new CourseScheduleException("This Course Schedule doesn't exist!", 400));
         if(courseSchedule != null) {
             return courseScheduleMapper.entityToDto(courseSchedule);
@@ -45,11 +46,11 @@ public class CourseScheduleService {
         }
     }
 
-    public List<CourseScheduleDTO> getAllCourseSchedule() {
+    public List<CourseScheduleResponseDTO> getAllCourseSchedule() {
         List<CourseSchedule> courseScheduleList = courseScheduleDAO.findActiveCourseSchedule();
-        List<CourseScheduleDTO> courseScheduleDTOList = new ArrayList<>();
+        List<CourseScheduleResponseDTO> courseScheduleDTOList = new ArrayList<>();
         for(CourseSchedule courseSchedule: courseScheduleList){
-            CourseScheduleDTO courseScheduleDTO = courseScheduleMapper.entityToDto(courseSchedule);
+            CourseScheduleResponseDTO courseScheduleDTO = courseScheduleMapper.entityToDto(courseSchedule);
             courseScheduleDTOList.add(courseScheduleDTO);
         }
         return courseScheduleDTOList;
@@ -60,7 +61,7 @@ public class CourseScheduleService {
         return courseScheduleDAO.findActiveCourseScheduleByCourse(id);
     }
 
-    public CourseScheduleDTO updateCourseScheduleById(Long id, CourseScheduleDTO courseScheduleDTO) throws CourseScheduleException, CourseException {
+    public CourseScheduleResponseDTO updateCourseScheduleById(Long id, CourseScheduleRequestDTO courseScheduleDTO) throws CourseScheduleException, CourseException {
         CourseSchedule optionalCourseSchedule = courseScheduleDAO.findById(id).orElseThrow(() -> new CourseScheduleException("This Course Schedule doesn't exist!", 400));
         if (optionalCourseSchedule != null) {
             optionalCourseSchedule.setStartDateTime(courseScheduleDTO.getStartDateTime());

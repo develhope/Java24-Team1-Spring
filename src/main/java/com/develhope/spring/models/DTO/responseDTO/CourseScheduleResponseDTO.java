@@ -1,20 +1,26 @@
-package com.develhope.spring.models.DTO;
+package com.develhope.spring.models.DTO.responseDTO;
 
-import com.develhope.spring.entities.Course;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.api.client.util.DateTime;
 
-import java.util.Date;
-
-public class CourseScheduleDTO {
+public class CourseScheduleResponseDTO {
 
     private Long id;
     private Long course_id;
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private DateTime startDateTime;
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private DateTime finishDateTime;
+    private String startDateTime;
+    private String finishDateTime;
     private String link;
+
+    public CourseScheduleResponseDTO(Long id, Long course_id, String startDateTime, String finishDateTime, String link) {
+        this.id = id;
+        this.course_id = course_id;
+        this.startDateTime = startDateTime;
+        this.finishDateTime = finishDateTime;
+        this.link = link;
+    }
+
+    public CourseScheduleResponseDTO() {
+    }
 
     public Long getId() {
         return id;
@@ -24,7 +30,6 @@ public class CourseScheduleDTO {
         this.id = id;
     }
 
-
     public Long getCourse_id() {
         return course_id;
     }
@@ -33,19 +38,19 @@ public class CourseScheduleDTO {
         this.course_id = course_id;
     }
 
-    public DateTime getStartDateTime() {
+    public String getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(DateTime startDateTime) {
+    public void setStartDateTime(String startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public DateTime getFinishDateTime() {
+    public String getFinishDateTime() {
         return finishDateTime;
     }
 
-    public void setFinishDateTime(DateTime finishDateTime) {
+    public void setFinishDateTime(String finishDateTime) {
         this.finishDateTime = finishDateTime;
     }
 

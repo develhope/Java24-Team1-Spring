@@ -1,14 +1,12 @@
 package com.develhope.spring.services;
 
 import com.develhope.spring.DAO.UserDAO;
-import com.develhope.spring.entities.Review;
 import com.develhope.spring.entities.User;
-import com.develhope.spring.exceptions.ReviewException;
 import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.UserMapper;
-import com.develhope.spring.models.DTO.UserDTO;
+import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
+import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.validators.UserValidator;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -26,7 +24,7 @@ public class UserService {
     @Autowired
     private UserValidator validator;
 
-    public UserDTO addUser(UserDTO user) throws UserException {
+    public UserResponseDTO addUser(UserRequestDTO user) throws UserException {
         if (validator.isUserValid(user)) {
             System.out.println(validator.isUserValid(user));
             User entity = userMapper.dtoToEntity(user);
@@ -37,17 +35,17 @@ public class UserService {
         }
     }
 
-    public List<UserDTO> getAllUsers() {
+    public List<UserResponseDTO> getAllUsers() {
         List <User> users = userDAO.findActiveUser();
-        List<UserDTO> usersDTOList = new ArrayList<>();
+        List<UserResponseDTO> usersDTOList = new ArrayList<>();
         for(User user : users){
-            UserDTO userDTO = userMapper.entityToDto(user);
+            UserResponseDTO userDTO = userMapper.entityToDto(user);
             usersDTOList.add(userDTO);
         }
         return usersDTOList;
     }
 
-    public UserDTO getUserById(Long id) throws UserException {
+    public UserResponseDTO getUserById(Long id) throws UserException {
         User user = userDAO.findById(id).orElseThrow(() -> new UserException("This user does not exist!", 400));
         if (user != null) {
             return userMapper.entityToDto(user);
@@ -57,7 +55,7 @@ public class UserService {
     }
 
 
-    public UserDTO updateUserById(Long id, UserDTO userDTO) throws UserException {
+    public UserResponseDTO updateUserById(Long id, UserRequestDTO userDTO) throws UserException {
         User optionalUser = userDAO.findById(id).orElseThrow(() -> new UserException("This user does not exist!", 400));
         if (optionalUser != null) {
             optionalUser.setName(userDTO.getName());

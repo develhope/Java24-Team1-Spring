@@ -1,7 +1,8 @@
 package com.develhope.spring.controllers;
 
 import com.develhope.spring.exceptions.RegisterException;
-import com.develhope.spring.models.DTO.UserDTO;
+import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
+import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.models.RegistrationDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.RegisterServices;
@@ -20,7 +21,7 @@ public class RegisterController {
     @PostMapping("/register")
     public ResponseEntity<Response> registerUser(@RequestBody RegistrationDTO registrationDTO) {
         try {
-            UserDTO userDTO = registerServices.saveUser(registrationDTO);
+            UserResponseDTO userDTO = registerServices.saveUser(registrationDTO);
             return ResponseEntity.ok().body(
                     new Response(
                             200,

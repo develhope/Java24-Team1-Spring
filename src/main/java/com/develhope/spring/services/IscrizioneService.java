@@ -10,7 +10,8 @@ import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.IscrizioneMapper;
 import com.develhope.spring.mappers.UserMapper;
 import com.develhope.spring.models.DTO.IscrizioneDTO;
-import com.develhope.spring.models.DTO.UserDTO;
+import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
+import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.validators.IscrizioneValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -124,9 +125,9 @@ public class IscrizioneService {
         return iscrizioneDTOList;
     }
 
-    public List<UserDTO> getUserByCourse(Long id) throws IscrizioneException {
+    public List<UserResponseDTO> getUserByCourse(Long id) throws IscrizioneException {
         List<Iscrizione> iscrizioneList = iscrizioneDAO.findCourseByCourse(id);
-        List<UserDTO> userDTOList = new ArrayList<>();
+        List<UserResponseDTO> userDTOList = new ArrayList<>();
         for (Iscrizione iscrizione : iscrizioneList) {
             userDTOList.add(userMapper.entityToDto(iscrizione.getUser()));
         }
