@@ -5,6 +5,8 @@ import com.develhope.spring.models.DTO.IscrizioneDTO;
 import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
 import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.models.Response;
+import com.develhope.spring.models.ResponseInvalid;
+import com.develhope.spring.models.ResponseValid;
 import com.develhope.spring.services.IscrizioneService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,14 +29,14 @@ public class IscrizioneController {
             IscrizioneDTO iscrizione = iscrizioneService.subscribeToCourse(userId,courseId);
             logger.info("Iscrizione creata" + iscrizione);
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "User " + iscrizione.getUser().getName() + " subscribed to course " + iscrizione.getCourse().getName(),
                             iscrizione)
             );
         }catch (IscrizioneException e){
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -49,14 +51,14 @@ public class IscrizioneController {
         try {
             IscrizioneDTO iscrizione = iscrizioneService.getById(id);
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "subscription found: ",
                             iscrizione)
             );
         }catch (IscrizioneException e){
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -69,13 +71,13 @@ public class IscrizioneController {
         try{
             List<IscrizioneDTO> iscrizioneDTOList = iscrizioneService.getAll();
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "subscription found: ",
                             iscrizioneDTOList));
         }catch (Exception e){
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -88,14 +90,14 @@ public class IscrizioneController {
         try{
             IscrizioneDTO iscrizione = iscrizioneService.payedSwitch(id);
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "paying status changed: ",
                             iscrizione)
             );
         }catch (IscrizioneException e){
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -112,7 +114,7 @@ public class IscrizioneController {
         }catch (IscrizioneException e){
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -124,13 +126,13 @@ public class IscrizioneController {
         try{
             List<IscrizioneDTO> iscrizioneDTOList = iscrizioneService.getAllByTutor(id);
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "subscription found: ",
                             iscrizioneDTOList));
         }catch (IscrizioneException e){
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -143,13 +145,13 @@ public class IscrizioneController {
         try{
             List<UserResponseDTO> userDTOList = iscrizioneService.getUserByCourse(id);
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "subscription found: ",
                             userDTOList));
         }catch (IscrizioneException e){
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -160,7 +162,7 @@ public class IscrizioneController {
     public ResponseEntity<Response> findCourseByUser(@PathVariable Long id){
         List<IscrizioneDTO> iscrizioneDTOList = iscrizioneService.getSubscribedCourse(id);
         return ResponseEntity.ok(
-                new Response(
+                new ResponseValid(
                         200,
                         "Iscrizioni",
                         iscrizioneDTOList));

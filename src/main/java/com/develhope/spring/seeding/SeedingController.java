@@ -28,23 +28,23 @@ public class SeedingController {
 }
     @PostMapping("/init")
     public ResponseEntity<Response> initDatabaseData(@RequestBody SeedingObjectDto s){
-        if(s == null) return ResponseEntity.badRequest().body(new Response(400, SeedingMessages.SEEDING_DATA_NOT_VALID, 0));
-        if(!s.getKey().equals(StaticSeedingData.SEED_KEY)) return ResponseEntity.status(403).body(new Response(403, SeedingMessages.SEEDING_DATA_NOT_VALID, 0));
+        if(s == null) return ResponseEntity.badRequest().body(new Response(400, SeedingMessages.SEEDING_DATA_NOT_VALID));
+        if(!s.getKey().equals(StaticSeedingData.SEED_KEY)) return ResponseEntity.status(403).body(new Response(403, SeedingMessages.SEEDING_DATA_NOT_VALID));
         this.seedingService.initDatabase();
         logger.info("Database inizializzato ");
-        return ResponseEntity.ok(new Response(200, SeedingMessages.SEEDING_DONE, 1));
+        return ResponseEntity.ok(new Response(200, SeedingMessages.SEEDING_DONE));
     }
 
     @PostMapping("/clean")
     public ResponseEntity<Response> cleanDatabase(@RequestBody SeedingObjectDto s){
         if(s == null) return ResponseEntity.badRequest().body
-                (new Response(400, SeedingMessages.SEEDING_DATA_NOT_VALID, 0));
+                (new Response(400, SeedingMessages.SEEDING_DATA_NOT_VALID));
         if(!s.getKey().equals(StaticSeedingData.SEED_KEY))
             return ResponseEntity.status(403).body(new Response
-                    (403, SeedingMessages.SEEDING_DATA_NOT_VALID, 0));
+                    (403, SeedingMessages.SEEDING_DATA_NOT_VALID));
         this.seedingService.cleanDatabase();
         logger.info("Database pulito ");
-        return ResponseEntity.ok(new Response(200, SeedingMessages.CLEAN_DATABASE, 1));
+        return ResponseEntity.ok(new Response(200, SeedingMessages.CLEAN_DATABASE));
     }
 
 }

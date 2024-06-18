@@ -5,6 +5,8 @@ import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
 import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.models.RegistrationDTO;
 import com.develhope.spring.models.Response;
+import com.develhope.spring.models.ResponseInvalid;
+import com.develhope.spring.models.ResponseValid;
 import com.develhope.spring.services.RegisterServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +28,7 @@ public class RegisterController {
             UserResponseDTO userDTO = registerServices.saveUser(registrationDTO);
             logger.info("Registrazione effettuata" + userDTO);
             return ResponseEntity.ok().body(
-                    new Response(
+                    new ResponseValid(
                             200,
                             "User " + userDTO.getUsername() + " registered correctly!",
                             userDTO
@@ -36,7 +38,7 @@ public class RegisterController {
         catch (RegisterException e) {
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )

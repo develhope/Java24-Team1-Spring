@@ -5,6 +5,8 @@ import com.develhope.spring.exceptions.GradeException;
 import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.GradeDTO;
 import com.develhope.spring.models.Response;
+import com.develhope.spring.models.ResponseInvalid;
+import com.develhope.spring.models.ResponseValid;
 import com.develhope.spring.services.GradeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +31,14 @@ public class GradeController {
             GradeDTO newGrade = gradeService.addGrade(grade);
             logger.info("Voto inserito" + newGrade);
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             " added correctly",
                             newGrade)
             );
         }catch (GradeException | CourseException | UserException e){
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -48,14 +50,14 @@ public class GradeController {
         try {
             List<GradeDTO> grades = gradeService.getAllGrade();
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "List of grades: ",
                             grades)
             );
         } catch (Exception e) {
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -68,14 +70,14 @@ public class GradeController {
         try {
             GradeDTO g = gradeService.getGradeById(id);
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "Grade found: ",
                             g)
             );
         }catch (GradeException e){
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             "Grade not found, Id invalid"
                     )
@@ -87,16 +89,16 @@ public class GradeController {
     public ResponseEntity<Response> updateGradeById(@PathVariable Long id, @RequestBody GradeDTO gradeDTO){
         try{
             gradeService.updateGradeById(id, gradeDTO);
-            return ResponseEntity.ok().body(new Response(200, "grade updated",gradeDTO));
+            return ResponseEntity.ok().body(new ResponseValid(200, "grade updated",gradeDTO));
         }catch(GradeException e){
             logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new Response(400, "grade id not found"));
+            return ResponseEntity.status(400).body(new ResponseInvalid(400, "grade id not found"));
         } catch (CourseException e) {
             logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new Response(400, "course id not found"));
+            return ResponseEntity.status(400).body(new ResponseInvalid(400, "course id not found"));
         } catch (UserException e) {
             logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new Response(400, "user id not found"));
+            return ResponseEntity.status(400).body(new ResponseInvalid(400, "user id not found"));
         }
     }
 
@@ -107,7 +109,7 @@ public class GradeController {
             return ResponseEntity.ok().body(new Response(200, "grade deleted"));
         }catch (GradeException e){
             logger.error("errore " + e.getMessage());
-            return  ResponseEntity.status(400).body(new Response(400, "grade id not found"));
+            return  ResponseEntity.status(400).body(new ResponseInvalid(400, "grade id not found"));
         }
     }
 
@@ -116,14 +118,14 @@ public class GradeController {
         try {
             List<GradeDTO> grades = gradeService.getGradeByTutor(id);
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "grades found: ",
                             grades)
             );
         } catch (GradeException e) {
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -134,7 +136,7 @@ public class GradeController {
     public ResponseEntity<Response> getAllStudentsGrades(@PathVariable Long id){
         List<GradeDTO> grades = gradeService.getAllStudentsGrades(id);
         return ResponseEntity.ok().body(
-                new Response(200,
+                new ResponseValid(200,
                         "List of grades for students: ",
                         grades)
         );

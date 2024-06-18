@@ -4,6 +4,8 @@ import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
 import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.models.Response;
+import com.develhope.spring.models.ResponseInvalid;
+import com.develhope.spring.models.ResponseValid;
 import com.develhope.spring.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +29,7 @@ public class UserController {
             UserResponseDTO newUser = userService.addUser(user);
             logger.info("User inserito"+newUser);
             return ResponseEntity.ok().body(
-                    new Response(
+                    new ResponseValid(
                             200,
                             newUser.getUsername() + " added correctly",
                             newUser)
@@ -35,7 +37,7 @@ public class UserController {
         } catch (UserException e) {
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -48,14 +50,14 @@ public class UserController {
         try {
             List<UserResponseDTO> users = userService.getAllUsers();
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "List of users: ",
                             users)
             );
         } catch (Exception e) {
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
-                    new Response(
+                    new ResponseInvalid(
                             400,
                             e.getMessage()
                     )
@@ -67,10 +69,10 @@ public class UserController {
     public ResponseEntity<Response> findUserById(@PathVariable Long id) {
         try {
             UserResponseDTO user = userService.getUserById(id);
-            return ResponseEntity.ok().body(new Response(200, "user found", user));
+            return ResponseEntity.ok().body(new ResponseValid(200, "user found", user));
         } catch (UserException e) {
             logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new Response(400, "user not found"));
+            return ResponseEntity.status(400).body(new ResponseInvalid(400, "user not found"));
         }
     }
 
@@ -81,7 +83,7 @@ public class UserController {
                 return ResponseEntity.ok().body(new Response(200, "user deleted"));
             }catch (UserException e){
                logger.error("errore " + e.getMessage());
-                return  ResponseEntity.status(400).body(new Response(400, "user id not found"));
+                return  ResponseEntity.status(400).body(new ResponseInvalid(400, "user id not found"));
             }
     }
 
@@ -89,10 +91,10 @@ public class UserController {
     public ResponseEntity<Response> updateUserById(@PathVariable Long id, @RequestBody UserRequestDTO userDTO){
         try{
            userService.updateUserById(id, userDTO);
-           return ResponseEntity.ok().body(new Response(200, "user updated",userDTO));
+           return ResponseEntity.ok().body(new ResponseValid(200, "user updated",userDTO));
         } catch(UserException e){
             logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new Response(400, "user id not found"));
+            return ResponseEntity.status(400).body(new ResponseInvalid(400, "user id not found"));
         }
     }
 }
