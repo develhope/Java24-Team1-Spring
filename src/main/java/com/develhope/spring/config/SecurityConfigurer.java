@@ -44,7 +44,12 @@ public class SecurityConfigurer {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/register").permitAll()
-                        .requestMatchers("/api/user/**").hasAuthority("TUTOR")
+                        .requestMatchers(
+                                "/api/course/t/**",
+                                "/api/course_schedule/t/**",
+                                "/api/grade/t/**",
+                                "/api/iscrizione/t/**")
+                        .hasAuthority("TUTOR")
                         .anyRequest().authenticated()
                 )
 

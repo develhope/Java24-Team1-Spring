@@ -25,7 +25,7 @@ public class GradeController {
 
     Logger logger = LoggerFactory.getLogger(GradeController.class);
 
-    @PostMapping
+    @PostMapping("/t")
     public ResponseEntity<Response> addGrade(@RequestBody GradeDTO grade){
         try {
             GradeDTO newGrade = gradeService.addGrade(grade);
@@ -45,7 +45,8 @@ public class GradeController {
             );
         }
     }
-    @GetMapping
+  
+    @GetMapping("/t")
     public ResponseEntity<Response> getAllGrade(){
         try {
             List<GradeDTO> grades = gradeService.getAllGrade();
@@ -85,7 +86,7 @@ public class GradeController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/t/{id}")
     public ResponseEntity<Response> updateGradeById(@PathVariable Long id, @RequestBody GradeDTO gradeDTO){
         try{
             gradeService.updateGradeById(id, gradeDTO);
@@ -102,7 +103,7 @@ public class GradeController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/t/{id}")
     public ResponseEntity<Response> deleteGradeById(@PathVariable Long id){
         try{
             gradeService.deleteGradeById(id);
@@ -113,7 +114,7 @@ public class GradeController {
         }
     }
 
-    @GetMapping("/tutor/{id}")
+    @GetMapping("/t/tutor/{id}")
     public ResponseEntity<Response> getGradesByTutor(@PathVariable Long id){
         try {
             List<GradeDTO> grades = gradeService.getGradeByTutor(id);

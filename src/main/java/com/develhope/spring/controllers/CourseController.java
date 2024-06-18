@@ -26,7 +26,7 @@ public class CourseController {
 
     Logger logger = LoggerFactory.getLogger(CourseController.class);
 
-    @PostMapping
+    @PostMapping("/t")
     public ResponseEntity<Response> addCourse(@RequestBody CourseDTO course) {
         try {
             CourseDTO newCourse = courseService.addCourse(course);
@@ -87,18 +87,9 @@ public class CourseController {
             );
         }
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Response> deleteCourseById(@PathVariable Long id){
-        try{
-            courseService.deleteCourseById(id);
-            return ResponseEntity.ok().body(new Response(200, "course deleted"));
-        }catch (CourseException e){
-            logger.error("errore " + e.getMessage());
-            return  ResponseEntity.status(404).body(new ResponseInvalid(404, "course id not found"));
-        }
-    }
 
-    @PutMapping("/{id}")
+
+    @PutMapping("/t/{id}")
     public ResponseEntity<Response> updateCourseById(@PathVariable Long id, @RequestBody CourseDTO courseDTO){
         try{
             courseService.updateCourseById(id, courseDTO);
@@ -111,6 +102,18 @@ public class CourseController {
             return ResponseEntity.status(400).body(new ResponseInvalid(400, "user id not found"));
         }
     }
+
+    @DeleteMapping("/t/{id}")
+    public ResponseEntity<Response> deleteCourseById(@PathVariable Long id){
+        try{
+            courseService.deleteCourseById(id);
+            return ResponseEntity.ok().body(new Response(200, "course deleted"));
+        }catch (CourseException e){
+            logger.error("errore " + e.getMessage());
+            return  ResponseEntity.status(400).body(new ResponseInvalid(400, "course id not found"));
+        }
+    }
+
     @GetMapping("/active/tutor/{id}")
     public ResponseEntity<Response> getActiveCourseByTutor(@PathVariable Long id){
         try {
