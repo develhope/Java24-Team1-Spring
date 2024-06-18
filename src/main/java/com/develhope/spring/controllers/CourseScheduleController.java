@@ -21,8 +21,8 @@ public class CourseScheduleController {
     @Autowired
     private CourseScheduleService courseScheduleService;
 
-    @PostMapping
-    public ResponseEntity<Response> postCourseSchedule(@RequestBody CourseScheduleRequestDTO courseSchedule) {
+    @PostMapping("/t")
+   public ResponseEntity<Response> postCourseSchedule(@RequestBody CourseScheduleRequestDTO courseSchedule) {
         try {
             CourseScheduleResponseDTO newCourseSchedule = courseScheduleService.addCourseSchedule(courseSchedule);
             return ResponseEntity.ok().body(
@@ -78,8 +78,10 @@ public class CourseScheduleController {
         }
     }
 
-    @PutMapping("/{id}")
+
+    @PutMapping("/t/{id}")
     public ResponseEntity<Response> updateCourseScheduleById(@PathVariable Long id, @RequestBody CourseScheduleRequestDTO courseScheduleDTO) {
+
         try {
             courseScheduleService.updateCourseScheduleById(id, courseScheduleDTO);
             return ResponseEntity.ok().body(new Response(200, "course schedule updated", courseScheduleDTO));
@@ -90,7 +92,7 @@ public class CourseScheduleController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/t/{id}")
     public ResponseEntity<Response> deleteCourseScheduleById(@PathVariable Long id) {
         try {
             courseScheduleService.deleteCourseScheduleById(id);

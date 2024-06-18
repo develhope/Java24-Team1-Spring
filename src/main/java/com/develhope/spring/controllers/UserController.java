@@ -18,8 +18,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("/a")
     public ResponseEntity<Response> postUser(@RequestBody UserRequestDTO user) {
+
         try {
             UserResponseDTO newUser = userService.addUser(user);
             return ResponseEntity.ok().body(
