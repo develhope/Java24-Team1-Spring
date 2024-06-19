@@ -89,8 +89,9 @@ public class CourseScheduleController {
         }
     }
 
+
     @PutMapping("/t/{id}")
-   public ResponseEntity<Response> updateCourseScheduleById(@PathVariable Long id, @RequestBody CourseScheduleRequestDTO courseScheduleDTO) {
+    public ResponseEntity<Response> updateCourseScheduleById(@PathVariable Long id, @RequestBody CourseScheduleRequestDTO courseScheduleDTO) {
         try {
             courseScheduleService.updateCourseScheduleById(id, courseScheduleDTO);
             return ResponseEntity.ok().body(new ResponseValid(200, "course schedule updated", courseScheduleDTO));
