@@ -24,9 +24,9 @@ public class UserValidator {
                 );
     }
 
-
     private boolean isEmailValid(UserRequestDTO u) {
         return (Pattern.matches("[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}", u.getEmail()));
+
     }
 
     private boolean isCfValid(UserRequestDTO u) {

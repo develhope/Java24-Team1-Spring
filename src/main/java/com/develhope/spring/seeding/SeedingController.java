@@ -3,6 +3,8 @@ package com.develhope.spring.seeding;
 
 import com.develhope.spring.models.Response;
 import org.modelmapper.spi.ErrorMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import javax.swing.*;
 public class SeedingController {
     private SeedingService seedingService;
 
+    Logger logger = LoggerFactory.getLogger(SeedingController.class);
     @Autowired
     public SeedingController(SeedingService seedingService){
 
@@ -25,21 +28,23 @@ public class SeedingController {
 }
     @PostMapping("/init")
     public ResponseEntity<Response> initDatabaseData(@RequestBody SeedingObjectDto s){
-        if(s == null) return ResponseEntity.badRequest().body(new Response(400, SeedingMessages.SEEDING_DATA_NOT_VALID, 0));
-        if(!s.getKey().equals(StaticSeedingData.SEED_KEY)) return ResponseEntity.status(403).body(new Response(403, SeedingMessages.SEEDING_DATA_NOT_VALID, 0));
+        if(s == null) return ResponseEntity.badRequest().body(new Response(400, SeedingMessages.SEEDING_DATA_NOT_VALID));
+        if(!s.getKey().equals(StaticSeedingData.SEED_KEY)) return ResponseEntity.status(403).body(new Response(403, SeedingMessages.SEEDING_DATA_NOT_VALID));
         this.seedingService.initDatabase();
-        return ResponseEntity.ok(new Response(200, SeedingMessages.SEEDING_DONE, 1));
+        logger.info("Database inizializzato ");
+        return ResponseEntity.ok(new Response(200, SeedingMessages.SEEDING_DONE));
     }
 
     @PostMapping("/clean")
     public ResponseEntity<Response> cleanDatabase(@RequestBody SeedingObjectDto s){
         if(s == null) return ResponseEntity.badRequest().body
-                (new Response(400, SeedingMessages.SEEDING_DATA_NOT_VALID, 0));
+                (new Response(400, SeedingMessages.SEEDING_DATA_NOT_VALID));
         if(!s.getKey().equals(StaticSeedingData.SEED_KEY))
             return ResponseEntity.status(403).body(new Response
-                    (403, SeedingMessages.SEEDING_DATA_NOT_VALID, 0));
+                    (403, SeedingMessages.SEEDING_DATA_NOT_VALID));
         this.seedingService.cleanDatabase();
-        return ResponseEntity.ok(new Response(200, SeedingMessages.CLEAN_DATABASE, 1));
+        logger.info("Database pulito ");
+        return ResponseEntity.ok(new Response(200, SeedingMessages.CLEAN_DATABASE));
     }
 
 }
