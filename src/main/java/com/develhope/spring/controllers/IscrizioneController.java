@@ -30,7 +30,7 @@ public class IscrizioneController {
             logger.info("Iscrizione creata" + iscrizione);
             return ResponseEntity.ok().body(
                     new ResponseValid(200,
-                            "User " + iscrizione.getUser().getName() + " subscribed to course " + iscrizione.getCourse().getName(),
+                            "User " + iscrizione.getUser() + " subscribed to course " + iscrizione.getCourse(),
                             iscrizione)
             );
         }catch (IscrizioneException e){
