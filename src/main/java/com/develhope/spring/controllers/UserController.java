@@ -7,9 +7,11 @@ import com.develhope.spring.models.Response;
 import com.develhope.spring.models.ResponseInvalid;
 import com.develhope.spring.models.ResponseValid;
 import com.develhope.spring.services.UserService;
+import com.develhope.spring.utilities.JWTUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,12 +24,17 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JWTUtil jwtUtil;
+
     Logger logger = LoggerFactory.getLogger(UserController.class);
+
+
     @PostMapping
     public ResponseEntity<Response> postUser(@RequestBody UserRequestDTO user) {
         try {
             UserResponseDTO newUser = userService.addUser(user);
-            logger.info("User inserito"+newUser);
+            logger.info("User inserito "+newUser);
             return ResponseEntity.ok().body(
                     new ResponseValid(
                             200,
@@ -65,10 +72,12 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Response> findUserById(@PathVariable Long id) {
+    @GetMapping("/me")
+    public ResponseEntity<Response> findUserById(@RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
         try {
-            UserResponseDTO user = userService.getUserById(id);
+            UserResponseDTO user = userService.getUserByUsername(username);
             return ResponseEntity.ok().body(new ResponseValid(200, "user found", user));
         } catch (UserException e) {
             logger.error("errore " + e.getMessage());
@@ -76,24 +85,28 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Response> deleteUserById(@PathVariable Long id){
-           try{
-               userService.deleteUserById(id);
-                return ResponseEntity.ok().body(new Response(200, "user deleted"));
-            }catch (UserException e){
-               logger.error("errore " + e.getMessage());
-                return  ResponseEntity.status(400).body(new ResponseInvalid(400, "user id not found"));
-            }
+    @DeleteMapping("/me")
+    public ResponseEntity<Response> deleteYourUser(@RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
+        try {
+            userService.deleteUserByUsername(username);
+            return ResponseEntity.ok().body(new Response(200, "user deleted"));
+        } catch (UserException e) {
+            return ResponseEntity.status(400).body(new ResponseInvalid(400, "user id not found"));
+        }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Response> updateUserById(@PathVariable Long id, @RequestBody UserRequestDTO userDTO){
-        try{
-           userService.updateUserById(id, userDTO);
-           return ResponseEntity.ok().body(new ResponseValid(200, "user updated",userDTO));
-        } catch(UserException e){
+    @PutMapping("/me")
+    public ResponseEntity<Response> updateUserById(@RequestHeader("Authorization") String authHeader, @RequestBody UserDTO userDTO) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
+        try {
+            userService.updateUserByUsername(username, userDTO);
+            return ResponseEntity.ok().body(new ResponseValid(200, "user updated", userDTO));
+        } catch (UserException e) {
             logger.error("errore " + e.getMessage());
+
             return ResponseEntity.status(400).body(new ResponseInvalid(400, "user id not found"));
         }
     }

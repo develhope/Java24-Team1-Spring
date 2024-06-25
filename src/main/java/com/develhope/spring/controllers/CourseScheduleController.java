@@ -8,6 +8,7 @@ import com.develhope.spring.models.Response;
 import com.develhope.spring.models.ResponseInvalid;
 import com.develhope.spring.models.ResponseValid;
 import com.develhope.spring.services.CourseScheduleService;
+import com.develhope.spring.utilities.JWTUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,18 @@ public class CourseScheduleController {
     @Autowired
     private CourseScheduleService courseScheduleService;
 
+    @Autowired
+    private JWTUtil jwtUtil;
 
     Logger logger = LoggerFactory.getLogger(CourseScheduleController.class);
 
+
     @PostMapping("/t")
-    public ResponseEntity<Response> postCourseSchedule(@RequestBody CourseScheduleRequestDTO courseSchedule) {
+    public ResponseEntity<Response> postCourseSchedule(@RequestBody CourseScheduleRequestDTO courseSchedule, @RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
         try {
-            CourseScheduleResponseDTO newCourseSchedule = courseScheduleService.addCourseSchedule(courseSchedule);
+            CourseScheduleResponseDTO newCourseSchedule = courseScheduleService.addCourseSchedule(courseSchedule, username);
             logger.info("evento corso creato" + newCourseSchedule);
             return ResponseEntity.ok().body(
                     new ResponseValid(
@@ -50,7 +56,7 @@ public class CourseScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<Response> getCourseScheduleById() {
+    public ResponseEntity<Response> getAllCourseSchedule() {
         try {
             List<CourseScheduleResponseDTO> courses = courseScheduleService.getAllCourseSchedule();
             return ResponseEntity.ok().body(
@@ -60,6 +66,27 @@ public class CourseScheduleController {
             );
         } catch (Exception e) {
             logger.error("errore " + e.getMessage());
+            return ResponseEntity.status(400).body(
+                    new ResponseInvalid(
+                            400,
+                            e.getMessage()
+                    )
+            );
+        }
+    }
+
+    @GetMapping("/course/{id}")
+    public ResponseEntity<Response> getCourseScheduleByCourseId(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok().body(
+                    new ResponseValid(
+                            200,
+                            "Course schedule for id " + id + " retrieved correctly",
+                            courseScheduleService.getAllCourseScheduleByCourse(id)
+                    )
+            );
+        }
+        catch (CourseException e) {
             return ResponseEntity.status(400).body(
                     new ResponseInvalid(
                             400,
@@ -89,11 +116,12 @@ public class CourseScheduleController {
         }
     }
 
-
     @PutMapping("/t/{id}")
-    public ResponseEntity<Response> updateCourseScheduleById(@PathVariable Long id, @RequestBody CourseScheduleRequestDTO courseScheduleDTO) {
+    public ResponseEntity<Response> updateCourseScheduleById(@PathVariable Long id, @RequestBody CourseScheduleRequestDTO courseScheduleDTO,  @RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
         try {
-            courseScheduleService.updateCourseScheduleById(id, courseScheduleDTO);
+            courseScheduleService.updateCourseScheduleById(id, courseScheduleDTO, username);
             return ResponseEntity.ok().body(new ResponseValid(200, "course schedule updated", courseScheduleDTO));
         } catch (CourseScheduleException e) {
             logger.error("errore " + e.getMessage());
@@ -104,7 +132,7 @@ public class CourseScheduleController {
         }
     }
 
-    @DeleteMapping("/t/{id}")
+    @DeleteMapping("/a/{id}")
     public ResponseEntity<Response> deleteCourseScheduleById(@PathVariable Long id) {
         try {
             courseScheduleService.deleteCourseScheduleById(id);
@@ -112,6 +140,18 @@ public class CourseScheduleController {
         } catch (CourseScheduleException e) {
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new ResponseInvalid(400, "course schedule id not found"));
+        }
+    }
+
+    @DeleteMapping("/t/{id}")
+    public ResponseEntity<Response> deleteYourCourseScheduleById(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
+        try {
+            courseScheduleService.deleteYourCourseScheduleById(id, username);
+            return ResponseEntity.ok().body(new Response(200, "course schedule deleted"));
+        } catch (CourseScheduleException e) {
+            return ResponseEntity.status(400).body(new Response(400, "course schedule id not found"));
         }
     }
 }

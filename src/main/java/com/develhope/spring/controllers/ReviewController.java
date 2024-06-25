@@ -11,6 +11,7 @@ import com.develhope.spring.models.ResponseValid;
 import com.develhope.spring.services.ReviewService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.develhope.spring.utilities.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +24,17 @@ public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private JWTUtil jwtUtil;
 
     Logger logger = LoggerFactory.getLogger(ReviewController.class);
 
     @PostMapping
-    public ResponseEntity<Response> postReview(@RequestBody ReviewDTO review) {
+    public ResponseEntity<Response> postReview(@RequestBody ReviewDTO review, @RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
         try {
-            ReviewDTO newReview = reviewService.addReview(review);
+            ReviewDTO newReview = reviewService.addReview(review, username);
             logger.info("Recensione inserita"+ newReview);
             return ResponseEntity.ok().body(
                     new ResponseValid(
@@ -89,10 +94,12 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Response> updateReviewById(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO) {
+    public ResponseEntity<Response> updateReviewById(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO, @RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
         try {
-            reviewService.updateReviewById(id, reviewDTO);
-            return ResponseEntity.ok().body(new ResponseValid(200, "review updated", reviewDTO));
+            ReviewDTO reviewDTOsaved = reviewService.updateReviewById(id, reviewDTO, username);
+            return ResponseEntity.ok().body(new ResponseValid(200, "review updated", reviewDTOsaved));
         } catch (ReviewException e) {
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new ResponseInvalid(400, "review id not found"));
@@ -105,7 +112,7 @@ public class ReviewController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/a/{id}")
     public ResponseEntity<Response> deleteReviewById(@PathVariable Long id) {
         try {
             reviewService.deleteReviewById(id);
@@ -113,6 +120,18 @@ public class ReviewController {
         } catch (ReviewException e) {
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(new ResponseInvalid(400, "review id not found"));
+        }
+    }
+
+    @DeleteMapping("/me/{id}")
+    public ResponseEntity<Response> deleteYourReviewById(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
+        try {
+            reviewService.deleteYourReviewById(id, username);
+            return ResponseEntity.ok().body(new Response(200, "review deleted"));
+        } catch (ReviewException e) {
+            return ResponseEntity.status(400).body(new Response(400, "review id not found"));
         }
     }
 

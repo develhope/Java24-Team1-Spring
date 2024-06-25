@@ -16,4 +16,5 @@ public interface CourseScheduleDAO extends JpaRepository<CourseSchedule, Long> {
 
     @Query("SELECT cs FROM CourseSchedule cs WHERE cs.isDeleted = false AND cs.course.id = :id")
     List<CourseSchedule> findActiveCourseScheduleByCourse(@Param("id") Long id);
+
 }

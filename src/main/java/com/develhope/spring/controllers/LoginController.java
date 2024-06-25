@@ -1,6 +1,9 @@
 package com.develhope.spring.controllers;
 
 import com.develhope.spring.entities.User;
+import com.develhope.spring.exceptions.UserException;
+import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
+import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
 import com.develhope.spring.models.LoginRequest;
 import com.develhope.spring.models.LoginResponse;
 import com.develhope.spring.models.UserDetailsImpl;
@@ -27,15 +30,15 @@ public class LoginController {
 
     Logger logger = LoggerFactory.getLogger(LoginController.class);
     @PostMapping(value = "/login")
-    public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) throws BadCredentialsException {
+    public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) {
         try {
-            User user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
+            UserResponseDTO user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
             if (user != null && passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
                 final String jwt = jwtUtil.createToken(new UserDetailsImpl(user.getUsername(), user.getPassword(), user.getRole()));
                 return ResponseEntity.ok().body(new LoginResponse(jwt, 200, "Token created successfully!"));
             }
 
-        } catch (BadCredentialsException e) {
+        } catch (UserException e) {
             logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new LoginResponse(
