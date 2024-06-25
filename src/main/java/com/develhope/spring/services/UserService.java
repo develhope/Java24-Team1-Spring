@@ -94,12 +94,16 @@ public class UserService {
     }
 
 
-    public UserDTO getUserByUsername(String username) throws UserException {
+    public UserResponseDTO getUserByUsername(String username) throws UserException {
         User user = userDAO.findByUsername(username).orElseThrow(() -> new UserException("User not found", 400));
         return userMapper.entityToDto(user);
     }
 
-    public UserDTO updateUserByUsername(String username, UserDTO userDTO) throws UserException {
+    public User getUserByUsernameLogin(String username) throws UserException {
+        return userDAO.findByUsername(username).orElseThrow(() -> new UserException("User not found", 400));
+    }
+
+    public UserResponseDTO updateUserByUsername(String username, UserRequestDTO userDTO) throws UserException {
         User optionalUser = userDAO.findByUsername(username).orElseThrow(() -> new UserException("This user does not exist!", 400));
         if (optionalUser != null) {
             optionalUser.setName(userDTO.getName());

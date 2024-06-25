@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<Response> updateUserById(@RequestHeader("Authorization") String authHeader, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<Response> updateUserById(@RequestHeader("Authorization") String authHeader, @RequestBody UserRequestDTO userDTO) {
         String token = jwtUtil.parseJwt(authHeader);
         String username = jwtUtil.extractUsername(token);
         try {

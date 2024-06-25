@@ -32,7 +32,7 @@ public class LoginController {
     @PostMapping(value = "/login")
     public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) {
         try {
-            UserResponseDTO user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
+            User user = userDetailsService.getUserByUsernameLogin(authenticationRequest.getUsername());
             if (user != null && passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
                 final String jwt = jwtUtil.createToken(new UserDetailsImpl(user.getUsername(), user.getPassword(), user.getRole()));
                 return ResponseEntity.ok().body(new LoginResponse(jwt, 200, "Token created successfully!"));
