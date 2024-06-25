@@ -154,7 +154,7 @@ public class CourseController {
         try {
             List<CourseDTO> courses = courseService.getYourActiveCourse(username);
             return ResponseEntity.ok().body(
-                    new Response(200,
+                    new ResponseValid(200,
                             "the active courses are:  ",
                             courses)
             );
