@@ -12,6 +12,7 @@ import com.develhope.spring.mappers.CourseMapper;
 import com.develhope.spring.models.DTO.CourseDTO;
 import com.develhope.spring.validators.CourseValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,15 +31,16 @@ public class CourseService {
     @Autowired
     private UserDAO userDAO;
 
-    public CourseDTO addCourse(CourseDTO course) throws CourseException {
+    public CourseDTO addCourse(String username, CourseDTO course) throws CourseException, UserException {
         if (validator.isCourseValid(course)) {
+            User user = userDAO.findByUsername(username).orElseThrow(() -> new UserException("User not found", 400));
             Course entity = courseMapper.dtoToEntity(course);
+            entity.setTutor(user);
             Course saved = courseDAO.saveAndFlush(entity);
             return courseMapper.entityToDto(saved);
         } else {
             throw new CourseException("Course not added, a problem occurred with the data", 400);
         }
-
     }
 
     public List<CourseDTO> getAllCourse() {
@@ -60,10 +62,9 @@ public class CourseService {
         }
     }
 
-    public CourseDTO updateCourseById(Long id, CourseDTO courseDTO) throws CourseException, UserException {
+    public CourseDTO updateCourseById(Long id, CourseDTO courseDTO, String username) throws CourseException, UserException {
         Course optionalCourse = courseDAO.findById(id).orElseThrow(() -> new CourseException("This course doesn't exist!", 400));
-
-        if (optionalCourse != null) {
+        if (optionalCourse.getTutor().getUsername().equals(username)) {
             optionalCourse.setName(courseDTO.getName());
             optionalCourse.setStartDate(courseDTO.getStartDate());
             optionalCourse.setFinishDate(courseDTO.getFinishDate());
@@ -76,17 +77,29 @@ public class CourseService {
             Course courseEdited = courseDAO.saveAndFlush(optionalCourse);
             return courseMapper.entityToDto(courseEdited);
         } else {
-            throw new CourseException("This course doesn't exist!", 400);
+            throw new CourseException("This course doesn't exist or you are not the owner!", 400);
         }
     }
 
+
     public void deleteCourseById(Long id) throws CourseException {
         Course course = courseDAO.findById(id).orElseThrow(() -> new CourseException("This course doesn't exist!", 400));
-        if(course.getActiveCourse()) {
+        if (course.getActiveCourse()) {
             course.setActiveCourse(false);
             courseDAO.saveAndFlush(course);
         } else {
             throw new CourseException("This course doesn't exist!", 400);
+        }
+    }
+
+    public void deleteYourCourse(Long id, String username) throws CourseException {
+        Course course = courseDAO.findById(id).orElseThrow(() -> new CourseException("This course doesn't exist!", 400));
+
+        if (course.getActiveCourse() && course.getTutor().getUsername().equals(username)) {
+            course.setActiveCourse(false);
+            courseDAO.saveAndFlush(course);
+        } else {
+            throw new CourseException("This course doesn't exist or you are not the owner!", 400);
         }
     }
 
@@ -100,10 +113,19 @@ public class CourseService {
         return courseDTOList;
     }
 
+    public List<CourseDTO> getYourActiveCourse(String username) throws CourseException {
+        List<Course> courseList = courseDAO.findYourCourse(username);
+        List<CourseDTO> courseDTOList = new ArrayList<>();
+        for (Course course : courseList) {
+            courseDTOList.add(courseMapper.entityToDto(course));
+        }
+        return courseDTOList;
+    }
+
     public List<CourseDTO> getActiveCourseBySubject(String s) {
         List<Course> courses = courseDAO.findActiveCourseBySubject(s);
         List<CourseDTO> courseDTOList = new ArrayList<>();
-        for(Course c : courses){
+        for (Course c : courses) {
             courseDTOList.add(courseMapper.entityToDto(c));
         }
         return courseDTOList;

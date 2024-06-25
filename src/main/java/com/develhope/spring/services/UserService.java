@@ -77,7 +77,17 @@ public class UserService {
     }
 
     public void deleteUserById(Long id) throws UserException {
-        User user = userDAO.findById(id).orElseThrow(() -> new UserException("This review does not exist!", 400));
+        User user = userDAO.findById(id).orElseThrow(() -> new UserException("This user does not exist!", 400));
+        if(!user.getIsDeleted()) {
+            user.setIsDeleted(true);
+            userDAO.saveAndFlush(user);
+        }else{
+            throw  new UserException("This user does not exist!", 400);
+        }
+    }
+
+    public void deleteUserByUsername(String username) throws UserException {
+        User user = userDAO.findByUsername(username).orElseThrow(() -> new UserException("This user does not exist!", 400));
         if(!user.getIsDeleted()) {
             user.setIsDeleted(true);
             userDAO.saveAndFlush(user);
@@ -87,13 +97,26 @@ public class UserService {
     }
 
 
-    public User getUserByUsername(String username){
-        Optional<User> user = userDAO.findByUsername(username);
-
-        if(user.isPresent()) {
-            return user.get();
-        }
-        throw new BadCredentialsException("");
+    public UserDTO getUserByUsername(String username) throws UserException {
+        User user = userDAO.findByUsername(username).orElseThrow(() -> new UserException("User not found", 400));
+        return userMapper.entityToDto(user);
     }
-  
+
+    public UserDTO updateUserByUsername(String username, UserDTO userDTO) throws UserException {
+        User optionalUser = userDAO.findByUsername(username).orElseThrow(() -> new UserException("This user does not exist!", 400));
+        if (optionalUser != null) {
+            optionalUser.setName(userDTO.getName());
+            optionalUser.setSurname(userDTO.getSurname());
+            optionalUser.setUsername(userDTO.getUsername());
+            optionalUser.setEmail(userDTO.getEmail());
+            optionalUser.setCellNum(userDTO.getCellNum());
+            optionalUser.setFiscCode(userDTO.getFiscCode());
+            optionalUser.setRole(userDTO.getRole());
+            optionalUser.setPassword(userDTO.getPassword());
+            User userEdited = userDAO.saveAndFlush(optionalUser);
+            return userMapper.entityToDto(userEdited);
+        } else {
+            throw new UserException("This user does not exist!", 400);
+        }
+    }
 }

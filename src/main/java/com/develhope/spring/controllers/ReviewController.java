@@ -7,6 +7,7 @@ import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.models.DTO.ReviewDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.ReviewService;
+import com.develhope.spring.utilities.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,11 +20,15 @@ public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
+    @Autowired
+    private JWTUtil jwtUtil;
 
     @PostMapping
-    public ResponseEntity<Response> postReview(@RequestBody ReviewDTO review) {
+    public ResponseEntity<Response> postReview(@RequestBody ReviewDTO review, @RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
         try {
-            ReviewDTO newReview = reviewService.addReview(review);
+            ReviewDTO newReview = reviewService.addReview(review, username);
             return ResponseEntity.ok().body(
                     new Response(
                             200,
@@ -79,10 +84,12 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Response> updateReviewById(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO) {
+    public ResponseEntity<Response> updateReviewById(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO, @RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
         try {
-            reviewService.updateReviewById(id, reviewDTO);
-            return ResponseEntity.ok().body(new Response(200, "review updated", reviewDTO));
+            ReviewDTO reviewDTOsaved = reviewService.updateReviewById(id, reviewDTO, username);
+            return ResponseEntity.ok().body(new Response(200, "review updated", reviewDTOsaved));
         } catch (ReviewException e) {
             return ResponseEntity.status(400).body(new Response(400, "review id not found"));
         } catch (CourseException e) {
@@ -92,10 +99,22 @@ public class ReviewController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/a/{id}")
     public ResponseEntity<Response> deleteReviewById(@PathVariable Long id) {
         try {
             reviewService.deleteReviewById(id);
+            return ResponseEntity.ok().body(new Response(200, "review deleted"));
+        } catch (ReviewException e) {
+            return ResponseEntity.status(400).body(new Response(400, "review id not found"));
+        }
+    }
+
+    @DeleteMapping("/me/{id}")
+    public ResponseEntity<Response> deleteYourReviewById(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
+        try {
+            reviewService.deleteYourReviewById(id, username);
             return ResponseEntity.ok().body(new Response(200, "review deleted"));
         } catch (ReviewException e) {
             return ResponseEntity.status(400).body(new Response(400, "review id not found"));

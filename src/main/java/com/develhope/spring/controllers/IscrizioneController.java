@@ -5,6 +5,7 @@ import com.develhope.spring.models.DTO.IscrizioneDTO;
 import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.models.Response;
 import com.develhope.spring.services.IscrizioneService;
+import com.develhope.spring.utilities.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +17,14 @@ import java.util.List;
 public class IscrizioneController {
     @Autowired
     private IscrizioneService iscrizioneService;
+    @Autowired
+    private JWTUtil jwtUtil;
     @PostMapping
-    public ResponseEntity<Response> subscribe(@RequestParam Long userId, @RequestParam Long courseId){
+    public ResponseEntity<Response> subscribe(@RequestParam Long courseId, @RequestHeader("Authorization") String authHeader){
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
         try {
-            IscrizioneDTO iscrizione = iscrizioneService.subscribeToCourse(userId,courseId);
+            IscrizioneDTO iscrizione = iscrizioneService.subscribeToCourse(courseId, username);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "User " + iscrizione.getUser().getName() + " subscribed to course " + iscrizione.getCourse().getName(),
@@ -92,10 +97,29 @@ public class IscrizioneController {
             );
         }
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/a/{id}")
     public ResponseEntity<Response> deleteSub(@PathVariable Long id){
         try{
             iscrizioneService.deleteSubscription(id);
+            return ResponseEntity.ok().body(
+                    new Response(200,
+                            "Subscription deleted"));
+        }catch (IscrizioneException e){
+            return ResponseEntity.status(400).body(
+                    new Response(
+                            400,
+                            e.getMessage()
+                    )
+            );
+        }
+    }
+
+    @DeleteMapping("/me/{id}")
+    public ResponseEntity<Response> deleteYourSub(@PathVariable Long id, @RequestHeader("Authorization") String authHeader){
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
+        try{
+            iscrizioneService.deleteYourSubscription(id, username);
             return ResponseEntity.ok().body(
                     new Response(200,
                             "Subscription deleted"));
