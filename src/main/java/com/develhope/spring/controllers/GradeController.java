@@ -52,7 +52,7 @@ public class GradeController {
         }
     }
 
-    @GetMapping("/t")
+    @GetMapping("/a")
     public ResponseEntity<Response> getAllGrade(){
         try {
             List<GradeDTO> grades = gradeService.getAllGrade();
@@ -73,9 +73,11 @@ public class GradeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Response> findGradeById (@PathVariable Long id){
+    public ResponseEntity<Response> findGradeById (@PathVariable Long id, @RequestHeader("Authorization") String authHeader){
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
         try {
-            GradeDTO g = gradeService.getGradeById(id);
+            GradeDTO g = gradeService.getGradeById(id,username);
             return ResponseEntity.ok().body(
                     new ResponseValid(200,
                             "Grade found: ",
@@ -86,7 +88,7 @@ public class GradeController {
             return ResponseEntity.status(400).body(
                     new ResponseInvalid(
                             400,
-                            "Grade not found, Id invalid"
+                            e.getMessage()
                     )
             );
         }

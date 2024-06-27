@@ -144,7 +144,7 @@ public class CourseController {
         }
     }
 
-    @GetMapping("/active/tutor/t/me")
+    @GetMapping("/t/active/tutor/me")
     public ResponseEntity<Response> getYourActiveCourse(@RequestHeader("Authorization") String authHeader){
         String token = jwtUtil.parseJwt(authHeader);
         String username = jwtUtil.extractUsername(token);
