@@ -123,12 +123,9 @@ public class CourseScheduleController {
         try {
             courseScheduleService.updateCourseScheduleById(id, courseScheduleDTO, username);
             return ResponseEntity.ok().body(new ResponseValid(200, "course schedule updated", courseScheduleDTO));
-        } catch (CourseScheduleException e) {
+        } catch (CourseScheduleException | CourseException e) {
             logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new ResponseInvalid(400, "course schedule id not found"));
-        } catch (CourseException e) {
-            logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new ResponseInvalid(400, "course id not found"));
+            return ResponseEntity.status(400).body(new ResponseInvalid(400, e.getMessage()));
         }
     }
 
@@ -151,7 +148,7 @@ public class CourseScheduleController {
             courseScheduleService.deleteYourCourseScheduleById(id, username);
             return ResponseEntity.ok().body(new Response(200, "course schedule deleted"));
         } catch (CourseScheduleException e) {
-            return ResponseEntity.status(400).body(new Response(400, "course schedule id not found"));
+            return ResponseEntity.status(400).body(new Response(400, e.getMessage()));
         }
     }
 }

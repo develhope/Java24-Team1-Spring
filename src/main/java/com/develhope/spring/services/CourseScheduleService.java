@@ -63,9 +63,19 @@ public class CourseScheduleService {
     }
 
 
-    public List<CourseSchedule> getAllCourseScheduleByCourse(Long id) throws CourseException {
+    public List<CourseSchedule> getAllCourseScheduleforEvent(Long id) throws CourseException {
         courseDAO.findById(id).orElseThrow(() -> new CourseException("Course not found", 400));
         return courseScheduleDAO.findActiveCourseScheduleByCourse(id);
+    }
+
+    public List<CourseScheduleResponseDTO> getAllCourseScheduleByCourse(Long id) throws CourseException {
+        courseDAO.findById(id).orElseThrow(() -> new CourseException("Course not found", 400));
+        List<CourseSchedule> courseScheduleList = courseScheduleDAO.findActiveCourseScheduleByCourse(id);
+        List<CourseScheduleResponseDTO> csDto = new ArrayList<>();
+        for(CourseSchedule courseSchedule : courseScheduleList){
+            csDto.add(courseScheduleMapper.entityToDto(courseSchedule));
+        }
+        return csDto;
     }
 
     public CourseScheduleResponseDTO updateCourseScheduleById(Long id, CourseScheduleRequestDTO courseScheduleDTO, String username) throws CourseScheduleException, CourseException {
@@ -74,7 +84,6 @@ public class CourseScheduleService {
             optionalCourseSchedule.setStartDateTime(courseScheduleDTO.getStartDateTime());
             optionalCourseSchedule.setFinishDateTime(courseScheduleDTO.getFinishDateTime());
             optionalCourseSchedule.setLink(courseScheduleDTO.getLink());
-            optionalCourseSchedule.setCourse(courseDAO.findById(courseScheduleDTO.getCourse_id()).orElseThrow(() -> new CourseException("This Course Schedule doesn't exist!", 400)));
             CourseSchedule courseScheduleEdited = courseScheduleDAO.saveAndFlush(optionalCourseSchedule);
             return courseScheduleMapper.entityToDto(courseScheduleEdited);
         } else {

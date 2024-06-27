@@ -64,8 +64,6 @@ public class ReviewService {
         Review optionalReview = reviewDAO.findById(id).orElseThrow(() -> new ReviewException("Review not found!", 400));
         if (optionalReview != null && optionalReview.getStudent().getUsername().equals(username)) {
             optionalReview.setReview(reviewDTO.getReview());
-            optionalReview.setStudent(userDAO.findById(reviewDTO.getStudent_id()).orElseThrow(() -> new UserException("Student not found!", 400)));
-            optionalReview.setCourse(courseDAO.findById(reviewDTO.getCourse_id()).orElseThrow(() -> new CourseException("Course not found!", 400)));
             Review reviewEdited = reviewDAO.saveAndFlush(optionalReview);
             return reviewMapper.entityToDto(reviewEdited);
         }

@@ -9,6 +9,8 @@ import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.validators.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ public class UserService {
     private UserDAO userDAO;
     @Autowired
     private UserValidator validator;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public UserResponseDTO addUser(UserRequestDTO user) throws UserException {
         if (validator.isUserValid(user)) {
@@ -65,7 +69,10 @@ public class UserService {
             optionalUser.setCellNum(userDTO.getCellNum());
             optionalUser.setFiscCode(userDTO.getFiscCode());
             optionalUser.setRole(userDTO.getRole());
-            optionalUser.setPassword(userDTO.getPassword());
+            String encPass = passwordEncoder.encode(userDTO.getPassword());
+            optionalUser.setPassword(encPass);
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + encPass);
+
             User userEdited = userDAO.saveAndFlush(optionalUser);
             return userMapper.entityToDto(userEdited);
         } else {
@@ -113,7 +120,7 @@ public class UserService {
             optionalUser.setCellNum(userDTO.getCellNum());
             optionalUser.setFiscCode(userDTO.getFiscCode());
             optionalUser.setRole(userDTO.getRole());
-            optionalUser.setPassword(userDTO.getPassword());
+            optionalUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             User userEdited = userDAO.saveAndFlush(optionalUser);
             return userMapper.entityToDto(userEdited);
         } else {

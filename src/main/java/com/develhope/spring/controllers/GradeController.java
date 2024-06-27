@@ -101,13 +101,7 @@ public class GradeController {
             return ResponseEntity.ok().body(new ResponseValid(200, "grade updated",gradeDTO));
         }catch(GradeException e){
             logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new ResponseInvalid(400, "grade id not found"));
-        } catch (CourseException e) {
-            logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new ResponseInvalid(400, "course id not found"));
-        } catch (UserException e) {
-            logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new ResponseInvalid(400, "user id not found"));
+            return ResponseEntity.status(400).body(new ResponseInvalid(400, e.getMessage()));
         }
     }
 

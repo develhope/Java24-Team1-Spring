@@ -65,7 +65,7 @@ public class IscrizioneService {
 
 
             //Crea List di EVENT da CourseSchedule utilizzando un servizio che torna una lista di eventi di un corso;
-            List<CourseSchedule> cs = courseScheduleService.getAllCourseScheduleByCourse(course.getId());
+            List<CourseSchedule> cs = courseScheduleService.getAllCourseScheduleforEvent(course.getId());
 
             //richiama metodo AddEvent;
             googleCalendarService.addEvent(userToken, cs);
@@ -121,8 +121,9 @@ public class IscrizioneService {
         if (!iscrizione.getIsDeleted() && iscrizione.getUser().getUsername().equals(username)) {
             iscrizione.setIsDeleted(true);
             iscrizioneDAO.saveAndFlush(iscrizione);
+        }else {
+            throw new IscrizioneException("This subscription does not exist or you are not the owner!", 400);
         }
-        throw new IscrizioneException("This subscription does not exist or you are not the owner!", 400);
 
     }
 

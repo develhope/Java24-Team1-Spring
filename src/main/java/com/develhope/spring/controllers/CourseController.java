@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tutor")
+@RequestMapping("/api/course")
 public class CourseController {
 
     @Autowired
@@ -28,7 +28,7 @@ public class CourseController {
     @Autowired
     private JWTUtil jwtUtil;
     Logger logger = LoggerFactory.getLogger(CourseController.class);
-    @PostMapping
+    @PostMapping("/t")
     public ResponseEntity<Response> addCourse(@RequestBody CourseDTO course, @RequestHeader("Authorization") String authHeader) {
         String token = jwtUtil.parseJwt(authHeader);
         String username = jwtUtil.extractUsername(token);
@@ -108,7 +108,7 @@ public class CourseController {
             courseService.deleteYourCourse(id, username);
             return ResponseEntity.ok().body(new Response(200, "course deleted"));
         }catch (CourseException e){
-            return  ResponseEntity.status(404).body(new Response(404, "course id not found"));
+            return  ResponseEntity.status(400).body(new Response(400, e.getMessage()));
         }
     }
 
@@ -119,12 +119,9 @@ public class CourseController {
         try{
             courseService.updateCourseById(id, courseDTO, username);
             return ResponseEntity.ok().body(new ResponseValid(200, "course updated",courseDTO));
-        }catch(CourseException e){
+        }catch(CourseException | UserException e){
             logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new ResponseInvalid(400, "course id not found"));
-        } catch (UserException e) {
-            logger.error("errore " + e.getMessage());
-            return ResponseEntity.status(400).body(new ResponseInvalid(400, "user id not found"));
+            return ResponseEntity.status(400).body(new ResponseInvalid(400, e.getMessage()));
         }
     }
     @GetMapping("/active/tutor/{id}")

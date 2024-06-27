@@ -59,11 +59,9 @@ public class GradeService {
         return gradeMapper.entityToDto(grade);
     }
 
-    public GradeDTO updateGradeById(Long id, GradeDTO gradeDTO, String username) throws GradeException, UserException, CourseException {
+    public GradeDTO updateGradeById(Long id, GradeDTO gradeDTO, String username) throws GradeException {
         Grade optionalGrade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("This grade does not exist!", 400));
         if (optionalGrade != null && optionalGrade.getCourse().getTutor().getUsername().equals(username)) {
-            optionalGrade.setStudent(userDAO.findById(gradeDTO.getStudent_id()).orElseThrow(() -> new UserException("This user does not exist!", 400)));
-            optionalGrade.setCourse(courseDAO.findById(gradeDTO.getCourse_id()).orElseThrow(() -> new CourseException("This course does not exist!", 400)));
             optionalGrade.setGrade(gradeDTO.getGrade());
             optionalGrade.setFinishedCourse(gradeDTO.getFinishedCourse());
             Grade gradeEdited = gradeDAO.saveAndFlush(optionalGrade);

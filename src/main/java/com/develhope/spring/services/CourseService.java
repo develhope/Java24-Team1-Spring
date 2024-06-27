@@ -72,7 +72,6 @@ public class CourseService {
             optionalCourse.setPrice(courseDTO.getPrice());
             optionalCourse.setSubject(courseDTO.getSubject());
             optionalCourse.setDescription(courseDTO.getDescription());
-            optionalCourse.setTutor(userDAO.findById(courseDTO.getTutor_id()).orElseThrow(() -> new UserException("This user doesn't exist!", 400)));
             optionalCourse.setCourseType(courseDTO.getCourseType());
             Course courseEdited = courseDAO.saveAndFlush(optionalCourse);
             return courseMapper.entityToDto(courseEdited);
