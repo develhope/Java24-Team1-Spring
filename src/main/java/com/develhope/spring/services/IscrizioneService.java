@@ -95,14 +95,14 @@ public class IscrizioneService {
         return iscrizioneDTOList;
     }
 
-    public IscrizioneDTO payedSwitch(Long id) throws IscrizioneException {
+    public IscrizioneDTO payedSwitch(Long id, String username) throws IscrizioneException {
         Iscrizione iscrizione = iscrizioneDAO.findById(id).orElseThrow(() -> new IscrizioneException("This subscription does not exist!", 400));
-        if (iscrizione != null) {
+        if (iscrizione.getCourse().getTutor().getUsername().equals(username)) {
             iscrizione.setPayed(!iscrizione.getPayed());
             Iscrizione saved = iscrizioneDAO.saveAndFlush(iscrizione);
             return iscrizioneMapper.entityToDTO(saved);
         } else {
-            throw new IscrizioneException("This subscription does not exist!", 400);
+            throw new IscrizioneException("You are not the owner of this course", 400);
         }
     }
 

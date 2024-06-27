@@ -91,10 +91,12 @@ public class IscrizioneController {
         }
     }
 
-    @PatchMapping("/a/pay/{id}")
-    public ResponseEntity<Response> paySwitch(@PathVariable Long id){
+    @PatchMapping("/t/pay/{id}")
+    public ResponseEntity<Response> paySwitch(@PathVariable Long id, @RequestHeader("Authorization") String authHeader){
+        String token = jwtUtil.parseJwt(authHeader);
+        String username = jwtUtil.extractUsername(token);
         try{
-            IscrizioneDTO iscrizione = iscrizioneService.payedSwitch(id);
+            IscrizioneDTO iscrizione = iscrizioneService.payedSwitch(id, username);
             return ResponseEntity.ok().body(
                     new ResponseValid(200,
                             "paying status changed: ",

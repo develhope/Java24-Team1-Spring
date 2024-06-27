@@ -2,9 +2,11 @@ package com.develhope.spring.services;
 
 import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.GradeDAO;
+import com.develhope.spring.DAO.IscrizioneDAO;
 import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.CourseSchedule;
 import com.develhope.spring.entities.Grade;
+import com.develhope.spring.entities.Iscrizione;
 import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.exceptions.GradeException;
@@ -30,16 +32,22 @@ public class GradeService {
     @Autowired
     private UserDAO userDAO;
     @Autowired
+    private IscrizioneDAO iscrizioneDAO;
+    @Autowired
     private GradeValidator validator;
+
 
     public GradeDTO addGrade(GradeDTO grade, String username) throws GradeException, CourseException, UserException {
         if (validator.isGradeValid(grade)) {
             Grade entity = gradeMapper.dtoToEntity(grade);
-            if (entity.getCourse().getTutor().getUsername().equals(username)) {
-                Grade saved = gradeDAO.saveAndFlush(entity);
-                return gradeMapper.entityToDto(saved);
+            List<Iscrizione> iscrizione = iscrizioneDAO.findCourseByCourse(entity.getCourse().getId());
+            for(Iscrizione sub : iscrizione) {
+                if (sub.getUser().equals(entity.getStudent()) && entity.getCourse().getTutor().getUsername().equals(username)) {
+                    Grade saved = gradeDAO.saveAndFlush(entity);
+                    return gradeMapper.entityToDto(saved);
+                }
             }
-            throw new GradeException("Grade not added, you are not the owner of the course", 400);
+            throw new GradeException("Grade not added, you are not the owner of the course or the student is not subbed to the course.", 400);
         }
         throw new GradeException("Grade not added, a problem occurred with the data", 400);
     }
@@ -54,9 +62,12 @@ public class GradeService {
         return gradesDTOList;
     }
 
-    public GradeDTO getGradeById(Long id) throws GradeException {
+    public GradeDTO getGradeById(Long id, String username) throws GradeException {
         Grade grade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("This grade does not exist!", 400));
-        return gradeMapper.entityToDto(grade);
+        if(grade.getStudent().getUsername().equals(username) || grade.getCourse().getTutor().getUsername().equals(username)) {
+            return gradeMapper.entityToDto(grade);
+        }
+        throw new GradeException("YOU SHALL NOT PASS!!!", 400);
     }
 
     public GradeDTO updateGradeById(Long id, GradeDTO gradeDTO, String username) throws GradeException {

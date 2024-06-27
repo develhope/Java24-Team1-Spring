@@ -1,8 +1,10 @@
 package com.develhope.spring.services;
 
 import com.develhope.spring.DAO.CourseDAO;
+import com.develhope.spring.DAO.IscrizioneDAO;
 import com.develhope.spring.DAO.ReviewDAO;
 import com.develhope.spring.DAO.UserDAO;
+import com.develhope.spring.entities.Iscrizione;
 import com.develhope.spring.entities.Review;
 import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.exceptions.ReviewException;
@@ -29,13 +31,22 @@ public class ReviewService {
     private UserDAO userDAO;
     @Autowired
     private CourseDAO courseDAO;
+    @Autowired
+    private IscrizioneDAO iscrizioneDAO;
 
     public ReviewDTO addReview(ReviewDTO review, String username) throws ReviewException, CourseException, UserException {
         if (validator.isReviewValid(review)) {
+
             Review entity = reviewMapper.dtoToEntity(review);
             entity.setStudent(userDAO.findByUsername(username).orElseThrow(() -> new UserException("User not found", 400)));
-            Review saved = reviewDAO.saveAndFlush(entity);
-            return reviewMapper.entityToDto(saved);
+            List<Iscrizione> iscrizione = iscrizioneDAO.findCourseByCourse(entity.getCourse().getId());
+            for(Iscrizione sub : iscrizione){
+                if(sub.getUser().equals(entity.getStudent())){
+                    Review saved = reviewDAO.saveAndFlush(entity);
+                    return reviewMapper.entityToDto(saved);
+                }
+            }
+            throw new ReviewException("You are not subbed to this course", 400);
         }
         throw new ReviewException("Review not added, a problem occurred with the data", 400);
 
