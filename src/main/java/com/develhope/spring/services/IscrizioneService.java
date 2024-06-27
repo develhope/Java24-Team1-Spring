@@ -10,7 +10,8 @@ import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.IscrizioneMapper;
 import com.develhope.spring.mappers.UserMapper;
 import com.develhope.spring.models.DTO.IscrizioneDTO;
-import com.develhope.spring.models.DTO.UserDTO;
+import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
+import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.validators.IscrizioneValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,12 +41,12 @@ public class IscrizioneService {
     @Autowired
     private UserMapper userMapper;
 
-    public IscrizioneDTO subscribeToCourse(Long idUser, Long idCourse) throws Exception {
+    public IscrizioneDTO subscribeToCourse(Long idCourse, String username) throws Exception {
 
-        User user = userDAO.findById(idUser).orElseThrow(() -> new UserException("This user does not exist!", 400));
+        User user = userDAO.findByUsername(username).orElseThrow(() -> new UserException("This user does not exist!", 400));
         Course course = courseDAO.findById(idCourse).orElseThrow(() -> new CourseException("This course does not exist!", 400));
 
-        if(iscrizioneValidator.isIscrizioneValid(user,course)){
+        if (iscrizioneValidator.isIscrizioneValid(user, course)) {
             Iscrizione iscrizione = new Iscrizione();
             iscrizione.setCourse(course);
             iscrizione.setUser(user);
@@ -56,15 +57,15 @@ public class IscrizioneService {
 
             //richiama metodo di UserTokenService; DA USCIRE DA QUI O FARE UN CONTROLLO SE GIà ESISTE TOKEN!////////////////////////////////////////////////////////////////////////////////////////////////////
             UserToken userToken;
-            if (userTokenService.findByUserId(user)!= null){
+            if (userTokenService.findByUserId(user) != null) {
                 userToken = userTokenService.findByUserId(user);
-            }else {
+            } else {
                 userToken = userTokenService.createUserToken(user);
             }
 
 
             //Crea List di EVENT da CourseSchedule utilizzando un servizio che torna una lista di eventi di un corso;
-            List<CourseSchedule> cs = courseScheduleService.getAllCourseScheduleByCourse(course.getId());
+            List<CourseSchedule> cs = courseScheduleService.getAllCourseScheduleforEvent(course.getId());
 
             //richiama metodo AddEvent;
             googleCalendarService.addEvent(userToken, cs);
@@ -75,7 +76,7 @@ public class IscrizioneService {
         }
     }
 
-      
+
     public IscrizioneDTO getById(Long id) throws IscrizioneException {
         Iscrizione iscrizione = iscrizioneDAO.findById(id).orElseThrow(() -> new IscrizioneException("This subscription does not exist!", 400));
         if (iscrizione != null) {
@@ -94,25 +95,36 @@ public class IscrizioneService {
         return iscrizioneDTOList;
     }
 
-    public IscrizioneDTO payedSwitch(Long id) throws IscrizioneException {
+    public IscrizioneDTO payedSwitch(Long id, String username) throws IscrizioneException {
         Iscrizione iscrizione = iscrizioneDAO.findById(id).orElseThrow(() -> new IscrizioneException("This subscription does not exist!", 400));
-        if (iscrizione != null) {
+        if (iscrizione.getCourse().getTutor().getUsername().equals(username)) {
             iscrizione.setPayed(!iscrizione.getPayed());
             Iscrizione saved = iscrizioneDAO.saveAndFlush(iscrizione);
             return iscrizioneMapper.entityToDTO(saved);
         } else {
-            throw new IscrizioneException("This subscription does not exist!", 400);
+            throw new IscrizioneException("You are not the owner of this course", 400);
         }
     }
 
     public void deleteSubscription(Long id) throws IscrizioneException {
         Iscrizione iscrizione = iscrizioneDAO.findById(id).orElseThrow(() -> new IscrizioneException("This subscription does not exist!", 400));
-        if(!iscrizione.getIsDeleted()) {
+        if (!iscrizione.getIsDeleted()) {
             iscrizione.setIsDeleted(true);
             iscrizioneDAO.saveAndFlush(iscrizione);
         } else {
             throw new IscrizioneException("This subscription does not exist!", 400);
         }
+    }
+
+    public void deleteYourSubscription(Long id, String username) throws IscrizioneException {
+        Iscrizione iscrizione = iscrizioneDAO.findById(id).orElseThrow(() -> new IscrizioneException("This subscription does not exist!", 400));
+        if (!iscrizione.getIsDeleted() && iscrizione.getUser().getUsername().equals(username)) {
+            iscrizione.setIsDeleted(true);
+            iscrizioneDAO.saveAndFlush(iscrizione);
+        }else {
+            throw new IscrizioneException("This subscription does not exist or you are not the owner!", 400);
+        }
+
     }
 
     public List<IscrizioneDTO> getAllByTutor(Long id) throws IscrizioneException {
@@ -124,9 +136,9 @@ public class IscrizioneService {
         return iscrizioneDTOList;
     }
 
-    public List<UserDTO> getUserByCourse(Long id) throws IscrizioneException {
+    public List<UserResponseDTO> getUserByCourse(Long id) throws IscrizioneException {
         List<Iscrizione> iscrizioneList = iscrizioneDAO.findCourseByCourse(id);
-        List<UserDTO> userDTOList = new ArrayList<>();
+        List<UserResponseDTO> userDTOList = new ArrayList<>();
         for (Iscrizione iscrizione : iscrizioneList) {
             userDTOList.add(userMapper.entityToDto(iscrizione.getUser()));
         }

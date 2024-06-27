@@ -3,6 +3,7 @@ import com.develhope.spring.models.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -69,5 +70,12 @@ public class JWTUtil {
 
     public String getUsername(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String parseJwt(String header) {
+        if(header != null && header.startsWith("Bearer ")) {
+            return (header.substring(7));
+        }
+        return null;
     }
 }

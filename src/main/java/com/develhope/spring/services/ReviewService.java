@@ -1,27 +1,22 @@
 package com.develhope.spring.services;
 
 import com.develhope.spring.DAO.CourseDAO;
+import com.develhope.spring.DAO.IscrizioneDAO;
 import com.develhope.spring.DAO.ReviewDAO;
 import com.develhope.spring.DAO.UserDAO;
-import com.develhope.spring.entities.CourseSchedule;
+import com.develhope.spring.entities.Iscrizione;
 import com.develhope.spring.entities.Review;
-import com.develhope.spring.entities.User;
 import com.develhope.spring.exceptions.CourseException;
-import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.exceptions.ReviewException;
 import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.ReviewMapper;
 import com.develhope.spring.models.DTO.ReviewDTO;
-import com.develhope.spring.models.DTO.UserDTO;
 import com.develhope.spring.validators.ReviewValidator;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class ReviewService {
@@ -36,15 +31,25 @@ public class ReviewService {
     private UserDAO userDAO;
     @Autowired
     private CourseDAO courseDAO;
+    @Autowired
+    private IscrizioneDAO iscrizioneDAO;
 
-    public ReviewDTO addReview(ReviewDTO review) throws ReviewException, CourseException, UserException {
+    public ReviewDTO addReview(ReviewDTO review, String username) throws ReviewException, CourseException, UserException {
         if (validator.isReviewValid(review)) {
+
             Review entity = reviewMapper.dtoToEntity(review);
-            Review saved = reviewDAO.saveAndFlush(entity);
-            return reviewMapper.entityToDto(saved);
-        } else {
-            throw new ReviewException("Review not added, a problem occurred with the data", 400);
+            entity.setStudent(userDAO.findByUsername(username).orElseThrow(() -> new UserException("User not found", 400)));
+            List<Iscrizione> iscrizione = iscrizioneDAO.findCourseByCourse(entity.getCourse().getId());
+            for(Iscrizione sub : iscrizione){
+                if(sub.getUser().equals(entity.getStudent())){
+                    Review saved = reviewDAO.saveAndFlush(entity);
+                    return reviewMapper.entityToDto(saved);
+                }
+            }
+            throw new ReviewException("You are not subbed to this course", 400);
         }
+        throw new ReviewException("Review not added, a problem occurred with the data", 400);
+
     }
 
     public List<ReviewDTO> getAllReview() {
@@ -66,27 +71,35 @@ public class ReviewService {
         }
     }
 
-    public ReviewDTO updateReviewById(Long id, ReviewDTO reviewDTO) throws ReviewException, UserException, CourseException {
+    public ReviewDTO updateReviewById(Long id, ReviewDTO reviewDTO, String username) throws ReviewException, UserException, CourseException {
         Review optionalReview = reviewDAO.findById(id).orElseThrow(() -> new ReviewException("Review not found!", 400));
-        if (optionalReview != null) {
+        if (optionalReview != null && optionalReview.getStudent().getUsername().equals(username)) {
             optionalReview.setReview(reviewDTO.getReview());
-            optionalReview.setStudent(userDAO.findById(reviewDTO.getStudent_id()).orElseThrow(() -> new UserException("Student not found!", 400)));
-            optionalReview.setCourse(courseDAO.findById(reviewDTO.getCourse_id()).orElseThrow(() -> new CourseException("Course not found!", 400)));
             Review reviewEdited = reviewDAO.saveAndFlush(optionalReview);
             return reviewMapper.entityToDto(reviewEdited);
-        } else {
-            throw new ReviewException("Review not found!", 400);
         }
+        throw new ReviewException("Review not found or you are not the owner of this review!", 400);
+
     }
 
     public void deleteReviewById(Long id) throws ReviewException {
         Review review = reviewDAO.findById(id).orElseThrow(() -> new ReviewException("Review not found!", 400));
-        if(!review.getIsDeleted()) {
+        if (!review.getIsDeleted()) {
             review.setIsDeleted(true);
             reviewDAO.saveAndFlush(review);
         } else {
             throw new ReviewException("user id not found", 400);
         }
+    }
+
+    public void deleteYourReviewById(Long id, String username) throws ReviewException {
+        Review review = reviewDAO.findById(id).orElseThrow(() -> new ReviewException("Review not found!", 400));
+        if (!review.getIsDeleted() && review.getStudent().getUsername().equals(username)) {
+            review.setIsDeleted(true);
+            reviewDAO.saveAndFlush(review);
+        }
+        throw new ReviewException("user id not found or you are not the owner of this review", 400);
+
     }
 
 
@@ -99,12 +112,12 @@ public class ReviewService {
         return reviewDTOList;
     }
 
-    public List<ReviewDTO> getReviewCourse(Long id){
+    public List<ReviewDTO> getReviewCourse(Long id) {
         List<Review> reviewList = reviewDAO.findReviewCourse(id);
         List<ReviewDTO> reviewDTOList = new ArrayList<>();
-        for(Review review : reviewList){
+        for (Review review : reviewList) {
             reviewDTOList.add(reviewMapper.entityToDto(review));
         }
-        return  reviewDTOList;
+        return reviewDTOList;
     }
 }

@@ -1,13 +1,17 @@
 package com.develhope.spring.controllers;
 
 import com.develhope.spring.entities.User;
+import com.develhope.spring.exceptions.UserException;
+import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
+import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
 import com.develhope.spring.models.LoginRequest;
 import com.develhope.spring.models.LoginResponse;
 import com.develhope.spring.models.UserDetailsImpl;
 import com.develhope.spring.services.UserService;
 import com.develhope.spring.utilities.JWTUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,11 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Objects;
-import java.util.Optional;
-
 @RestController
-public class loginController {
+public class LoginController {
     @Autowired
     private UserService userDetailsService;
     @Autowired
@@ -27,16 +28,18 @@ public class loginController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    Logger logger = LoggerFactory.getLogger(LoginController.class);
     @PostMapping(value = "/login")
-    public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) throws BadCredentialsException {
+    public ResponseEntity<LoginResponse> createAuthenticationToken(@RequestBody LoginRequest authenticationRequest) {
         try {
-            User user = userDetailsService.getUserByUsername(authenticationRequest.getUsername());
+            User user = userDetailsService.getUserByUsernameLogin(authenticationRequest.getUsername());
             if (user != null && passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
                 final String jwt = jwtUtil.createToken(new UserDetailsImpl(user.getUsername(), user.getPassword(), user.getRole()));
                 return ResponseEntity.ok().body(new LoginResponse(jwt, 200, "Token created successfully!"));
             }
 
-        } catch (BadCredentialsException e) {
+        } catch (UserException e) {
+            logger.error("errore " + e.getMessage());
             return ResponseEntity.status(400).body(
                     new LoginResponse(
                             400,

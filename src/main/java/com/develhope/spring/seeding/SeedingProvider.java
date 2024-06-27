@@ -6,6 +6,7 @@ import com.develhope.spring.enums.CourseType;
 import com.develhope.spring.enums.RoleEnum;
 import com.google.api.client.util.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,20 +18,23 @@ public class SeedingProvider {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     public List<User> generateUser() {
         List<User> users = new ArrayList<>();
 
         // Aggiungere alcuni corsi di esempio con dettagli fittizi
         users.add(new User (null, "Liborio", "Di Stefano", "Lib18",
-                "lib18@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, "PippoFranco"));
+                "lib18@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, passwordEncoder.encode("PippoFranco")));
         users.add(new User (null, "Davide", "Busà", "sbrakkius",
-                "davide@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, "PippoFranco"));
+                "davide@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, passwordEncoder.encode("PippoFranco")));
         users.add(new User (null, "Giovanni", "Innaimi", "vocalic oister",
-                "vocalic@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, "PippoFranco"));
+                "vocalic@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.STUDENT, passwordEncoder.encode("PippoFranco")));
         users.add(new User (null, "Gianluca", "Mulieddi", "aizen",
-                "aizen@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, "PippoFranco"));
+                "aizen@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, passwordEncoder.encode("PippoFranco")));
         users.add(new User (null, "Giada", "Fiorito", "jade flower",
-                "jade@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, "PippoFranco"));
+                "jade@gmail.it", "3333333333", "GGGPPP33G33I333G", RoleEnum.TUTOR, passwordEncoder.encode("PippoFranco")));
         // Puoi aggiungere altri corsi di esempio qui
 
         return users;

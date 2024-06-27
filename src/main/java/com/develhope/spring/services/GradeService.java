@@ -2,9 +2,11 @@ package com.develhope.spring.services;
 
 import com.develhope.spring.DAO.CourseDAO;
 import com.develhope.spring.DAO.GradeDAO;
+import com.develhope.spring.DAO.IscrizioneDAO;
 import com.develhope.spring.DAO.UserDAO;
 import com.develhope.spring.entities.CourseSchedule;
 import com.develhope.spring.entities.Grade;
+import com.develhope.spring.entities.Iscrizione;
 import com.develhope.spring.exceptions.CourseException;
 import com.develhope.spring.exceptions.CourseScheduleException;
 import com.develhope.spring.exceptions.GradeException;
@@ -30,16 +32,24 @@ public class GradeService {
     @Autowired
     private UserDAO userDAO;
     @Autowired
+    private IscrizioneDAO iscrizioneDAO;
+    @Autowired
     private GradeValidator validator;
 
-    public GradeDTO addGrade(GradeDTO grade) throws GradeException, CourseException, UserException {
+
+    public GradeDTO addGrade(GradeDTO grade, String username) throws GradeException, CourseException, UserException {
         if (validator.isGradeValid(grade)) {
             Grade entity = gradeMapper.dtoToEntity(grade);
-            Grade saved = gradeDAO.saveAndFlush(entity);
-            return gradeMapper.entityToDto(saved);
-        } else {
-            throw new GradeException("Grade not added, a problem occurred with the data", 400);
+            List<Iscrizione> iscrizione = iscrizioneDAO.findCourseByCourse(entity.getCourse().getId());
+            for(Iscrizione sub : iscrizione) {
+                if (sub.getUser().equals(entity.getStudent()) && entity.getCourse().getTutor().getUsername().equals(username)) {
+                    Grade saved = gradeDAO.saveAndFlush(entity);
+                    return gradeMapper.entityToDto(saved);
+                }
+            }
+            throw new GradeException("Grade not added, you are not the owner of the course or the student is not subbed to the course.", 400);
         }
+        throw new GradeException("Grade not added, a problem occurred with the data", 400);
     }
 
     public List<GradeDTO> getAllGrade() {
@@ -52,23 +62,23 @@ public class GradeService {
         return gradesDTOList;
     }
 
-    public GradeDTO getGradeById(Long id) throws GradeException {
+    public GradeDTO getGradeById(Long id, String username) throws GradeException {
         Grade grade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("This grade does not exist!", 400));
-        return gradeMapper.entityToDto(grade);
+        if(grade.getStudent().getUsername().equals(username) || grade.getCourse().getTutor().getUsername().equals(username)) {
+            return gradeMapper.entityToDto(grade);
+        }
+        throw new GradeException("YOU SHALL NOT PASS!!!", 400);
     }
 
-    public GradeDTO updateGradeById(Long id, GradeDTO gradeDTO) throws GradeException, UserException, CourseException {
+    public GradeDTO updateGradeById(Long id, GradeDTO gradeDTO, String username) throws GradeException {
         Grade optionalGrade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("This grade does not exist!", 400));
-        if (optionalGrade != null) {
-            optionalGrade.setStudent(userDAO.findById(gradeDTO.getStudent_id()).orElseThrow(() -> new UserException("This user does not exist!", 400)));
-            optionalGrade.setCourse(courseDAO.findById(gradeDTO.getCourse_id()).orElseThrow(() -> new CourseException("This course does not exist!", 400)));
+        if (optionalGrade != null && optionalGrade.getCourse().getTutor().getUsername().equals(username)) {
             optionalGrade.setGrade(gradeDTO.getGrade());
             optionalGrade.setFinishedCourse(gradeDTO.getFinishedCourse());
             Grade gradeEdited = gradeDAO.saveAndFlush(optionalGrade);
             return gradeMapper.entityToDto(gradeEdited);
-        } else {
-            throw new GradeException("This grade does not exist!", 400);
         }
+            throw new GradeException("This grade does not exist or you are not the owner of the course!", 400);
     }
 
     public void deleteGradeById(Long id) throws GradeException {
@@ -81,9 +91,19 @@ public class GradeService {
         }
     }
 
+    public void deleteYourGradeById(Long id, String username) throws GradeException {
+        Grade grade = gradeDAO.findById(id).orElseThrow(() -> new GradeException("This Course Schedule does not exist!", 400));
+        if(!grade.getIsDeleted() && grade.getCourse().getTutor().getUsername().equals(username)) {
+            grade.setIsDeleted(true);
+            gradeDAO.saveAndFlush(grade);
+        } else {
+            throw new GradeException("This grade does not exist or you are not the owner of the course!", 400);
+        }
+    }
 
-    public List<GradeDTO> getGradeByTutor(Long id) throws GradeException {
-        List<Grade> gradeList = gradeDAO.findAllTutorGrades(id);
+
+    public List<GradeDTO> getGradeByTutor(String username) throws GradeException {
+        List<Grade> gradeList = gradeDAO.findAllTutorGrades(username);
         List<GradeDTO> gradeDTOList = new ArrayList<>();
         for(Grade grade: gradeList){
               gradeDTOList.add(gradeMapper.entityToDto(grade));
@@ -91,8 +111,8 @@ public class GradeService {
         return gradeDTOList;
     }
 
-    public List<GradeDTO> getAllStudentsGrades(Long id){
-        List<Grade> gradeList = gradeDAO.findAllStudentGrades(id);
+    public List<GradeDTO> getAllStudentsGrades(String username){
+        List<Grade> gradeList = gradeDAO.findAllStudentGrades(username);
         List<GradeDTO> gradeDTOList = new ArrayList<>();
         for(Grade grade : gradeList){
             gradeDTOList.add(gradeMapper.entityToDto(grade));

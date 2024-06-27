@@ -1,16 +1,16 @@
 package com.develhope.spring.services;
 
 import com.develhope.spring.DAO.UserDAO;
-import com.develhope.spring.entities.Review;
 import com.develhope.spring.entities.User;
-import com.develhope.spring.exceptions.ReviewException;
 import com.develhope.spring.exceptions.UserException;
 import com.develhope.spring.mappers.UserMapper;
-import com.develhope.spring.models.DTO.UserDTO;
+import com.develhope.spring.models.DTO.requestDTO.UserRequestDTO;
+import com.develhope.spring.models.DTO.responseDTO.UserResponseDTO;
 import com.develhope.spring.validators.UserValidator;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,9 +25,10 @@ public class UserService {
     private UserDAO userDAO;
     @Autowired
     private UserValidator validator;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
-    public UserDTO addUser(UserDTO user) throws UserException {
-        System.out.println(validator.isUserValid(user));
+    public UserResponseDTO addUser(UserRequestDTO user) throws UserException {
         if (validator.isUserValid(user)) {
             System.out.println(validator.isUserValid(user));
             User entity = userMapper.dtoToEntity(user);
@@ -38,17 +39,17 @@ public class UserService {
         }
     }
 
-    public List<UserDTO> getAllUsers() {
+    public List<UserResponseDTO> getAllUsers() {
         List <User> users = userDAO.findActiveUser();
-        List<UserDTO> usersDTOList = new ArrayList<>();
+        List<UserResponseDTO> usersDTOList = new ArrayList<>();
         for(User user : users){
-            UserDTO userDTO = userMapper.entityToDto(user);
+            UserResponseDTO userDTO = userMapper.entityToDto(user);
             usersDTOList.add(userDTO);
         }
         return usersDTOList;
     }
 
-    public UserDTO getUserById(Long id) throws UserException {
+    public UserResponseDTO getUserById(Long id) throws UserException {
         User user = userDAO.findById(id).orElseThrow(() -> new UserException("This user does not exist!", 400));
         if (user != null) {
             return userMapper.entityToDto(user);
@@ -58,7 +59,7 @@ public class UserService {
     }
 
 
-    public UserDTO updateUserById(Long id, UserDTO userDTO) throws UserException {
+    public UserResponseDTO updateUserById(Long id, UserRequestDTO userDTO) throws UserException {
         User optionalUser = userDAO.findById(id).orElseThrow(() -> new UserException("This user does not exist!", 400));
         if (optionalUser != null) {
             optionalUser.setName(userDTO.getName());
@@ -68,7 +69,10 @@ public class UserService {
             optionalUser.setCellNum(userDTO.getCellNum());
             optionalUser.setFiscCode(userDTO.getFiscCode());
             optionalUser.setRole(userDTO.getRole());
-            optionalUser.setPassword(userDTO.getPassword());
+            String encPass = passwordEncoder.encode(userDTO.getPassword());
+            optionalUser.setPassword(encPass);
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" + encPass);
+
             User userEdited = userDAO.saveAndFlush(optionalUser);
             return userMapper.entityToDto(userEdited);
         } else {
@@ -77,7 +81,17 @@ public class UserService {
     }
 
     public void deleteUserById(Long id) throws UserException {
-        User user = userDAO.findById(id).orElseThrow(() -> new UserException("This review does not exist!", 400));
+        User user = userDAO.findById(id).orElseThrow(() -> new UserException("This user does not exist!", 400));
+        if(!user.getIsDeleted()) {
+            user.setIsDeleted(true);
+            userDAO.saveAndFlush(user);
+        }else{
+            throw  new UserException("This user does not exist!", 400);
+        }
+    }
+
+    public void deleteUserByUsername(String username) throws UserException {
+        User user = userDAO.findByUsername(username).orElseThrow(() -> new UserException("This user does not exist!", 400));
         if(!user.getIsDeleted()) {
             user.setIsDeleted(true);
             userDAO.saveAndFlush(user);
@@ -87,13 +101,30 @@ public class UserService {
     }
 
 
-    public User getUserByUsername(String username){
-        Optional<User> user = userDAO.findByUsername(username);
-
-        if(user.isPresent()) {
-            return user.get();
-        }
-        throw new BadCredentialsException("");
+    public UserResponseDTO getUserByUsername(String username) throws UserException {
+        User user = userDAO.findByUsername(username).orElseThrow(() -> new UserException("User not found", 400));
+        return userMapper.entityToDto(user);
     }
-  
+
+    public User getUserByUsernameLogin(String username) throws UserException {
+        return userDAO.findByUsername(username).orElseThrow(() -> new UserException("User not found", 400));
+    }
+
+    public UserResponseDTO updateUserByUsername(String username, UserRequestDTO userDTO) throws UserException {
+        User optionalUser = userDAO.findByUsername(username).orElseThrow(() -> new UserException("This user does not exist!", 400));
+        if (optionalUser != null) {
+            optionalUser.setName(userDTO.getName());
+            optionalUser.setSurname(userDTO.getSurname());
+            optionalUser.setUsername(userDTO.getUsername());
+            optionalUser.setEmail(userDTO.getEmail());
+            optionalUser.setCellNum(userDTO.getCellNum());
+            optionalUser.setFiscCode(userDTO.getFiscCode());
+            optionalUser.setRole(userDTO.getRole());
+            optionalUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            User userEdited = userDAO.saveAndFlush(optionalUser);
+            return userMapper.entityToDto(userEdited);
+        } else {
+            throw new UserException("This user does not exist!", 400);
+        }
+    }
 }
